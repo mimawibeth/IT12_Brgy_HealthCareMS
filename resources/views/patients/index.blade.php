@@ -20,28 +20,33 @@
         </div>
 
         <!-- Search and Filter Section -->
-        <div class="filters">
+        <form method="GET" action="{{ route('patients.index') }}" class="filters">
             <div class="search-box">
-                <input type="text" placeholder="Search patients..." class="search-input">
-                <button class="btn-search"><i class="bi bi-search"></i> Search</button>
+                <input type="text" name="search" placeholder="Search patients..." class="search-input"
+                    value="{{ request('search') }}">
+                <button type="submit" class="btn-search"><i class="bi bi-search"></i> Search</button>
             </div>
 
             <div class="filter-options">
-                <select class="filter-select">
+                <select name="gender" class="filter-select">
                     <option value="">All Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
+                    <option value="male" {{ request('gender') === 'male' ? 'selected' : '' }}>Male</option>
+                    <option value="female" {{ request('gender') === 'female' ? 'selected' : '' }}>Female</option>
                 </select>
 
-                <select class="filter-select">
+                <select name="age_group" class="filter-select">
                     <option value="">All Ages</option>
-                    <option value="child">Children (0-12)</option>
-                    <option value="teen">Teenagers (13-19)</option>
-                    <option value="adult">Adults (20-59)</option>
-                    <option value="senior">Senior (60+)</option>
+                    <option value="child" {{ request('age_group') === 'child' ? 'selected' : '' }}>Children (0-12)
+                    </option>
+                    <option value="teen" {{ request('age_group') === 'teen' ? 'selected' : '' }}>Teenagers (13-19)
+                    </option>
+                    <option value="adult" {{ request('age_group') === 'adult' ? 'selected' : '' }}>Adults (20-59)
+                    </option>
+                    <option value="senior" {{ request('age_group') === 'senior' ? 'selected' : '' }}>Senior (60+)
+                    </option>
                 </select>
             </div>
-        </div>
+        </form>
 
         <!-- Patients Table -->
         <div class="table-container">
@@ -59,55 +64,257 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Sample Patient Row -->
-                    <tr>
-                        <td>Nov 20, 2025</td>
-                        <td>P-001</td>
-                        <td>Santos, Maria A.</td>
-                        <td>F</td>
-                        <td>Jan 15, 1997</td>
-                        <td>Purok 1, Brgy Sto. Niño</td>
-                        <td>0912-345-6789</td>
-                        <td class="actions">
-                            <a href="#" class="btn-action btn-view">View</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Nov 18, 2025</td>
-                        <td>P-002</td>
-                        <td>Dela Cruz, Juan B.</td>
-                        <td>M</td>
-                        <td>Mar 22, 1980</td>
-                        <td>Purok 2, Brgy Sto. Niño</td>
-                        <td>0923-456-7890</td>
-                        <td class="actions">
-                            <a href="#" class="btn-action btn-view">View</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Nov 15, 2025</td>
-                        <td>P-003</td>
-                        <td>Reyes, Ana C.</td>
-                        <td>F</td>
-                        <td>Jul 08, 1993</td>
-                        <td>Purok 3, Brgy Sto. Niño</td>
-                        <td>0934-567-8901</td>
-                        <td class="actions">
-                            <a href="#" class="btn-action btn-view">View</a>
-                        </td>
-                    </tr>
+                    @forelse ($patients as $patient)
+                        <tr>
+                            <td>
+                                {{ $patient->dateRegistered ? \Carbon\Carbon::parse($patient->dateRegistered)->format('M d, Y') : '' }}
+                            </td>
+                            <td>{{ $patient->patientNo }}</td>
+                            <td>{{ $patient->name }}</td>
+                            <td>{{ $patient->sex }}</td>
+                            <td>
+                                {{ $patient->birthday ? \Carbon\Carbon::parse($patient->birthday)->format('M d, Y') : '' }}
+                            </td>
+                            <td>{{ $patient->address }}</td>
+                            <td>{{ $patient->contactNumber }}</td>
+                            <td class="actions">
+                                <a href="#" class="btn-action btn-view" data-patient-id="{{ $patient->PatientID }}">View</a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" style="text-align: center;">No patients found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
-        <!-- Pagination -->
+        <!-- Pagination (static display for now, design kept as-is) -->
         <div class="pagination">
             <button class="btn-page">« Previous</button>
-            <span class="page-info">Page 1 of 10</span>
+            <span class="page-info">Page 1 of 1</span>
             <button class="btn-page">Next »</button>
         </div>
 
+        <!-- Patient View Modal -->
+        <div id="patientViewModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Patient Details</h3>
+                    <span class="close-modal" onclick="closePatientViewModal()">&times;</span>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="section-header"><span class="section-indicator"></span>Patient Information</h4>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Date Registered</label>
+                            <p id="modalDateRegistered"></p>
+                        </div>
+                        <div class="form-group">
+                            <label>Patient No.</label>
+                            <p id="modalPatientNo"></p>
+                        </div>
+                        <div class="form-group">
+                            <label>Sex</label>
+                            <p id="modalSex"></p>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label>Name</label>
+                            <p id="modalName"></p>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Birthday</label>
+                            <p id="modalBirthday"></p>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <p id="modalContactNumber"></p>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label>Address</label>
+                            <p id="modalAddress"></p>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>NHTS ID No.</label>
+                            <p id="modalNhtsIdNo"></p>
+                        </div>
+                        <div class="form-group">
+                            <label>PWD ID No.</label>
+                            <p id="modalPwdIdNo"></p>
+                        </div>
+                        <div class="form-group">
+                            <label>PHIC ID No.</label>
+                            <p id="modalPhicIdNo"></p>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>4Ps/CCT ID No.</label>
+                            <p id="modalFourPsCctIdNo"></p>
+                        </div>
+                        <div class="form-group">
+                            <label>Ethnic Group</label>
+                            <p id="modalEthnicGroup"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h4 class="section-header"><span class="section-indicator"></span>Latest Assessment</h4>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <p id="modalAssessmentDate"></p>
+                        </div>
+                        <div class="form-group">
+                            <label>Age</label>
+                            <p id="modalAssessmentAge"></p>
+                        </div>
+                        <div class="form-group">
+                            <label>CVD Risk</label>
+                            <p id="modalAssessmentCvdRisk"></p>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>BP (Systolic)</label>
+                            <p id="modalAssessmentBpSystolic"></p>
+                        </div>
+                        <div class="form-group">
+                            <label>BP (Diastolic)</label>
+                            <p id="modalAssessmentBpDiastolic"></p>
+                        </div>
+                        <div class="form-group">
+                            <label>Wt (kg)</label>
+                            <p id="modalAssessmentWt"></p>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Ht (cm)</label>
+                            <p id="modalAssessmentHt"></p>
+                        </div>
+                        <div class="form-group">
+                            <label>FBS/RBS</label>
+                            <p id="modalAssessmentFbsRbs"></p>
+                        </div>
+                        <div class="form-group">
+                            <label>Lipid Profile</label>
+                            <p id="modalAssessmentLipidProfile"></p>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Chief Complaint</label>
+                            <p id="modalAssessmentChiefComplaint"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closePatientViewModal()">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+    <script>
+        function openPatientViewModal(patientId) {
+            fetch('{{ route('patients.index') }}/' + patientId)
+                .then(response => response.json())
+                .then(data => {
+                    const patient = data.patient || data;
+
+                    const formatDate = (value) => {
+                        if (!value) return '';
+                        const d = new Date(value);
+                        if (isNaN(d.getTime())) {
+                            return value;
+                        }
+                        return d.toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: '2-digit',
+                            year: 'numeric'
+                        });
+                    };
+
+                    document.getElementById('modalDateRegistered').textContent = formatDate(patient.dateRegistered);
+                    document.getElementById('modalPatientNo').textContent = patient.patientNo || '';
+                    document.getElementById('modalSex').textContent = patient.sex || '';
+                    document.getElementById('modalName').textContent = patient.name || '';
+                    document.getElementById('modalBirthday').textContent = formatDate(patient.birthday);
+                    document.getElementById('modalContactNumber').textContent = patient.contactNumber || '';
+                    document.getElementById('modalAddress').textContent = patient.address || '';
+                    document.getElementById('modalNhtsIdNo').textContent = patient.nhtsIdNo || '';
+                    document.getElementById('modalPwdIdNo').textContent = patient.pwdIdNo || '';
+                    document.getElementById('modalPhicIdNo').textContent = patient.phicIdNo || '';
+                    document.getElementById('modalFourPsCctIdNo').textContent = patient.fourPsCctIdNo || '';
+                    document.getElementById('modalEthnicGroup').textContent = patient.ethnicGroup || '';
+
+                    const assessments = data.assessments || patient.assessments || [];
+                    const latest = assessments.length ? assessments[assessments.length - 1] : null;
+
+                    document.getElementById('modalAssessmentDate').textContent = latest ? formatDate(latest.date) : '';
+                    document.getElementById('modalAssessmentAge').textContent = latest && latest.age ? latest.age : '';
+                    document.getElementById('modalAssessmentCvdRisk').textContent = latest && latest.cvdRisk ? latest.cvdRisk : '';
+                    document.getElementById('modalAssessmentBpSystolic').textContent = latest && latest.bpSystolic ? latest.bpSystolic : '';
+                    document.getElementById('modalAssessmentBpDiastolic').textContent = latest && latest.bpDiastolic ? latest.bpDiastolic : '';
+                    document.getElementById('modalAssessmentWt').textContent = latest && latest.wt ? latest.wt : '';
+                    document.getElementById('modalAssessmentHt').textContent = latest && latest.ht ? latest.ht : '';
+                    document.getElementById('modalAssessmentFbsRbs').textContent = latest && latest.fbsRbs ? latest.fbsRbs : '';
+                    document.getElementById('modalAssessmentLipidProfile').textContent = latest && latest.lipidProfile ? latest.lipidProfile : '';
+                    document.getElementById('modalAssessmentChiefComplaint').textContent = latest && latest.chiefComplaint ? latest.chiefComplaint : '';
+
+                    document.getElementById('patientViewModal').style.display = 'block';
+                });
+        }
+
+        function closePatientViewModal() {
+            document.getElementById('patientViewModal').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const viewButtons = document.querySelectorAll('.btn-view');
+
+            viewButtons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const patientId = this.getAttribute('data-patient-id');
+                    if (patientId) {
+                        openPatientViewModal(patientId);
+                    }
+                });
+            });
+
+            window.addEventListener('click', function (event) {
+                const modal = document.getElementById('patientViewModal');
+                if (event.target === modal) {
+                    closePatientViewModal();
+                }
+            });
+        });
+    </script>
 @endsection

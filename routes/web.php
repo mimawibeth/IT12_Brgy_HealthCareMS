@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PatientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,38 +65,27 @@ Route::middleware('auth')->group(function () {
     // ====================
     Route::prefix('patients')->name('patients.')->group(function () {
         // Patient list
-        Route::get('/', function () {
-            return view('patients.index');
-        })->name('index');
+        Route::get('/', [PatientController::class, 'index'])->name('index');
 
         // Add new patient form
-        Route::get('/create', function () {
-            return view('patients.create');
-        })->name('create');
+        Route::get('/create', [PatientController::class, 'create'])->name('create');
 
-        // Save new patient
-        Route::post('/store', function () {
-            // TODO: Save patient logic
-            return redirect()->route('patients.index')->with('success', 'Patient added successfully');
-        })->name('store');
+        // Save new patient (with assessments)
+        Route::post('/store', [PatientController::class, 'store'])->name('store');
 
-        // View patient details
-        Route::get('/{id}', function ($id) {
-            return view('patients.show', compact('id'));
-        })->name('show');
+        // JSON details for view modal
+        Route::get('/{patient}', [PatientController::class, 'show'])->name('show');
 
-        // Edit patient
+        // Edit, update, and delete can be wired later as needed
         Route::get('/{id}/edit', function ($id) {
             return view('patients.edit', compact('id'));
         })->name('edit');
 
-        // Update patient
         Route::put('/{id}', function ($id) {
             // TODO: Update patient logic
             return redirect()->route('patients.index')->with('success', 'Patient updated successfully');
         })->name('update');
 
-        // Delete patient
         Route::delete('/{id}', function ($id) {
             // TODO: Delete patient logic
             return redirect()->route('patients.index')->with('success', 'Patient deleted successfully');
