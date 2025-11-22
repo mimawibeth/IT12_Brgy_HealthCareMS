@@ -105,128 +105,132 @@
                     <span class="close-modal" onclick="closePatientViewModal()">&times;</span>
                 </div>
 
-                <div class="form-section">
-                    <h4 class="section-header"><span class="section-indicator"></span>Patient Information</h4>
+                <div class="modal-body">
+                    <!-- Section 1: Patient Information (from ITR) -->
+                    <div class="form-section section-patient-info">
+                        <h4 class="section-header"><span class="section-indicator"></span>Patient Information</h4>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Date Registered</label>
-                            <p id="modalDateRegistered"></p>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>Full Name</label>
+                                <p id="modalName"></p>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Patient No.</label>
-                            <p id="modalPatientNo"></p>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Patient No.</label>
+                                <p id="modalPatientNo"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Sex</label>
+                                <p id="modalSex"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Birthday</label>
+                                <p id="modalBirthday"></p>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Sex</label>
-                            <p id="modalSex"></p>
+
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>Address</label>
+                                <p id="modalAddress"></p>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Contact Number</label>
+                                <p id="modalContactNumber"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Date Registered</label>
+                                <p id="modalDateRegistered"></p>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>NHTS ID No.</label>
+                                <p id="modalNhtsIdNo"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>PWD ID No.</label>
+                                <p id="modalPwdIdNo"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>PHIC ID No.</label>
+                                <p id="modalPhicIdNo"></p>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>4Ps/CCT ID No.</label>
+                                <p id="modalFourPsCctIdNo"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Ethnic Group</label>
+                                <p id="modalEthnicGroup"></p>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group full-width">
-                            <label>Name</label>
-                            <p id="modalName"></p>
-                        </div>
-                    </div>
+                    <!-- Section 2: Latest Health Assessment (Initial Visit Assessment) -->
+                    <div class="form-section section-assessment">
+                        <h4 class="section-header"><span class="section-indicator"></span>Initial Visit Assessment - Monitoring Parameters</h4>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Birthday</label>
-                            <p id="modalBirthday"></p>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Assessment Date</label>
+                                <p id="modalAssessmentDate"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Age</label>
+                                <p id="modalAssessmentAge"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>CVD Risk</label>
+                                <p id="modalAssessmentCvdRisk"></p>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Contact Number</label>
-                            <p id="modalContactNumber"></p>
-                        </div>
-                    </div>
 
-                    <div class="form-row">
-                        <div class="form-group full-width">
-                            <label>Address</label>
-                            <p id="modalAddress"></p>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>BP Systolic (mmHg)</label>
+                                <p id="modalAssessmentBpSystolic"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>BP Diastolic (mmHg)</label>
+                                <p id="modalAssessmentBpDiastolic"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Weight (kg)</label>
+                                <p id="modalAssessmentWt"></p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>NHTS ID No.</label>
-                            <p id="modalNhtsIdNo"></p>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Height (cm)</label>
+                                <p id="modalAssessmentHt"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>FBS/RBS (mg/dL)</label>
+                                <p id="modalAssessmentFbsRbs"></p>
+                            </div>
+                            <div class="form-group">
+                                <label>Lipid Profile</label>
+                                <p id="modalAssessmentLipidProfile"></p>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>PWD ID No.</label>
-                            <p id="modalPwdIdNo"></p>
-                        </div>
-                        <div class="form-group">
-                            <label>PHIC ID No.</label>
-                            <p id="modalPhicIdNo"></p>
-                        </div>
-                    </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>4Ps/CCT ID No.</label>
-                            <p id="modalFourPsCctIdNo"></p>
-                        </div>
-                        <div class="form-group">
-                            <label>Ethnic Group</label>
-                            <p id="modalEthnicGroup"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <h4 class="section-header"><span class="section-indicator"></span>Latest Assessment</h4>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Date</label>
-                            <p id="modalAssessmentDate"></p>
-                        </div>
-                        <div class="form-group">
-                            <label>Age</label>
-                            <p id="modalAssessmentAge"></p>
-                        </div>
-                        <div class="form-group">
-                            <label>CVD Risk</label>
-                            <p id="modalAssessmentCvdRisk"></p>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>BP (Systolic)</label>
-                            <p id="modalAssessmentBpSystolic"></p>
-                        </div>
-                        <div class="form-group">
-                            <label>BP (Diastolic)</label>
-                            <p id="modalAssessmentBpDiastolic"></p>
-                        </div>
-                        <div class="form-group">
-                            <label>Wt (kg)</label>
-                            <p id="modalAssessmentWt"></p>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Ht (cm)</label>
-                            <p id="modalAssessmentHt"></p>
-                        </div>
-                        <div class="form-group">
-                            <label>FBS/RBS</label>
-                            <p id="modalAssessmentFbsRbs"></p>
-                        </div>
-                        <div class="form-group">
-                            <label>Lipid Profile</label>
-                            <p id="modalAssessmentLipidProfile"></p>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Chief Complaint</label>
-                            <p id="modalAssessmentChiefComplaint"></p>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>Chief Complaint</label>
+                                <p id="modalAssessmentChiefComplaint"></p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -288,7 +292,7 @@
                     document.getElementById('modalAssessmentLipidProfile').textContent = latest && latest.lipidProfile ? latest.lipidProfile : '';
                     document.getElementById('modalAssessmentChiefComplaint').textContent = latest && latest.chiefComplaint ? latest.chiefComplaint : '';
 
-                    document.getElementById('patientViewModal').style.display = 'block';
+                    document.getElementById('patientViewModal').style.display = 'flex';
                 });
         }
 

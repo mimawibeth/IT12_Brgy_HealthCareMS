@@ -1,59 +1,136 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<!--
+	Project: IT12_Brgy_HealthCareMS
+	Root README tailored to this repository. Keep concise and actionable.
+-->
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# IT12_Brgy_HealthCareMS
 
-## About Laravel
+A Barangay Healthcare Management System built with Laravel. This project provides basic modules for managing users, patients, reports, logs, and administrative tasks for a local barangay health center.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Repository:** `IT12_Brgy_HealthCareMS`
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Main features (visible in repo):**
+- Users management (`app/Models/User.php`, `resources/views/users`)
+- Patients management (`resources/views/patients`)
+- Reports and logs (`resources/views/reports`, `resources/views/logs`)
+- Laravel-based backend with Blade views and Vite-powered frontend assets
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Maintainers:** project team (contact repository owner on GitHub)
 
-## Learning Laravel
+## Prerequisites
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- PHP 8.1+ (verify with `php -v`)
+- Composer (dependency manager)
+- Node.js + npm or yarn (for frontend build) — Node 16+ recommended
+- A database (MySQL/MariaDB/Postgres/SQLite)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Getting Started (Development)
 
-## Laravel Sponsors
+1. Clone the repository (if you haven't already):
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```powershell
+git clone <repository-url> IT12_Brgy_HealthCareMS
+cd IT12_Brgy_HealthCareMS
+```
 
-### Premium Partners
+2. Install PHP dependencies:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```powershell
+composer install
+```
+
+3. Install frontend dependencies and build assets:
+
+```powershell
+npm install
+npm run dev
+```
+
+4. Copy `.env` and set environment variables (database, mail, etc.):
+
+```powershell
+copy .env.example .env
+```
+
+Then edit `.env` and set `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD`.
+
+5. Generate the application key and run migrations:
+
+```powershell
+php artisan key:generate
+php artisan migrate
+php artisan db:seed
+```
+
+If you prefer to use SQLite for quick local testing, set `DB_CONNECTION=sqlite` and point `DB_DATABASE` to a file.
+
+6. Serve the application locally:
+
+```powershell
+php artisan serve
+```
+
+Open `http://127.0.0.1:8000` in your browser.
+
+## Running Tests
+
+This project includes basic tests (see `tests/`). Run tests with:
+
+```powershell
+php artisan test
+# or if using phpunit directly
+vendor\bin\phpunit
+```
+
+## Project Structure (high level)
+
+- `app/` — Laravel application code (models, controllers, middleware, providers)
+- `routes/` — route definitions (`web.php`, `console.php`)
+- `resources/views/` — Blade templates (auth, dashboard, users, patients, reports, logs)
+- `resources/js`, `resources/css` — frontend sources (built with Vite)
+- `public/` — compiled assets and entry point
+- `database/migrations`, `database/seeders` — database setup
+
+## Common Tasks
+
+- Run migrations: `php artisan migrate`
+- Rollback last migration: `php artisan migrate:rollback`
+- Clear caches: `php artisan optimize:clear`
+- Create a controller: `php artisan make:controller NameController`
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Contributions are welcome. Typical workflow:
 
-## Code of Conduct
+1. Fork the repo
+2. Create a feature branch: `git checkout -b feat/your-feature`
+3. Make changes, add tests if applicable
+4. Commit and push: `git push origin feat/your-feature`
+5. Open a pull request describing your changes
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Please follow existing code style and conventions (Blade templates, controller patterns).
 
-## Security Vulnerabilities
+## Deployment Notes
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- Ensure environment variables are set on the server.
+- Run `composer install --no-dev` and `npm run build` during deployment.
+- Use a process manager (Supervisor) for queue workers if used.
+
+## Where to Look Next
+
+- Views: `resources/views/` (look into `users`, `patients`, `reports` folders)
+- Routes: `routes/web.php`
+- Controllers: `app/Http/Controllers`
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project follows the repository license (check `composer.json`). If unspecified, assume MIT-compatible usage but confirm with project owners before redistribution.
+
+---
+
+If you'd like, I can also:
+- run the migration and dev server for you locally
+- commit this README change and push it to `main`
+- open a PR instead of pushing directly
+
+Tell me which option you prefer and I will proceed.
