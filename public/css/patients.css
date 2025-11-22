@@ -94,7 +94,7 @@
 
 .data-table th {
     padding: 15px;
-    text-align: left;
+    text-align: center;
     font-weight: 600;
     font-size: 14px;
 }
@@ -103,6 +103,7 @@
     padding: 12px 15px;
     border-bottom: 1px solid #ecf0f1;
     font-size: 14px;
+    text-align: center;
 }
 
 .data-table tbody tr:hover {
@@ -113,30 +114,51 @@
 .actions {
     display: flex;
     gap: 10px;
+    justify-content: center;
 }
 
 .btn-action {
-    padding: 5px 10px;
+    padding: 6px 12px;
     border-radius: 4px;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 13px;
     display: inline-block;
+    border: 1px solid;
+    transition: all 0.3s ease;
+    font-weight: 500;
 }
 
 .btn-view {
     color: #3498db;
+    background-color: #fff;
+    border-color: #3498db;
+}
+
+.btn-view:hover {
+    background-color: #3498db;
+    color: #fff;
 }
 
 .btn-edit {
     color: #f39c12;
+    background-color: #fff;
+    border-color: #f39c12;
+}
+
+.btn-edit:hover {
+    background-color: #f39c12;
+    color: #fff;
 }
 
 .btn-delete {
     color: #e74c3c;
+    background-color: #fff;
+    border-color: #e74c3c;
 }
 
-.btn-action:hover {
-    opacity: 0.7;
+.btn-delete:hover {
+    background-color: #e74c3c;
+    color: #fff;
 }
 
 /* === PAGINATION === */
@@ -393,6 +415,107 @@ textarea.form-control {
     margin-top: 30px;
     padding-top: 20px;
     border-top: 1px solid #ecf0f1;
+}
+
+/* === MULTI-STEP TABS === */
+.nav-tabs {
+    display: flex;
+    border-bottom: 2px solid #2c5aa0;
+    margin-bottom: 30px;
+    background: #f8f9fa;
+    border-radius: 6px 6px 0 0;
+    overflow-x: auto;
+}
+
+.nav-tabs .nav-item {
+    flex: 1;
+    text-align: center;
+}
+
+.nav-tabs .nav-link {
+    display: block;
+    padding: 14px 0;
+    color: #2c5aa0;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    border-radius: 6px 6px 0 0;
+}
+
+.nav-tabs .nav-link.active {
+    background: #fff;
+    color: #1a1a1a;
+    border-bottom: 2px solid #fff;
+    font-weight: 700;
+}
+
+.nav-tabs .nav-link:focus {
+    outline: none;
+}
+
+/* === TAB CONTENT === */
+.tab-content {
+    min-height: 350px;
+    animation: fadeIn 0.3s;
+}
+
+.tab-pane {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.tab-pane.show {
+    display: block;
+    opacity: 1;
+}
+
+/* === PROGRESS INDICATOR === */
+.step-progress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 10px;
+}
+
+.step-circle {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    color: #2c5aa0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s;
+}
+
+.step-circle.active {
+    background: #2c5aa0;
+    color: #fff;
+}
+
+.step-label {
+    font-size: 13px;
+    color: #2c5aa0;
+    font-weight: 500;
+    margin-left: 4px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 /* === RESPONSIVE === */

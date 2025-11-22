@@ -48,60 +48,54 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Patient ID</th>
-                        <th>Full Name</th>
-                        <th>Age</th>
-                        <th>Gender</th>
+                        <th>Date Registered</th>
+                        <th>Patient No.</th>
+                        <th>Name</th>
+                        <th>Sex</th>
+                        <th>Birthday</th>
                         <th>Address</th>
-                        <th>Contact</th>
-                        <th>Last Visit</th>
+                        <th>Contact Number</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <!-- Sample Patient Row -->
                     <tr>
+                        <td>Nov 20, 2025</td>
                         <td>P-001</td>
-                        <td>Maria Santos</td>
-                        <td>28</td>
-                        <td>Female</td>
+                        <td>Santos, Maria A.</td>
+                        <td>F</td>
+                        <td>Jan 15, 1997</td>
                         <td>Purok 1, Brgy Sto. Niño</td>
                         <td>0912-345-6789</td>
-                        <td>Nov 20, 2025</td>
                         <td class="actions">
-                            <a href="#" class="btn-action btn-view" title="View Details"><i class="bi bi-eye"></i></a>
-                            <a href="#" class="btn-action btn-edit" title="Edit"><i class="bi bi-pencil"></i></a>
-                            <a href="#" class="btn-action btn-delete" title="Delete"><i class="bi bi-trash"></i></a>
+                            <a href="#" class="btn-action btn-view">View</a>
                         </td>
                     </tr>
 
                     <tr>
+                        <td>Nov 18, 2025</td>
                         <td>P-002</td>
-                        <td>Juan Dela Cruz</td>
-                        <td>45</td>
-                        <td>Male</td>
+                        <td>Dela Cruz, Juan B.</td>
+                        <td>M</td>
+                        <td>Mar 22, 1980</td>
                         <td>Purok 2, Brgy Sto. Niño</td>
                         <td>0923-456-7890</td>
-                        <td>Nov 18, 2025</td>
                         <td class="actions">
-                            <a href="#" class="btn-action btn-view" title="View Details"><i class="bi bi-eye"></i></a>
-                            <a href="#" class="btn-action btn-edit" title="Edit"><i class="bi bi-pencil"></i></a>
-                            <a href="#" class="btn-action btn-delete" title="Delete"><i class="bi bi-trash"></i></a>
+                            <a href="#" class="btn-action btn-view">View</a>
                         </td>
                     </tr>
 
                     <tr>
+                        <td>Nov 15, 2025</td>
                         <td>P-003</td>
-                        <td>Ana Reyes</td>
-                        <td>32</td>
-                        <td>Female</td>
+                        <td>Reyes, Ana C.</td>
+                        <td>F</td>
+                        <td>Jul 08, 1993</td>
                         <td>Purok 3, Brgy Sto. Niño</td>
                         <td>0934-567-8901</td>
-                        <td>Nov 15, 2025</td>
                         <td class="actions">
-                            <a href="#" class="btn-action btn-view" title="View Details"><i class="bi bi-eye"></i></a>
-                            <a href="#" class="btn-action btn-edit" title="Edit"><i class="bi bi-pencil"></i></a>
-                            <a href="#" class="btn-action btn-delete" title="Delete"><i class="bi bi-trash"></i></a>
+                            <a href="#" class="btn-action btn-view">View</a>
                         </td>
                     </tr>
                 </tbody>

@@ -229,46 +229,39 @@ Route::middleware('auth')->group(function () {
     });
 
     // ====================
-    // USER MANAGEMENT ROUTES
+    // USER MANAGEMENT ROUTES (Super Admin Access)
     // ====================
     Route::prefix('users')->name('users.')->group(function () {
-        // All users list (BHW, Admin, Workers)
-        Route::get('/bhw', function () {
-            return view('users.index');
-        })->name('bhw');
+        // All Users - View all system users (Super Admin, Admin, BHW)
+        Route::get('/all-users', function () {
+            return view('users.all-users');
+        })->name('all-users');
 
-        // Create user
-        Route::get('/create', function () {
-            return view('users.create');
-        })->name('create');
+        // Add New User - Form to create new user account
+        Route::get('/add-new-user', function () {
+            return view('users.add-new-user');
+        })->name('add-new');
 
-        // Store user
+        // Store new user
         Route::post('/store', function () {
-            // TODO: Store user logic
-            return redirect()->route('users.bhw')->with('success', 'User created successfully');
+            // TODO: Store user logic with role assignment
+            return redirect()->route('users.all-users')->with('success', 'User account created successfully');
         })->name('store');
 
-        // Admin accounts list
-        Route::get('/admin', function () {
-            return view('users.admin');
-        })->name('admin');
+        // Admin Accounts - View only Admin users
+        Route::get('/admin-accounts', function () {
+            return view('users.admin-accounts');
+        })->name('admin-accounts');
 
-        // Assign admin role (for Super Admin only)
-        Route::post('/{id}/assign-admin', function ($id) {
-            // TODO: Assign admin role logic
-            return back()->with('success', 'Admin role assigned successfully');
-        })->name('assign-admin');
+        // Role Management - View and manage user roles and permissions
+        Route::get('/role-management', function () {
+            return view('users.role-management');
+        })->name('role-management');
 
-        // Role management
-        Route::get('/roles', function () {
-            return view('users.roles');
-        })->name('roles');
-
-        // Update user role
-        Route::post('/{id}/update-role', function ($id) {
-            // TODO: Update user role logic
-            return back()->with('success', 'User role updated successfully');
-        })->name('update-role');
+        // View user details
+        Route::get('/{id}', function ($id) {
+            return view('users.show', compact('id'));
+        })->name('show');
 
         // Edit user
         Route::get('/{id}/edit', function ($id) {
@@ -278,20 +271,62 @@ Route::middleware('auth')->group(function () {
         // Update user
         Route::put('/{id}', function ($id) {
             // TODO: Update user logic
-            return redirect()->route('users.bhw')->with('success', 'User updated successfully');
+            return redirect()->route('users.all-users')->with('success', 'User updated successfully');
         })->name('update');
 
         // Delete user
         Route::delete('/{id}', function ($id) {
             // TODO: Delete user logic
-            return redirect()->route('users.bhw')->with('success', 'User deleted successfully');
+            return redirect()->route('users.all-users')->with('success', 'User deleted successfully');
         })->name('destroy');
+
+        // Update user role
+        Route::post('/{id}/update-role', function ($id) {
+            // TODO: Update user role logic (Super Admin, Admin, BHW)
+            return back()->with('success', 'User role updated successfully');
+        })->name('update-role');
 
         // Reset password
         Route::post('/{id}/reset-password', function ($id) {
             // TODO: Reset password logic
             return back()->with('success', 'Password reset successfully');
         })->name('reset-password');
+
+        // Toggle user status (Active/Inactive)
+        Route::post('/{id}/toggle-status', function ($id) {
+            // TODO: Toggle user status logic
+            return back()->with('success', 'User status updated successfully');
+        })->name('toggle-status');
+
+        // Store new role
+        Route::post('/roles/store', function () {
+            // TODO: Store new role logic
+            return redirect()->route('users.role-management')->with('success', 'Role created successfully');
+        })->name('roles.store');
+
+        // Edit role
+        Route::get('/roles/{id}/edit', function ($id) {
+            // TODO: Return edit role view
+            return back();
+        })->name('roles.edit');
+
+        // Update role
+        Route::put('/roles/{id}', function ($id) {
+            // TODO: Update role logic
+            return redirect()->route('users.role-management')->with('success', 'Role updated successfully');
+        })->name('roles.update');
+
+        // Delete role
+        Route::delete('/roles/{id}', function ($id) {
+            // TODO: Delete role logic (with validation - don't delete if users assigned)
+            return redirect()->route('users.role-management')->with('success', 'Role deleted successfully');
+        })->name('roles.destroy');
+
+        // Promote existing user to Admin
+        Route::post('/promote-admin', function () {
+            // TODO: Promote user to admin role logic
+            return redirect()->route('users.admin-accounts')->with('success', 'User promoted to Admin successfully');
+        })->name('promote-admin');
     });
 
     // ====================

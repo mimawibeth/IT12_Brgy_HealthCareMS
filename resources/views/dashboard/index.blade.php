@@ -15,185 +15,199 @@
         <!-- Overview Cards: Display quick statistics -->
         <div class="stats-grid">
 
-            <!-- Total Patients Card -->
+            <!-- Total Registered Patients Card -->
             <div class="stat-card">
                 <div class="stat-icon"><i class="bi bi-people"></i></div>
                 <div class="stat-details">
-                    <h3>Total Patients</h3>
+                    <h3>Registered Patients</h3>
                     <p class="stat-number">1,234</p>
-                    <span class="stat-label">Registered</span>
+                    <span class="stat-label">Total ITR Records</span>
                 </div>
             </div>
 
-            <!-- Monthly Consultations Card -->
+            <!-- Active Health Programs Card -->
             <div class="stat-card">
-                <div class="stat-icon"><i class="bi bi-hospital"></i></div>
+                <div class="stat-icon"><i class="bi bi-heart-pulse"></i></div>
                 <div class="stat-details">
-                    <h3>Consultations</h3>
-                    <p class="stat-number">345</p>
-                    <span class="stat-label">This Month</span>
+                    <h3>Health Programs</h3>
+                    <p class="stat-number">407</p>
+                    <span class="stat-label">Active Participants</span>
                 </div>
             </div>
 
-            <!-- Medicines in Stock Card -->
+            <!-- Monthly Services Card -->
+            <div class="stat-card">
+                <div class="stat-icon"><i class="bi bi-clipboard2-pulse"></i></div>
+                <div class="stat-details">
+                    <h3>Monthly Services</h3>
+                    <p class="stat-number">345</p>
+                    <span class="stat-label">November 2025</span>
+                </div>
+            </div>
+
+            <!-- Medicine Inventory Card -->
             <div class="stat-card">
                 <div class="stat-icon"><i class="bi bi-capsule"></i></div>
                 <div class="stat-details">
-                    <h3>Medicines</h3>
+                    <h3>Medicine Stock</h3>
                     <p class="stat-number">89</p>
-                    <span class="stat-label">In Stock</span>
-                </div>
-            </div>
-
-            <!-- Low Stock Alerts Card -->
-            <div class="stat-card alert-card">
-                <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
-                <div class="stat-details">
-                    <h3>Low Stock</h3>
-                    <p class="stat-number">12</p>
-                    <span class="stat-label">Items</span>
+                    <span class="stat-label">Available Items</span>
                 </div>
             </div>
 
         </div>
 
-        <!-- Program Summary Section -->
+        <!-- Health Programs Overview Section -->
         <div class="program-summary">
-            <h2>Program Summary</h2>
+            <h2>Health Programs Overview</h2>
 
             <div class="program-cards">
-                <!-- Prenatal Care -->
+                <!-- Prenatal Care Services -->
                 <div class="program-card">
-                    <h3><i class="bi bi-heart-pulse"></i> Prenatal Care</h3>
-                    <p class="program-count">45 Active Mothers</p>
-                    <a href="{{ route('health-programs.prenatal.records') }}" class="btn-link">View Details <i
+                    <h3><i class="bi bi-heart-pulse"></i> Prenatal Care Services</h3>
+                    <p class="program-count">48 Registered Pregnant Women</p>
+                    <a href="{{ route('health-programs.prenatal.records') }}" class="btn-link">View Records <i
                             class="bi bi-arrow-right"></i></a>
                 </div>
 
-                <!-- Family Planning -->
+                <!-- Family Planning Services -->
                 <div class="program-card">
-                    <h3><i class="bi bi-people-fill"></i> Family Planning</h3>
-                    <p class="program-count">128 Active Clients</p>
-                    <a href="{{ route('health-programs.fp.records') }}" class="btn-link">View Details <i
+                    <h3><i class="bi bi-people-fill"></i> Family Planning Services</h3>
+                    <p class="program-count">125 Active FP Clients</p>
+                    <a href="{{ route('health-programs.fp.records') }}" class="btn-link">View Records <i
                             class="bi bi-arrow-right"></i></a>
                 </div>
 
-                <!-- Immunization -->
+                <!-- Immunization Program (NIP) -->
                 <div class="program-card">
-                    <h3><i class="bi bi-hospital"></i> Immunization</h3>
-                    <p class="program-count">234 Children</p>
-                    <a href="{{ route('health-programs.immunization.records') }}" class="btn-link">View Details <i
+                    <h3><i class="bi bi-shield-check"></i> Immunization Program</h3>
+                    <p class="program-count">234 Children Enrolled</p>
+                    <a href="{{ route('health-programs.immunization.records') }}" class="btn-link">View Records <i
                             class="bi bi-arrow-right"></i></a>
                 </div>
             </div>
         </div>
 
-        <!-- Charts Section -->
+        <!-- Statistical Analysis Section -->
         <div class="charts-section">
-            <h2>Performance Overview</h2>
+            <h2>Statistical Analysis</h2>
 
             <div class="charts-grid">
-                <!-- Consultations Trend Chart -->
+                <!-- Monthly Services Trend -->
                 <div class="chart-card" onclick="window.location.href='{{ route('reports.monthly') }}'">
-                    <h3><i class="bi bi-graph-up"></i> Consultations Trend</h3>
+                    <h3><i class="bi bi-graph-up"></i> Monthly Services Trend</h3>
                     <div class="chart-placeholder">
                         <canvas id="consultationsChart"></canvas>
                     </div>
-                    <p class="chart-footer">Click to view detailed reports</p>
+                    <p class="chart-footer">Click to view detailed monthly reports</p>
                 </div>
 
-                <!-- Health Programs Distribution -->
+                <!-- Program Distribution -->
                 <div class="chart-card" onclick="window.location.href='{{ route('reports.monthly') }}'">
-                    <h3><i class="bi bi-pie-chart"></i> Health Programs</h3>
+                    <h3><i class="bi bi-pie-chart"></i> Program Distribution</h3>
                     <div class="chart-placeholder">
                         <canvas id="programsChart"></canvas>
                     </div>
-                    <p class="chart-footer">Click to view detailed reports</p>
+                    <p class="chart-footer">Click to view program statistics</p>
                 </div>
 
-                <!-- Medicine Usage -->
+                <!-- Medicine Dispensing -->
                 <div class="chart-card" onclick="window.location.href='{{ route('reports.monthly') }}'">
-                    <h3><i class="bi bi-bar-chart-line"></i> Medicine Usage</h3>
+                    <h3><i class="bi bi-bar-chart-line"></i> Medicine Dispensing</h3>
                     <div class="chart-placeholder">
                         <canvas id="medicineChart"></canvas>
                     </div>
-                    <p class="chart-footer">Click to view detailed reports</p>
+                    <p class="chart-footer">Click to view inventory reports</p>
                 </div>
             </div>
         </div>
 
         <!-- Two Column Layout: Stats and Activities -->
         <div class="dashboard-grid">
-            <!-- Left Column: Monthly Stats -->
+            <!-- Left Column: Monthly Statistics -->
             <div class="monthly-stats">
-                <h2>Monthly Statistics</h2>
+                <h2>Monthly Service Summary</h2>
 
                 <div class="stats-table">
                     <table>
                         <thead>
                             <tr>
-                                <th>Category</th>
-                                <th>This Month</th>
-                                <th>Last Month</th>
-                                <th>Change</th>
+                                <th>Service Category</th>
+                                <th>November 2025</th>
+                                <th>October 2025</th>
+                                <th>Variance</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Total Consultations</td>
-                                <td>345</td>
-                                <td>312</td>
-                                <td class="positive">+10.6%</td>
+                                <td>Prenatal Care Consultations</td>
+                                <td>48</td>
+                                <td>45</td>
+                                <td class="positive">+6.7%</td>
                             </tr>
                             <tr>
-                                <td>New Patients</td>
-                                <td>67</td>
-                                <td>54</td>
-                                <td class="positive">+24.1%</td>
+                                <td>Family Planning Services</td>
+                                <td>125</td>
+                                <td>118</td>
+                                <td class="positive">+5.9%</td>
                             </tr>
                             <tr>
-                                <td>Medicines Dispensed</td>
+                                <td>Immunizations Administered</td>
+                                <td>89</td>
+                                <td>95</td>
+                                <td class="negative">-6.3%</td>
+                            </tr>
+                            <tr>
+                                <td>Medicine Items Dispensed</td>
                                 <td>1,234</td>
                                 <td>1,456</td>
                                 <td class="negative">-15.2%</td>
                             </tr>
                             <tr>
-                                <td>Prenatal Visits</td>
-                                <td>89</td>
-                                <td>95</td>
-                                <td class="negative">-6.3%</td>
+                                <td>New Patient Registrations</td>
+                                <td>67</td>
+                                <td>54</td>
+                                <td class="positive">+24.1%</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Right Column: Recent Activities -->
+            <!-- Right Column: Recent System Activities -->
             <div class="recent-activities">
-                <h2>Recent Activities</h2>
+                <h2>Recent System Activities</h2>
 
                 <div class="activity-list">
                     <!-- Activity Item -->
                     <div class="activity-item">
-                        <span class="activity-icon"><i class="bi bi-check-circle"></i></span>
+                        <span class="activity-icon"><i class="bi bi-person-plus"></i></span>
                         <div class="activity-details">
-                            <p class="activity-text">New patient registered: Maria Santos</p>
+                            <p class="activity-text">Patient Registration: Maria Santos (ITR-2025-152)</p>
                             <span class="activity-time">5 minutes ago</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <span class="activity-icon"><i class="bi bi-heart-pulse"></i></span>
+                        <div class="activity-details">
+                            <p class="activity-text">Prenatal Consultation: Ana Cruz - Checkup completed</p>
+                            <span class="activity-time">25 minutes ago</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <span class="activity-icon"><i class="bi bi-shield-check"></i></span>
+                        <div class="activity-details">
+                            <p class="activity-text">Immunization: BCG vaccine administered to Juan Reyes</p>
+                            <span class="activity-time">1 hour ago</span>
                         </div>
                     </div>
 
                     <div class="activity-item">
                         <span class="activity-icon"><i class="bi bi-capsule"></i></span>
                         <div class="activity-details">
-                            <p class="activity-text">Medicine dispensed: Paracetamol (10 tablets)</p>
-                            <span class="activity-time">15 minutes ago</span>
-                        </div>
-                    </div>
-
-                    <div class="activity-item">
-                        <span class="activity-icon"><i class="bi bi-journal-text"></i></span>
-                        <div class="activity-details">
-                            <p class="activity-text">Prenatal visit recorded for Ana Cruz</p>
+                            <p class="activity-text">Medicine Dispensed: Paracetamol 500mg (10 tablets)</p>
                             <span class="activity-time">1 hour ago</span>
                         </div>
                     </div>
@@ -201,7 +215,7 @@
                     <div class="activity-item">
                         <span class="activity-icon"><i class="bi bi-exclamation-triangle"></i></span>
                         <div class="activity-details">
-                            <p class="activity-text">Low stock alert: Amoxicillin</p>
+                            <p class="activity-text">Inventory Alert: Amoxicillin stock level critical</p>
                             <span class="activity-time">2 hours ago</span>
                         </div>
                     </div>
@@ -215,14 +229,14 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Consultations Trend Chart
+        // Monthly Services Trend Chart
         const ctx1 = document.getElementById('consultationsChart').getContext('2d');
         new Chart(ctx1, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                labels: ['June', 'July', 'August', 'September', 'October', 'November'],
                 datasets: [{
-                    label: 'Consultations',
+                    label: 'Health Services Provided',
                     data: [280, 295, 310, 298, 312, 345],
                     borderColor: '#3498db',
                     backgroundColor: 'rgba(52, 152, 219, 0.1)',
@@ -236,15 +250,15 @@
             }
         });
 
-        // Health Programs Pie Chart
+        // Health Programs Distribution Chart
         const ctx2 = document.getElementById('programsChart').getContext('2d');
         new Chart(ctx2, {
             type: 'doughnut',
             data: {
-                labels: ['Prenatal', 'Family Planning', 'Immunization'],
+                labels: ['Prenatal Care', 'Family Planning', 'Immunization (NIP)'],
                 datasets: [{
-                    data: [45, 128, 234],
-                    backgroundColor: ['#3498db', '#9b59b6', '#1abc9c']
+                    data: [48, 125, 234],
+                    backgroundColor: ['#e74c3c', '#9b59b6', '#2ecc71']
                 }]
             },
             options: {
@@ -254,16 +268,16 @@
             }
         });
 
-        // Medicine Usage Bar Chart
+        // Medicine Dispensing Chart
         const ctx3 = document.getElementById('medicineChart').getContext('2d');
         new Chart(ctx3, {
             type: 'bar',
             data: {
                 labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
                 datasets: [{
-                    label: 'Medicines Dispensed',
+                    label: 'Medicine Items Dispensed',
                     data: [280, 350, 298, 306],
-                    backgroundColor: '#2ecc71'
+                    backgroundColor: '#3498db'
                 }]
             },
             options: {

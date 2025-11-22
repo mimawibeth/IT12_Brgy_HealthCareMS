@@ -120,23 +120,23 @@
                         <i class="bi bi-chevron-down arrow"></i>
                     </button>
                     <div class="nav-dropdown-menu">
-                        <a href="{{ route('users.bhw') }}"
-                            class="nav-item {{ request()->routeIs('users.bhw') ? 'active' : '' }}">
+                        <a href="{{ route('users.all-users') }}"
+                            class="nav-item {{ request()->routeIs('users.all-users') ? 'active' : '' }}">
                             <i class="bi bi-people icon"></i>
                             <span>All Users</span>
                         </a>
-                        <a href="{{ route('users.create') }}"
-                            class="nav-item {{ request()->routeIs('users.create') ? 'active' : '' }}">
+                        <a href="{{ route('users.add-new') }}"
+                            class="nav-item {{ request()->routeIs('users.add-new') ? 'active' : '' }}">
                             <i class="bi bi-person-plus icon"></i>
                             <span>Add New User</span>
                         </a>
-                        <a href="{{ route('users.admin') }}"
-                            class="nav-item {{ request()->routeIs('users.admin') ? 'active' : '' }}">
+                        <a href="{{ route('users.admin-accounts') }}"
+                            class="nav-item {{ request()->routeIs('users.admin-accounts') ? 'active' : '' }}">
                             <i class="bi bi-person-gear icon"></i>
                             <span>Admin Accounts</span>
                         </a>
-                        <a href="{{ route('users.roles') }}"
-                            class="nav-item {{ request()->routeIs('users.roles') ? 'active' : '' }}">
+                        <a href="{{ route('users.role-management') }}"
+                            class="nav-item {{ request()->routeIs('users.role-management') ? 'active' : '' }}">
                             <i class="bi bi-shield-lock icon"></i>
                             <span>Role Management</span>
                         </a>
