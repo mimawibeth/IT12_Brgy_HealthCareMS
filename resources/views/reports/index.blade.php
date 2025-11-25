@@ -24,6 +24,53 @@
             </div>
         </div>
 
+        <!-- Summary Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="bi bi-people"></i>
+                </div>
+                <div class="stat-details">
+                    <div class="stat-value">152</div>
+                    <div class="stat-label">Total Patients</div>
+                    <div class="stat-change positive">+12 from last month</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="bi bi-heart-pulse"></i>
+                </div>
+                <div class="stat-details">
+                    <div class="stat-value">48</div>
+                    <div class="stat-label">Prenatal Consultations</div>
+                    <div class="stat-change positive">+5 from last month</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <div class="stat-details">
+                    <div class="stat-value">89</div>
+                    <div class="stat-label">Immunizations Given</div>
+                    <div class="stat-change positive">+15 from last month</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="stat-details">
+                    <div class="stat-value">34</div>
+                    <div class="stat-label">Family Planning Clients</div>
+                    <div class="stat-change">No change</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Report Filter Section -->
         <div class="report-filters">
             <div class="filter-row">
@@ -57,78 +104,81 @@
             </div>
         </div>
 
-        <!-- Summary Statistics -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">
-                    <i class="bi bi-people"></i>
-                </div>
-                <div class="stat-details">
-                    <div class="stat-value">152</div>
-                    <div class="stat-label">Total Patients</div>
-                    <div class="stat-change positive">+12 from last month</div>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
-                    <i class="bi bi-heart-pulse"></i>
-                </div>
-                <div class="stat-details">
-                    <div class="stat-value">48</div>
-                    <div class="stat-label">Prenatal Consultations</div>
-                    <div class="stat-change positive">+5 from last month</div>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);">
-                    <i class="bi bi-shield-check"></i>
-                </div>
-                <div class="stat-details">
-                    <div class="stat-value">89</div>
-                    <div class="stat-label">Immunizations Given</div>
-                    <div class="stat-change positive">+15 from last month</div>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);">
-                    <i class="bi bi-people-fill"></i>
-                </div>
-                <div class="stat-details">
-                    <div class="stat-value">34</div>
-                    <div class="stat-label">Family Planning Clients</div>
-                    <div class="stat-change">No change</div>
-                </div>
-            </div>
+        <!-- Charts Section -->
+        <div class="charts-section-title">
+            <h2>Statistical Analysis & Trends</h2>
         </div>
 
-        <!-- Charts Section -->
         <div class="charts-grid">
-            <!-- Patient Registration Trend -->
+            <!-- Monthly Services Trend -->
             <div class="chart-card">
                 <div class="chart-header">
-                    <h3>Patient Registration Trend</h3>
+                    <h3><i class="bi bi-graph-up"></i> Monthly Services Trend</h3>
                     <span class="chart-period">Last 6 Months</span>
                 </div>
                 <div class="chart-placeholder">
-                    <i class="bi bi-bar-chart-line"></i>
-                    <p>Chart will be displayed here</p>
-                    <small>Shows monthly patient registration trends</small>
+                    <canvas id="servicesChart"></canvas>
+                    <p>Overall service delivery trends across all programs</p>
                 </div>
             </div>
 
-            <!-- Service Distribution -->
+            <!-- Program Distribution -->
             <div class="chart-card">
                 <div class="chart-header">
-                    <h3>Service Distribution</h3>
+                    <h3><i class="bi bi-pie-chart"></i> Health Program Distribution</h3>
                     <span class="chart-period">November 2025</span>
                 </div>
                 <div class="chart-placeholder">
-                    <i class="bi bi-pie-chart"></i>
-                    <p>Chart will be displayed here</p>
-                    <small>Shows distribution of health services</small>
+                    <canvas id="programDistributionChart"></canvas>
+                    <p>Service breakdown by health programs</p>
+                </div>
+            </div>
+
+            <!-- Patient Demographics -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="bi bi-people"></i> Patient Demographics</h3>
+                    <span class="chart-period">Age Group Distribution</span>
+                </div>
+                <div class="chart-placeholder">
+                    <canvas id="demographicsChart"></canvas>
+                    <p>Patient breakdown by age groups</p>
+                </div>
+            </div>
+
+            <!-- Service Completion Rate -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="bi bi-check-circle"></i> Service Completion Rate</h3>
+                    <span class="chart-period">November 2025</span>
+                </div>
+                <div class="chart-placeholder">
+                    <canvas id="completionChart"></canvas>
+                    <p>Completed vs Pending services</p>
+                </div>
+            </div>
+
+            <!-- Top Health Programs -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="bi bi-bar-chart"></i> Top Health Programs</h3>
+                    <span class="chart-period">Cases Handled</span>
+                </div>
+                <div class="chart-placeholder">
+                    <canvas id="topProgramsChart"></canvas>
+                    <p>Most active health programs this month</p>
+                </div>
+            </div>
+
+            <!-- Gender Distribution -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3><i class="bi bi-gender-ambiguous"></i> Gender Distribution</h3>
+                    <span class="chart-period">Patient Statistics</span>
+                </div>
+                <div class="chart-placeholder">
+                    <canvas id="genderChart"></canvas>
+                    <p>Male vs Female patient breakdown</p>
                 </div>
             </div>
         </div>
@@ -285,6 +335,170 @@
 
 @push('scripts')
     <script>
+        // Chart configuration
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        font: { size: 12 },
+                        usePointStyle: true,
+                        padding: 15
+                    }
+                }
+            }
+        };
+
+        // Initialize Monthly Services Trend Chart
+        const servicesCtx = document.getElementById('servicesChart').getContext('2d');
+        new Chart(servicesCtx, {
+            type: 'line',
+            data: {
+                labels: ['June', 'July', 'August', 'September', 'October', 'November'],
+                datasets: [
+                    {
+                        label: 'Prenatal Care',
+                        data: [42, 45, 44, 46, 45, 48],
+                        borderColor: '#e74c3c',
+                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Family Planning',
+                        data: [110, 115, 120, 122, 118, 125],
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Immunization',
+                        data: [75, 80, 85, 90, 95, 89],
+                        borderColor: '#2ecc71',
+                        backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                ...chartOptions,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Initialize Program Distribution Chart
+        const programCtx = document.getElementById('programDistributionChart').getContext('2d');
+        new Chart(programCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Prenatal Care', 'Family Planning', 'Immunization', 'Nutrition Program', 'Child Care'],
+                datasets: [{
+                    data: [48, 125, 89, 56, 67],
+                    backgroundColor: [
+                        '#e74c3c',
+                        '#3498db',
+                        '#2ecc71',
+                        '#f39c12',
+                        '#9b59b6'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: chartOptions
+        });
+
+        // Initialize Patient Demographics Chart
+        const demographicsCtx = document.getElementById('demographicsChart').getContext('2d');
+        new Chart(demographicsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['0-5 years', '6-12 years', '13-19 years', '20-59 years', '60+ years'],
+                datasets: [{
+                    label: 'Number of Patients',
+                    data: [53, 38, 20, 37, 4],
+                    backgroundColor: '#3498db',
+                    borderColor: '#2980b9',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                ...chartOptions,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Initialize Service Completion Rate Chart
+        const completionCtx = document.getElementById('completionChart').getContext('2d');
+        new Chart(completionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Completed', 'Pending', 'Follow-ups'],
+                datasets: [{
+                    data: [364, 50, 191],
+                    backgroundColor: [
+                        '#2ecc71',
+                        '#e74c3c',
+                        '#f39c12'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: chartOptions
+        });
+
+        // Initialize Top Health Programs Chart
+        const topProgramsCtx = document.getElementById('topProgramsChart').getContext('2d');
+        new Chart(topProgramsCtx, {
+            type: 'horizontalBar',
+            type: 'bar',
+            data: {
+                labels: ['Deworming', 'Immunization', 'Prenatal Care', 'Family Planning', 'Nutrition'],
+                datasets: [{
+                    label: 'Cases Handled',
+                    data: [120, 89, 48, 34, 56],
+                    backgroundColor: ['#3498db', '#2ecc71', '#e74c3c', '#9b59b6', '#f39c12'],
+                    borderColor: ['#2980b9', '#27ae60', '#c0392b', '#8e44ad', '#d68910'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                ...chartOptions,
+                indexAxis: 'y',
+                scales: {
+                    x: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Initialize Gender Distribution Chart
+        const genderCtx = document.getElementById('genderChart').getContext('2d');
+        new Chart(genderCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Female', 'Male'],
+                datasets: [{
+                    data: [91, 61],
+                    backgroundColor: ['#e74c3c', '#3498db'],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: chartOptions
+        });
+
+        // Report Functions
         function generateReport() {
             const month = document.getElementById('report-month').value;
             const type = document.getElementById('report-type').value;

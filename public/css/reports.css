@@ -131,13 +131,9 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    transition: all 0.3s ease;
 }
 
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
+
 
 .stat-icon {
     font-size: 36px;
@@ -147,7 +143,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: #2c3e50;
+    background-color: #ecf0f1;
 }
 
 .stat-details {
@@ -184,6 +181,17 @@
 }
 
 /* Charts Grid */
+.charts-section-title {
+    margin-bottom: 20px;
+}
+
+.charts-section-title h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 30px 0 20px 0;
+}
+
 .charts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -196,6 +204,11 @@
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.chart-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .chart-header {
@@ -207,10 +220,18 @@
 }
 
 .chart-header h3 {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     color: #2c3e50;
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chart-header h3 i {
+    color: #3498db;
+    font-size: 18px;
 }
 
 .chart-period {
@@ -223,26 +244,26 @@
 }
 
 .chart-placeholder {
-    padding: 60px 20px;
+    padding: 30px 20px;
     text-align: center;
     color: #95a5a6;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-.chart-placeholder i {
-    font-size: 48px;
-    margin-bottom: 15px;
-    display: block;
+.chart-placeholder canvas {
+    max-width: 100%;
+    max-height: 250px;
 }
 
 .chart-placeholder p {
-    font-size: 16px;
+    font-size: 13px;
+    color: #7f8c8d;
+    margin: 10px 0 0 0;
     font-weight: 500;
-    margin-bottom: 5px;
-}
-
-.chart-placeholder small {
-    font-size: 12px;
-    color: #bdc3c7;
 }
 
 /* Report Section */
@@ -256,7 +277,7 @@
 
 .section-header {
     padding: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #3498db;
     color: white;
 }
 
@@ -285,7 +306,8 @@
 }
 
 .report-table thead {
-    background-color: #f8f9fa;
+    background-color: #34495e;
+    color: #fff;
 }
 
 .report-table th {
@@ -295,8 +317,8 @@
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #2c3e50;
-    border-bottom: 2px solid #e9ecef;
+    color: #fff;
+    border-bottom: 2px solid #2c3e50;
 }
 
 .report-table tbody tr {
@@ -326,7 +348,7 @@
 /* Responsive Design */
 @media (max-width: 1200px) {
     .charts-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
@@ -361,6 +383,20 @@
 
     .stats-grid {
         grid-template-columns: 1fr;
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .chart-placeholder {
+        min-height: 250px;
     }
 
     .report-table {

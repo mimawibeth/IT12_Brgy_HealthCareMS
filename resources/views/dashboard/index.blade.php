@@ -66,7 +66,7 @@
                 <div class="program-card">
                     <h3><i class="bi bi-heart-pulse"></i> Prenatal Care Services</h3>
                     <p class="program-count">48 Registered Pregnant Women</p>
-                    <a href="{{ route('health-programs.prenatal.records') }}" class="btn-link">View Records <i
+                    <a href="{{ route('health-programs.prenatal-view') }}" class="btn-link">View Records <i
                             class="bi bi-arrow-right"></i></a>
                 </div>
 
@@ -74,7 +74,7 @@
                 <div class="program-card">
                     <h3><i class="bi bi-people-fill"></i> Family Planning Services</h3>
                     <p class="program-count">125 Active FP Clients</p>
-                    <a href="{{ route('health-programs.fp.records') }}" class="btn-link">View Records <i
+                    <a href="{{ route('health-programs.family-planning-view') }}" class="btn-link">View Records <i
                             class="bi bi-arrow-right"></i></a>
                 </div>
 
@@ -82,7 +82,7 @@
                 <div class="program-card">
                     <h3><i class="bi bi-shield-check"></i> Immunization Program</h3>
                     <p class="program-count">234 Children Enrolled</p>
-                    <a href="{{ route('health-programs.immunization.records') }}" class="btn-link">View Records <i
+                    <a href="{{ route('health-programs.nip-view') }}" class="btn-link">View Records <i
                             class="bi bi-arrow-right"></i></a>
                 </div>
             </div>

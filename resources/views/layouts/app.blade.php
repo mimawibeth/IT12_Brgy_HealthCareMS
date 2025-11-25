@@ -7,6 +7,8 @@
     <title>@yield('title', 'Barangay Health Center')</title>
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     <!-- Page-specific CSS -->
@@ -22,8 +24,8 @@
             <!-- Logo/Header Section -->
             <div class="sidebar-header">
                 <img src="{{ asset('images/brgy.logo.png') }}" alt="Barangay Logo" class="sidebar-logo">
-                <h2>Brgy Sto. Niño HCS</h2>
-                <p class="user-role">{{ auth()->user()->role ?? 'Guest' }}</p>
+                <h2>Barangay Sto. Niño Health Center System</h2>
+                <p class="user-role" style="display: none;">{{ auth()->user()->role ?? 'Guest' }}</p>
             </div>
 
             <!-- Navigation Menu -->
@@ -66,26 +68,23 @@
                         <i class="bi bi-chevron-down arrow"></i>
                     </button>
                     <div class="nav-dropdown-menu">
-                        <a href="{{ route('health-programs.prenatal.records') }}"
-                            class="nav-item {{ request()->routeIs('health-programs.prenatal.*') ? 'active' : '' }}">
+                        <a href="{{ route('health-programs.prenatal-view') }}"
+                            class="nav-item {{ request()->routeIs('health-programs.prenatal-*') ? 'active' : '' }}">
                             <i class="bi bi-heart-pulse icon"></i>
                             <span>Prenatal Care</span>
                         </a>
-                        <a href="{{ route('health-programs.fp.records') }}"
-                            class="nav-item {{ request()->routeIs('health-programs.fp.*') ? 'active' : '' }}">
+                        <a href="{{ route('health-programs.family-planning-view') }}"
+                            class="nav-item {{ request()->routeIs('health-programs.family-planning-*') ? 'active' : '' }}">
                             <i class="bi bi-people-fill icon"></i>
                             <span>Family Planning</span>
                         </a>
-                        <a href="{{ route('health-programs.immunization.records') }}"
-                            class="nav-item {{ request()->routeIs('health-programs.immunization.*') ? 'active' : '' }}">
+                        <a href="{{ route('health-programs.nip-view') }}"
+                            class="nav-item {{ request()->routeIs('health-programs.nip-*') ? 'active' : '' }}">
+                            
                             <i class="bi bi-shield-check icon"></i>
                             <span>Immunization</span>
                         </a>
-                        <a href="{{ route('health-programs.other-services') }}"
-                            class="nav-item {{ request()->routeIs('health-programs.other-services') ? 'active' : '' }}">
-                            <i class="bi bi-bandaid icon"></i>
-                            <span>Other Services</span>
-                        </a>
+
                     </div>
                 </div>
 
@@ -180,7 +179,17 @@
             <header class="top-bar">
                 <h1 class="page-title">@yield('page-title', 'Dashboard')</h1>
                 <div class="user-info">
-                    <span class="user-name">{{ auth()->user()->name ?? 'User' }}</span>
+                    <div class="datetime-display">
+                        <div class="current-date" id="currentDate"></div>
+                        <div class="current-time" id="currentTime"></div>
+                    </div>
+                    <div class="user-details">
+                        <div class="user-role">
+                            <i class="bi bi-shield-lock"></i>
+                            <span id="userRole">Super Admin</span>
+                        </div>
+                        <div class="user-name-display">Dr. Maria Santos</div>
+                    </div>
                 </div>
             </header>
 
@@ -210,6 +219,49 @@
 
     <!-- Sidebar Dropdown Script -->
     <script>
+        // Update date and time display
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            };
+            const dateString = now.toLocaleDateString('en-US', options);
+            const timeString = now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            document.getElementById('currentDate').textContent = dateString;
+            document.getElementById('currentTime').textContent = timeString;
+        }
+
+        // Update user role based on actual role
+        function updateUserRole() {
+            const userRole = '{{ auth()->user()->role ?? "user" }}';
+            const roleText = document.getElementById('userRole');
+
+            // Map roles to display text - Only 3 user types
+            const roleMap = {
+                'super_admin': 'System Super Administrator',
+                'admin': 'System Administrator',
+                'bhw': 'Barangay Health Worker'
+            };
+
+            roleText.textContent = roleMap[userRole] || 'User';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            updateDateTime();
+            updateUserRole();
+            // Update time every second
+            setInterval(updateDateTime, 1000);
+        });
+
         // Toggle dropdown menus in sidebar
         document.querySelectorAll('.nav-dropdown-toggle').forEach(button => {
             button.addEventListener('click', function () {

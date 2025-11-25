@@ -96,78 +96,37 @@ Route::middleware('auth')->group(function () {
     // HEALTH PROGRAMS ROUTES
     // ====================
     Route::prefix('health-programs')->name('health-programs.')->group(function () {
-
         // Prenatal Care
-        Route::prefix('prenatal')->name('prenatal.')->group(function () {
-            // View all prenatal records
-            Route::get('/records', function () {
-                return view('health-programs.prenatal.index');
-            })->name('records');
+        Route::get('/prenatal', function () {
+            return view('health-programs.prenatal');
+        })->name('prenatal-view');
 
-            // Add prenatal record
-            Route::post('/records/store', function () {
-                // TODO: Store prenatal record logic
-                return redirect()->route('health-programs.prenatal.records')->with('success', 'Prenatal record added successfully');
-            })->name('records.store');
-
-            // Update prenatal record
-            Route::put('/records/{id}', function ($id) {
-                // TODO: Update prenatal record logic
-                return redirect()->route('health-programs.prenatal.records')->with('success', 'Prenatal record updated successfully');
-            })->name('records.update');
-        });
+        Route::get('/prenatal/{id}/edit', function ($id) {
+            return view('health-programs.prenatal-edit', compact('id'));
+        })->name('prenatal-edit');
 
         // Family Planning
-        Route::prefix('family-planning')->name('fp.')->group(function () {
-            // View all FP client records
-            Route::get('/client-records', function () {
-                return view('health-programs.family-planning.index');
-            })->name('records');
+        Route::get('/family-planning', function () {
+            return view('health-programs.family-planning');
+        })->name('family-planning-view');
 
-            // Add FP record
-            Route::post('/records/store', function () {
-                // TODO: Store FP record logic
-                return redirect()->route('health-programs.fp.records')->with('success', 'FP record added successfully');
-            })->name('records.store');
-
-            // Update FP record
-            Route::put('/records/{id}', function ($id) {
-                // TODO: Update FP record logic
-                return redirect()->route('health-programs.fp.records')->with('success', 'FP record updated successfully');
-            })->name('records.update');
-        });
+        Route::get('/family-planning/{id}/edit', function ($id) {
+            return view('health-programs.family-planning-edit', compact('id'));
+        })->name('family-planning-edit');
 
         // Immunization (NIP)
-        Route::prefix('immunization')->name('immunization.')->group(function () {
-            // View all immunization records
-            Route::get('/records', function () {
-                return view('health-programs.immunization.index');
-            })->name('records');
+        Route::get('/immunization', function () {
+            return view('health-programs.nip');
+        })->name('nip-view');
 
-            // Add immunization record
-            Route::post('/records/store', function () {
-                // TODO: Store immunization record logic
-                return redirect()->route('health-programs.immunization.records')->with('success', 'Immunization record added successfully');
-            })->name('records.store');
-
-            // Update immunization record
-            Route::put('/records/{id}', function ($id) {
-                // TODO: Update immunization record logic
-                return redirect()->route('health-programs.immunization.records')->with('success', 'Immunization record updated successfully');
-            })->name('records.update');
-        });
-
-        // Other Services (Wound dressing, basic emergency, etc.)
-        Route::get('/other-services', function () {
-            return view('health-programs.other-services');
-        })->name('other-services');
-
-        // Store other service record
-        Route::post('/other-services/store', function () {
-            // TODO: Store other service record logic
-            return redirect()->route('health-programs.other-services')->with('success', 'Service record added successfully');
-        })->name('other-services.store');
+        Route::get('/immunization/{id}/edit', function ($id) {
+            return view('health-programs.nip-edit', compact('id'));
+        })->name('nip-edit');
     });
+
+    Route::get('/health-programs/other-services', function () {
+        return view('health-programs.other-services');
+    })->name('health-programs.other-services');
 
     // ====================
     // MEDICINE & INVENTORY ROUTES
