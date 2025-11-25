@@ -120,23 +120,23 @@
 }
 
 .badge-super-admin {
-    background-color: #8e44ad;
-    color: #fff;
+    background-color: #ede7f6;
+    color: #5c2d91;
 }
 
 .badge-admin {
-    background-color: #e74c3c;
-    color: #fff;
+    background-color: #ffe5e0;
+    color: #c0392b;
 }
 
 .badge-bhw {
-    background-color: #3498db;
-    color: #fff;
+    background-color: #e3f2fd;
+    color: #2874a6;
 }
 
 .badge-staff {
-    background-color: #95a5a6;
-    color: #fff;
+    background-color: #eef2f4;
+    color: #566573;
 }
 
 .status-badge {
@@ -148,13 +148,13 @@
 }
 
 .status-active {
-    background-color: #27ae60;
-    color: #fff;
+    background-color: #e8f8f1;
+    color: #138d75;
 }
 
 .status-inactive {
-    background-color: #e67e22;
-    color: #fff;
+    background-color: #fff4e6;
+    color: #c45c0b;
 }
 
 /* === ACTION BUTTONS === */

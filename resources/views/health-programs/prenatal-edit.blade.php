@@ -75,7 +75,8 @@
                     <span><span class="section-indicator"></span>Add Follow-up Visit (SOAP)</span>
                     <button type="button" class="btn btn-outline" id="addFollowUpBtn">+ Add Visit</button>
                 </div>
-                <p class="form-note">Capture S/O/A/P details for follow-up visits. Previously saved visits appear in the table above.</p>
+                <p class="form-note">Capture S/O/A/P details for follow-up visits. Previously saved visits appear in the
+                    table above.</p>
 
                 <form id="followUpForm">
                     <div id="followUpContainer"></div>
@@ -98,75 +99,75 @@
             let visitCount = 0;
 
             const visitTemplate = (index) => `
-                <div class="visit-box" data-index="${index}">
-                    <div class="visit-box-header">
-                        <h4>Visit ${index + 3}</h4>
-                        <button type="button" class="btn btn-link remove-follow-up" data-index="${index}">Remove</button>
-                    </div>
+                    <div class="visit-box" data-index="${index}">
+                        <div class="visit-box-header">
+                            <h4>Visit ${index + 3}</h4>
+                            <button type="button" class="btn btn-link remove-follow-up" data-index="${index}">Remove</button>
+                        </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Date <span class="required-asterisk">*</span></label>
-                            <input type="date" name="new_visits[${index}][date]" class="form-control" required>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Date <span class="required-asterisk">*</span></label>
+                                <input type="date" name="new_visits[${index}][date]" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Trimester</label>
+                                <select name="new_visits[${index}][trimester]" class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="1st">1st</option>
+                                    <option value="2nd">2nd</option>
+                                    <option value="3rd">3rd</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Risk Code</label>
+                                <input type="text" name="new_visits[${index}][risk_code]" class="form-control">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Trimester</label>
-                            <select name="new_visits[${index}][trimester]" class="form-control">
-                                <option value="">Select</option>
-                                <option value="1st">1st</option>
-                                <option value="2nd">2nd</option>
-                                <option value="3rd">3rd</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Risk Code</label>
-                            <input type="text" name="new_visits[${index}][risk_code]" class="form-control">
-                        </div>
-                    </div>
 
-                    <div class="form-row">
-                        <div class="form-group full-width">
-                            <label>S – Subjective</label>
-                            <textarea name="new_visits[${index}][subjective]" class="form-control" rows="2"></textarea>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>S – Subjective</label>
+                                <textarea name="new_visits[${index}][subjective]" class="form-control" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="soap-label">O – Objective</div>
+                        <div class="form-row small-row">
+                            <div class="form-group"><label>AOG</label><input type="text" name="new_visits[${index}][aog]" class="form-control"></div>
+                            <div class="form-group"><label>WT</label><input type="text" name="new_visits[${index}][wt]" class="form-control"></div>
+                            <div class="form-group"><label>HT</label><input type="text" name="new_visits[${index}][ht]" class="form-control"></div>
+                        </div>
+                        <div class="form-row small-row">
+                            <div class="form-group"><label>B/P</label><input type="text" name="new_visits[${index}][bp]" class="form-control"></div>
+                            <div class="form-group"><label>PR</label><input type="text" name="new_visits[${index}][pr]" class="form-control"></div>
+                            <div class="form-group"><label>FH</label><input type="text" name="new_visits[${index}][fh]" class="form-control"></div>
+                        </div>
+                        <div class="form-row small-row">
+                            <div class="form-group"><label>FHT</label><input type="text" name="new_visits[${index}][fht]" class="form-control"></div>
+                            <div class="form-group"><label>Pres.</label><input type="text" name="new_visits[${index}][presentation]" class="form-control"></div>
+                            <div class="form-group"><label>BMI</label><input type="text" name="new_visits[${index}][bmi]" class="form-control"></div>
+                        </div>
+                        <div class="form-row small-row">
+                            <div class="form-group"><label>RR</label><input type="text" name="new_visits[${index}][rr]" class="form-control"></div>
+                            <div class="form-group"><label>HR</label><input type="text" name="new_visits[${index}][hr]" class="form-control"></div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>A – Assessment</label>
+                                <textarea name="new_visits[${index}][assessment]" class="form-control" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>P – Plan</label>
+                                <textarea name="new_visits[${index}][plan]" class="form-control" rows="2"></textarea>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="soap-label">O – Objective</div>
-                    <div class="form-row small-row">
-                        <div class="form-group"><label>AOG</label><input type="text" name="new_visits[${index}][aog]" class="form-control"></div>
-                        <div class="form-group"><label>WT</label><input type="text" name="new_visits[${index}][wt]" class="form-control"></div>
-                        <div class="form-group"><label>HT</label><input type="text" name="new_visits[${index}][ht]" class="form-control"></div>
-                    </div>
-                    <div class="form-row small-row">
-                        <div class="form-group"><label>B/P</label><input type="text" name="new_visits[${index}][bp]" class="form-control"></div>
-                        <div class="form-group"><label>PR</label><input type="text" name="new_visits[${index}][pr]" class="form-control"></div>
-                        <div class="form-group"><label>FH</label><input type="text" name="new_visits[${index}][fh]" class="form-control"></div>
-                    </div>
-                    <div class="form-row small-row">
-                        <div class="form-group"><label>FHT</label><input type="text" name="new_visits[${index}][fht]" class="form-control"></div>
-                        <div class="form-group"><label>Pres.</label><input type="text" name="new_visits[${index}][presentation]" class="form-control"></div>
-                        <div class="form-group"><label>BMI</label><input type="text" name="new_visits[${index}][bmi]" class="form-control"></div>
-                    </div>
-                    <div class="form-row small-row">
-                        <div class="form-group"><label>RR</label><input type="text" name="new_visits[${index}][rr]" class="form-control"></div>
-                        <div class="form-group"><label>HR</label><input type="text" name="new_visits[${index}][hr]" class="form-control"></div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group full-width">
-                            <label>A – Assessment</label>
-                            <textarea name="new_visits[${index}][assessment]" class="form-control" rows="2"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group full-width">
-                            <label>P – Plan</label>
-                            <textarea name="new_visits[${index}][plan]" class="form-control" rows="2"></textarea>
-                        </div>
-                    </div>
-                </div>
-            `;
+                `;
 
             const addVisitCard = () => {
                 const wrapper = document.createElement('div');
@@ -185,4 +186,3 @@
         });
     </script>
 @endpush
-
