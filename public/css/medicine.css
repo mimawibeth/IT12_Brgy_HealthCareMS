@@ -1,0 +1,243 @@
+/* ========================================
+   MEDICINE CSS - Medicine Management
+   ======================================== */
+
+/* Base modal styles (copied from patients.css for standalone use) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1200;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.45);
+    -webkit-overflow-scrolling: touch;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 20px auto;
+    border-radius: 8px;
+    padding: 0;
+    width: 90%;
+    max-width: 900px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    animation: modalFadeIn 0.18s ease-out;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, #2c5aa0 0%, #1e3c72 100%);
+    border-bottom: 3px solid #1e3c72;
+    flex-shrink: 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.close-modal {
+    cursor: pointer;
+    font-size: 26px;
+    line-height: 1;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    opacity: 0.9;
+}
+
+.close-modal:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.15);
+    opacity: 1;
+}
+
+.modal-body {
+    overflow-y: auto;
+    flex: 1;
+    padding: 20px;
+}
+
+@keyframes modalFadeIn {
+    from {
+        transform: translateY(-6px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Required Field Asterisk - RED Color */
+.required-asterisk {
+    color: #e74c3c;
+    font-weight: 700;
+    margin-left: 2px;
+}
+
+/* Modal Customization for Medicine */
+#addMedicineModal .modal-header {
+    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+    border-bottom-color: #d35400;
+}
+
+#addMedicineModal .modal-header h3 {
+    color: #fff;
+}
+
+#addMedicineModal .close-modal {
+    color: #fff;
+}
+
+#addMedicineModal .section-indicator {
+    background-color: #e67e22;
+}
+
+#addMedicineModal .form-section {
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #f9fafb;
+}
+
+#addMedicineModal .section-header {
+    border-bottom-color: #e67e22;
+}
+
+/* Form Section Indicators */
+#addMedicineModal .form-section:nth-child(1) .section-indicator {
+    background-color: #e67e22;
+}
+
+#addMedicineModal .form-section:nth-child(1) .section-header {
+    border-bottom-color: #e67e22;
+}
+
+#addMedicineModal .form-section:nth-child(2) .section-indicator {
+    background-color: #27ae60;
+}
+
+#addMedicineModal .form-section:nth-child(2) .section-header {
+    border-bottom-color: #27ae60;
+}
+
+#addMedicineModal .form-section:nth-child(3) .section-indicator {
+    background-color: #3498db;
+}
+
+#addMedicineModal .form-section:nth-child(3) .section-header {
+    border-bottom-color: #3498db;
+}
+
+/* Modal Form Controls */
+#addMedicineModal .form-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 4px;
+    display: block;
+}
+
+#addMedicineModal .form-control {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+#addMedicineModal .form-control:focus {
+    outline: none;
+    border-color: #e67e22;
+    box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+}
+
+#addMedicineModal textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Modal Actions - Right Aligned */
+#addMedicineModal .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 12px 20px;
+    border-top: 1px solid #e8e8e8;
+    background-color: #f8f9fa;
+}
+
+#addMedicineModal .modal-actions .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#addMedicineModal .modal-actions .btn-primary {
+    background-color: #e67e22;
+    color: white;
+}
+
+#addMedicineModal .modal-actions .btn-primary:hover {
+    background-color: #d35400;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(230, 126, 34, 0.3);
+}
+
+#addMedicineModal .modal-actions .btn-secondary {
+    background-color: #95a5a6;
+    color: white;
+}
+
+#addMedicineModal .modal-actions .btn-secondary:hover {
+    background-color: #7f8c8d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(149, 165, 166, 0.3);
+}
+
+/* Full Width Form Group */
+#addMedicineModal .form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Responsive Modal */
+@media (max-width: 768px) {
+    #addMedicineModal .modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    #addMedicineModal .modal-actions {
+        flex-direction: column;
+    }
+
+    #addMedicineModal .modal-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

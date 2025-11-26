@@ -28,9 +28,9 @@
         </div>
 
         <!-- Summary Stats -->
-        <div class="stats-container">
+        <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="stat-icon">
                     <i class="bi bi-activity"></i>
                 </div>
                 <div class="stat-details">
@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);">
+                <div class="stat-icon">
                     <i class="bi bi-check-circle"></i>
                 </div>
                 <div class="stat-details">
@@ -48,7 +48,7 @@
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+                <div class="stat-icon">
                     <i class="bi bi-x-circle"></i>
                 </div>
                 <div class="stat-details">
@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">
+                <div class="stat-icon">
                     <i class="bi bi-people"></i>
                 </div>
                 <div class="stat-details">
@@ -100,7 +100,8 @@
                         <select id="action-filter" name="action" class="filter-select">
                             <option value="">All Actions</option>
                             @foreach($actions as $action)
-                                <option value="{{ $action }}" @selected(request('action') === $action)>{{ ucfirst($action) }}</option>
+                                <option value="{{ $action }}" @selected(request('action') === $action)>{{ ucfirst($action) }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -135,9 +136,8 @@
                 </div>
 
                 <div class="search-box">
-                    <input type="text" name="search"
-                        placeholder="Search logs by description, IP address, or details..." class="search-input"
-                        value="{{ request('search') }}">
+                    <input type="text" name="search" placeholder="Search logs by description, IP address, or details..."
+                        class="search-input" value="{{ request('search') }}">
                     <button class="btn-search" type="button" onclick="applyFilters()"><i class="bi bi-search"></i>
                         Search</button>
                 </div>

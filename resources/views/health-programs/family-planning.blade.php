@@ -11,8 +11,9 @@
     <div class="page-content">
         <div class="content-header">
             <div>
-                <h2>Family Planning Client Assessment</h2>
-                <p class="content-subtitle">Manage client intake, risks, and physical examination records.</p>
+                <h2>Family Planning Assessment Records</h2>
+                <p class="content-subtitle">View and manage past client assessments, intake details, and examination
+                    records.</p>
             </div>
             <div class="header-actions">
                 <button class="btn btn-primary" id="openFpForm">+ Add New Record</button>
@@ -42,10 +43,7 @@
         </div>
 
         <div class="table-container" id="fpTablePanel">
-            <div class="table-heading">
-                <h3>FP Assessment Records</h3>
-                <span class="table-note">Latest saved family planning assessments</span>
-            </div>
+
             <table class="data-table">
                 <thead>
                     <tr>
@@ -74,7 +72,8 @@
                             <td>{{ optional($record->updated_at)->format('Y-m-d') }}</td>
                             <td><span class="status-chip status-green">Recorded</span></td>
                             <td>
-                                <a href="{{ route('health-programs.family-planning-edit', $record) }}" class="btn-action btn-edit">Edit</a>
+                                <a href="{{ route('health-programs.family-planning-edit', $record) }}"
+                                    class="btn-action btn-edit">Edit</a>
                             </td>
                         </tr>
                     @empty
@@ -90,7 +89,8 @@
             <h2 class="form-title">Family Planning Client Assessment Record</h2>
             <div id="fp-alert" class="alert" style="display:none"></div>
 
-            <form id="fpForm" class="patient-form" method="POST" action="{{ route('health-programs.family-planning-store') }}">
+            <form id="fpForm" class="patient-form" method="POST"
+                action="{{ route('health-programs.family-planning-store') }}">
                 @csrf
 
                 <div class="form-section section-patient-info">
@@ -246,18 +246,23 @@
                         <div class="form-group">
                             <label>Risk for STIs</label>
                             <div class="checkbox-group">
-                                <label><input type="checkbox" name="fp_sti[]" value="abnormal-discharge"> Abnormal discharge</label>
+                                <label><input type="checkbox" name="fp_sti[]" value="abnormal-discharge"> Abnormal
+                                    discharge</label>
                                 <label><input type="checkbox" name="fp_sti[]" value="pain"> Pain / burning sensation</label>
-                                <label><input type="checkbox" name="fp_sti[]" value="partner-symptoms"> Partner has symptoms</label>
+                                <label><input type="checkbox" name="fp_sti[]" value="partner-symptoms"> Partner has
+                                    symptoms</label>
                                 <label><input type="checkbox" name="fp_sti[]" value="treated"> Treated for STI</label>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Risk for VAW</label>
                             <div class="checkbox-group">
-                                <label><input type="checkbox" name="fp_vaw[]" value="domestic-violence"> History of domestic violence</label>
-                                <label><input type="checkbox" name="fp_vaw[]" value="sexual-abuse"> Unpleasant sexual relationship</label>
-                                <label><input type="checkbox" name="fp_vaw[]" value="referred"> Referred to WCPU / DSWD</label>
+                                <label><input type="checkbox" name="fp_vaw[]" value="domestic-violence"> History of domestic
+                                    violence</label>
+                                <label><input type="checkbox" name="fp_vaw[]" value="sexual-abuse"> Unpleasant sexual
+                                    relationship</label>
+                                <label><input type="checkbox" name="fp_vaw[]" value="referred"> Referred to WCPU /
+                                    DSWD</label>
                             </div>
                         </div>
                     </div>
@@ -280,7 +285,8 @@
                     <div class="form-row">
                         <div class="form-group full-width">
                             <label for="fp_exam_findings">Physical Examination Findings</label>
-                            <textarea id="fp_exam_findings" name="fp_exam_findings" class="form-control" rows="3"></textarea>
+                            <textarea id="fp_exam_findings" name="fp_exam_findings" class="form-control"
+                                rows="3"></textarea>
                         </div>
                     </div>
                 </div>
@@ -313,59 +319,58 @@
             </form>
         </div>
     </div>
-@push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const formPanel = document.getElementById('fpFormPanel');
-            const tablePanel = document.getElementById('fpTablePanel');
-            const filters = document.getElementById('fpFilters');
-            const openBtn = document.getElementById('openFpForm');
-            const backBtn = document.getElementById('backToFpList');
-            const form = document.getElementById('fpForm');
-            const alertBox = document.getElementById('fp-alert');
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const formPanel = document.getElementById('fpFormPanel');
+                const tablePanel = document.getElementById('fpTablePanel');
+                const filters = document.getElementById('fpFilters');
+                const openBtn = document.getElementById('openFpForm');
+                const backBtn = document.getElementById('backToFpList');
+                const form = document.getElementById('fpForm');
+                const alertBox = document.getElementById('fp-alert');
 
-            const toggleForm = (show) => {
-                formPanel.style.display = show ? 'block' : 'none';
-                tablePanel.style.display = show ? 'none' : 'block';
-                filters.style.display = show ? 'none' : 'block';
-                openBtn.style.display = show ? 'none' : 'inline-flex';
-                backBtn.style.display = show ? 'inline-flex' : 'none';
+                const toggleForm = (show) => {
+                    formPanel.style.display = show ? 'block' : 'none';
+                    tablePanel.style.display = show ? 'none' : 'block';
+                    filters.style.display = show ? 'none' : 'block';
+                    openBtn.style.display = show ? 'none' : 'inline-flex';
+                    backBtn.style.display = show ? 'inline-flex' : 'none';
 
-                if (!show) {
-                    alertBox.style.display = 'none';
-                    form.reset();
-                }
-            };
-
-            openBtn.addEventListener('click', () => toggleForm(true));
-            backBtn.addEventListener('click', () => toggleForm(false));
-
-            form.addEventListener('submit', function (e) {
-                e.preventDefault();
-                const requiredEls = form.querySelectorAll('[required]');
-                let valid = true;
-                requiredEls.forEach(function (el) {
-                    const err = form.querySelector('.error-message[data-for="' + el.id + '"]');
-                    if (!el.value) {
-                        valid = false;
-                        if (err) err.textContent = 'This field is required.';
-                    } else {
-                        if (err) err.textContent = '';
+                    if (!show) {
+                        alertBox.style.display = 'none';
+                        form.reset();
                     }
+                };
+
+                openBtn.addEventListener('click', () => toggleForm(true));
+                backBtn.addEventListener('click', () => toggleForm(false));
+
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const requiredEls = form.querySelectorAll('[required]');
+                    let valid = true;
+                    requiredEls.forEach(function (el) {
+                        const err = form.querySelector('.error-message[data-for="' + el.id + '"]');
+                        if (!el.value) {
+                            valid = false;
+                            if (err) err.textContent = 'This field is required.';
+                        } else {
+                            if (err) err.textContent = '';
+                        }
+                    });
+
+                    if (!valid) {
+                        alertBox.className = 'alert alert-error';
+                        alertBox.style.display = 'block';
+                        alertBox.textContent = 'Please fix validation errors before saving.';
+                        return;
+                    }
+
+                    alertBox.style.display = 'none';
+                    form.submit();
                 });
-
-                if (!valid) {
-                    alertBox.className = 'alert alert-error';
-                    alertBox.style.display = 'block';
-                    alertBox.textContent = 'Please fix validation errors before saving.';
-                    return;
-                }
-
-                alertBox.style.display = 'none';
-                form.submit();
             });
-        });
-    </script>
-@endpush
+        </script>
+    @endpush
 @endsection
-

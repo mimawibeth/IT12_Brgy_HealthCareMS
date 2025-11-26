@@ -57,11 +57,7 @@
             </div>
         </div>
 
-        <!-- Info Box -->
-        <div class="info-box" style="margin-bottom: 20px;">
-            <p><strong>Admin Role:</strong> Administrators can manage patients, records, and reports but cannot modify
-                system users or access super admin settings.</p>
-        </div>
+
 
         <!-- Admin Accounts Table -->
         <div class="table-container">
@@ -134,7 +130,8 @@
                                 @php
                                     $fullName = trim(($user->first_name ?? '') . ' ' . ($user->middle_name ? $user->middle_name . ' ' : '') . ($user->last_name ?? '')) ?: $user->name;
                                 @endphp
-                                <option value="{{ $user->id }}">{{ $user->username }} - {{ $fullName }} ({{ strtoupper($user->role) }})</option>
+                                <option value="{{ $user->id }}">{{ $user->username }} - {{ $fullName }}
+                                    ({{ strtoupper($user->role) }})</option>
                             @endforeach
                         </select>
                         <small class="form-text">Only non-admin users are shown in this list</small>

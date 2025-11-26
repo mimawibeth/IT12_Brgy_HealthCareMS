@@ -21,6 +21,40 @@
             <form method="POST" action="{{ route('users.store') }}" class="user-form">
                 @csrf
 
+
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <h3 class="section-header"><span class="section-indicator"></span>Personal Information</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first_name">First Name *</label>
+                            <input type="text" id="first_name" name="first_name" class="form-control" required
+                                placeholder="Enter first name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="middle_name">Middle Name</label>
+                            <input type="text" id="middle_name" name="middle_name" class="form-control"
+                                placeholder="Enter middle name (optional)">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="last_name">Last Name *</label>
+                            <input type="text" id="last_name" name="last_name" class="form-control" required
+                                placeholder="Enter last name">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contact_number">Contact Number *</label>
+                            <input type="text" id="contact_number" name="contact_number" class="form-control" required
+                                placeholder="09XX-XXX-XXXX">
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Account Information Section -->
                 <div class="form-section">
                     <h3 class="section-header"><span class="section-indicator"></span>Account Information</h3>
@@ -57,39 +91,6 @@
                     </div>
                 </div>
 
-                <!-- Personal Information Section -->
-                <div class="form-section">
-                    <h3 class="section-header"><span class="section-indicator"></span>Personal Information</h3>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="first_name">First Name *</label>
-                            <input type="text" id="first_name" name="first_name" class="form-control" required
-                                placeholder="Enter first name">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="middle_name">Middle Name</label>
-                            <input type="text" id="middle_name" name="middle_name" class="form-control"
-                                placeholder="Enter middle name (optional)">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="last_name">Last Name *</label>
-                            <input type="text" id="last_name" name="last_name" class="form-control" required
-                                placeholder="Enter last name">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="contact_number">Contact Number *</label>
-                            <input type="text" id="contact_number" name="contact_number" class="form-control" required
-                                placeholder="09XX-XXX-XXXX">
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Role and Access Section -->
                 <div class="form-section">
                     <h3 class="section-header"><span class="section-indicator"></span>Role and Access Level</h3>
@@ -99,9 +100,8 @@
                             <label for="role">User Role *</label>
                             <select id="role" name="role" class="form-control" required>
                                 <option value="">Select User Role</option>
-                                <option value="super_admin">Super Admin - Full system access</option>
-                                <option value="admin">Admin - Management access</option>
-                                <option value="bhw">Barangay Health Worker (BHW) - Field access</option>
+                                <option value="admin">System Administrator</option>
+                                <option value="bhw">Barangay Health Worker (BHW) </option>
                             </select>
                             <small class="form-text">Select appropriate role based on user responsibilities</small>
                         </div>
@@ -109,8 +109,8 @@
                         <div class="form-group">
                             <label for="status">Account Status *</label>
                             <select id="status" name="status" class="form-control" required>
-                                <option value="active">Active - User can login immediately</option>
-                                <option value="inactive">Inactive - Account disabled</option>
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive </option>
                             </select>
                         </div>
                     </div>

@@ -11,24 +11,23 @@
 @section('content')
     <div class="page-content">
 
-        <!-- Header with Add Role Button -->
         <div class="content-header">
-            <h2>Role Management</h2>
+            <div>
+                <h2>Role Management</h2>
+                <p class="content-subtitle">
+                    Create, view, and manage user roles and their permissions in the system.
+                </p>
+            </div>
             <button class="btn btn-primary" onclick="openAddRoleModal()">
                 <i class="bi bi-plus-circle"></i> Add New Role
             </button>
         </div>
 
-        <!-- Info Box -->
-        <div class="info-box" style="margin-bottom: 30px;">
-            <h4>System Roles Overview</h4>
-            <p>Manage system roles and their permissions. You can add new roles, edit existing ones, or assign roles to
-                users when creating or editing user accounts.</p>
-        </div>
+
+
 
         <!-- All Roles Table -->
         <div class="table-container" style="margin-bottom: 30px;">
-            <h3 style="padding: 20px 20px 0; color: #2c3e50; font-size: 18px;">Current System Roles</h3>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -80,7 +79,8 @@
                         <tr>
                             <td>{{ $role->name }}</td>
                             <td>
-                                <span class="badge badge-custom" style="background-color: {{ $role->badge_color ?? '#3498db' }};">
+                                <span class="badge badge-custom"
+                                    style="background-color: {{ $role->badge_color ?? '#3498db' }};">
                                     {{ $role->name }}
                                 </span>
                             </td>
@@ -89,7 +89,8 @@
                             <td>{{ $role->created_at?->format('M d, Y') ?? '—' }}</td>
                             <td class="actions">
                                 <a href="#" class="btn-action btn-view" onclick="viewRoleDetails('{{ $role->slug }}')">View</a>
-                                <form action="{{ route('users.roles.destroy', $role) }}" method="POST" style="display:inline-block;">
+                                <form action="{{ route('users.roles.destroy', $role) }}" method="POST"
+                                    style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn-action btn-delete"

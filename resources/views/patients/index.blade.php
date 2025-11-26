@@ -13,7 +13,12 @@
 
         <!-- Header with Add Button -->
         <div class="content-header">
-            <h2>All Patients</h2>
+            <div>
+                <h2>All Patient Records</h2>
+                <p class="content-subtitle">
+                    Record patient consultations, treatments, and follow-ups in the health system.
+                </p>
+            </div>
             <a href="{{ route('patients.create') }}" class="btn btn-primary">
                 <i class="bi bi-person-plus"></i> Add New Patient
             </a>
@@ -179,7 +184,8 @@
 
                     <!-- Section 2: Latest Health Assessment (Initial Visit Assessment) -->
                     <div class="form-section section-assessment">
-                        <h4 class="section-header"><span class="section-indicator"></span>Initial Visit Assessment - Monitoring Parameters</h4>
+                        <h4 class="section-header"><span class="section-indicator"></span>Initial Visit Assessment -
+                            Monitoring Parameters</h4>
 
                         <div class="form-row">
                             <div class="form-group">

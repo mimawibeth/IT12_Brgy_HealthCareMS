@@ -32,8 +32,8 @@
 
             <div class="form-group">
                 <label for="strength">Strength</label>
-                <input type="text" id="strength" name="strength" class="form-control"
-                    placeholder="e.g., 500 mg" value="{{ old('strength') }}">
+                <input type="text" id="strength" name="strength" class="form-control" placeholder="e.g., 500 mg"
+                    value="{{ old('strength') }}">
             </div>
 
             <div class="form-group">
@@ -44,8 +44,8 @@
 
             <div class="form-group">
                 <label for="quantity_on_hand">Quantity on Hand *</label>
-                <input type="number" id="quantity_on_hand" name="quantity_on_hand" class="form-control" min="0"
-                    required value="{{ old('quantity_on_hand', 0) }}">
+                <input type="number" id="quantity_on_hand" name="quantity_on_hand" class="form-control" min="0" required
+                    value="{{ old('quantity_on_hand', 0) }}">
             </div>
 
             <div class="form-group">

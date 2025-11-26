@@ -80,7 +80,7 @@
                         </a>
                         <a href="{{ route('health-programs.nip-view') }}"
                             class="nav-item {{ request()->routeIs('health-programs.nip-*') ? 'active' : '' }}">
-                            
+
                             <i class="bi bi-shield-check icon"></i>
                             <span>Immunization</span>
                         </a>
@@ -100,12 +100,12 @@
                         <a href="{{ route('medicine.index') }}"
                             class="nav-item {{ request()->routeIs('medicine.index') ? 'active' : '' }}">
                             <i class="bi bi-list-ul icon"></i>
-                            <span>Medicine List</span>
+                            <span>Medicine Records</span>
                         </a>
                         <a href="{{ route('medicine.dispense') }}"
                             class="nav-item {{ request()->routeIs('medicine.dispense') ? 'active' : '' }}">
                             <i class="bi bi-prescription2 icon"></i>
-                            <span>Dispense</span>
+                            <span>Dispense Medicine</span>
                         </a>
                     </div>
                 </div>

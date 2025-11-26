@@ -17,11 +17,8 @@
         @endphp
         <div class="info-box" style="margin-bottom: 20px;">
             @if($role === 'super_admin')
-                <p><strong>Role:</strong> System Super Administrator &mdash; full access to all modules, user management, reports, and audit logs.</p>
             @elseif($role === 'admin')
-                <p><strong>Role:</strong> System Administrator &mdash; manage patients, health programs, reports, and user accounts.</p>
             @else
-                <p><strong>Role:</strong> Barangay Health Worker (BHW) &mdash; focused access to patient records and health programs.</p>
             @endif
         </div>
 
