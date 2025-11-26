@@ -103,22 +103,22 @@
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="nhts_id_no">NHTS ID No.</label>
+                                    <label for="nhts_id_no">NHTS (National Household Targeting System) ID No.</label>
                                     <input type="text" id="nhts_id_no" name="nhts_id_no" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label for="pwd_id_no">PWD ID No.</label>
+                                    <label for="pwd_id_no">PWD (Person with Disability) ID No.</label>
                                     <input type="text" id="pwd_id_no" name="pwd_id_no" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label for="phic_id_no">PHIC ID No.</label>
+                                    <label for="phic_id_no">PHIC (Philippine Health Insurance Corporation) ID No.</label>
                                     <input type="text" id="phic_id_no" name="phic_id_no" class="form-control">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="4ps_cct_id_no">4PS/CCT ID No.</label>
+                                    <label for="4ps_cct_id_no">4Ps/CCT (Pantawid Pamilyang Pilipino Program/Conditional Cash Transfer) ID No.</label>
                                     <input type="text" id="4ps_cct_id_no" name="4ps_cct_id_no" class="form-control">
                                 </div>
                                 <div class="form-group">
@@ -148,7 +148,7 @@
                                     <input type="date" id="hypertension_date" name="hypertension_date" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label for="copd_date">COPD Date</label>
+                                    <label for="copd_date">COPD (Chronic Obstructive Pulmonary Disease) Date</label>
                                     <input type="date" id="copd_date" name="copd_date" class="form-control">
                                 </div>
                                 <div class="form-group">
@@ -208,12 +208,13 @@
                     <!-- Step 3: PhilPen Screening & Disability Assessment -->
                     <div class="step-content" data-step="3">
                         <div class="form-section section-screening">
-                            <h3 class="section-header"><span class="section-indicator"></span>PhilPen Screening & Disability
-                                Assessment</h3>
+                            <h3 class="section-header"><span class="section-indicator"></span>PhilPen (Philippine Package of
+                                    Essential Non-communicable Disease Interventions) Screening & Disability Assessment</h3>
                             <div class="form-row">
                                 <!-- PhilPen Screening (Left Column) -->
                                 <div class="form-group" style="flex: 1;">
-                                    <h4 class="subsection-header">PhilPen Screening</h4>
+                                    <h4 class="subsection-header">PhilPen (Philippine Package of Essential Non-communicable
+                                        Disease Interventions) Screening</h4>
 
                                     <div class="form-row">
                                         <div class="form-group">
@@ -225,12 +226,12 @@
                                     <div class="form-row">
                                         <div class="form-group">
                                             <label>Smoking Status</label>
-                                            <div class="checkbox-group">
-                                                <label><input type="checkbox" name="current_smoker" value="1"> Current
+                                            <div class="radio-group">
+                                                <label><input type="radio" name="smoking_status" value="current"> Current
                                                     Smoker</label>
-                                                <label><input type="checkbox" name="passive_smoker" value="1"> Passive
+                                                <label><input type="radio" name="smoking_status" value="passive"> Passive
                                                     Smoker</label>
-                                                <label><input type="checkbox" name="stopped_smoking" value="1"> Stopped
+                                                <label><input type="radio" name="smoking_status" value="stopped"> Stopped
                                                     Smoking</label>
                                             </div>
                                         </div>
@@ -281,7 +282,7 @@
                                                 class="form-control" placeholder="cm">
                                         </div>
                                         <div class="form-group">
-                                            <label for="bmi">BMI</label>
+                                            <label for="bmi">BMI (Body Mass Index)</label>
                                             <input type="text" id="bmi" name="bmi" class="form-control"
                                                 placeholder="Auto-calculated">
                                         </div>
@@ -290,7 +291,8 @@
 
                                 <!-- Disability Assessment (Right Column) -->
                                 <div class="form-group" style="flex: 1; margin-left: 20px;">
-                                    <h4 class="subsection-header">Disability Assessment (WHO-DAS)</h4>
+                                    <h4 class="subsection-header">Disability Assessment (WHO-DAS - World Health Organization
+                                            Disability Assessment Schedule)</h4>
 
                                     <div class="form-row">
                                         <div class="form-group">
@@ -449,14 +451,14 @@
                                             <div class="form-row">
                                                 <div class="form-group">
                                                     <label>Date:</label>
-                                                    <input type="date" name="assessments[0][date]" class="form-control">
+                                                    <input type="date" name="assessments[0][date]" class="form-control assessment-date">
                                                 </div>
                                             </div>
 
                                             <div class="form-row">
                                                 <div class="form-group">
                                                     <label>Age:</label>
-                                                    <input type="text" name="assessments[0][age]" class="form-control">
+                                                    <input type="text" name="assessments[0][age]" class="form-control assessment-age" readonly>
                                                 </div>
                                             </div>
 
@@ -691,14 +693,14 @@
                                                 <div class="form-row">
                                                     <div class="form-group">
                                                         <label>Date:</label>
-                                                        <input type="date" name="assessments[${assessmentCount}][date]" class="form-control">
+                                                        <input type="date" name="assessments[${assessmentCount}][date]" class="form-control assessment-date">
                                                     </div>
                                                 </div>
 
                                                 <div class="form-row">
                                                     <div class="form-group">
                                                         <label>Age:</label>
-                                                        <input type="text" name="assessments[${assessmentCount}][age]" class="form-control">
+                                                        <input type="text" name="assessments[${assessmentCount}][age]" class="form-control assessment-age" readonly>
                                                     </div>
                                                 </div>
 
@@ -810,6 +812,76 @@
 
             container.appendChild(newAssessment);
             assessmentCount++;
+
+            // Recalculate ages for all assessment entries whenever a new one is added
+            calculateAssessmentAges();
+        });
+
+        function calculateAssessmentAges() {
+            const birthdayInput = document.getElementById('birthday');
+            if (!birthdayInput) {
+                return;
+            }
+
+            const birthdayValue = birthdayInput.value;
+            if (!birthdayValue) {
+                document.querySelectorAll('#assessmentsContainer .assessment-age').forEach(function (ageInput) {
+                    ageInput.value = '';
+                });
+                return;
+            }
+
+            const birthDate = new Date(birthdayValue);
+            if (isNaN(birthDate.getTime())) {
+                return;
+            }
+
+            document.querySelectorAll('#assessmentsContainer .assessment-entry').forEach(function (entry) {
+                const dateInput = entry.querySelector('.assessment-date');
+                const ageInput = entry.querySelector('.assessment-age');
+
+                if (!dateInput || !ageInput) {
+                    return;
+                }
+
+                const visitDateValue = dateInput.value;
+                if (!visitDateValue) {
+                    ageInput.value = '';
+                    return;
+                }
+
+                const visitDate = new Date(visitDateValue);
+                if (isNaN(visitDate.getTime())) {
+                    ageInput.value = '';
+                    return;
+                }
+
+                let age = visitDate.getFullYear() - birthDate.getFullYear();
+                const monthDiff = visitDate.getMonth() - birthDate.getMonth();
+                const dayDiff = visitDate.getDate() - birthDate.getDate();
+
+                if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+                    age--;
+                }
+
+                ageInput.value = age >= 0 ? age : '';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const birthdayInput = document.getElementById('birthday');
+            if (birthdayInput) {
+                birthdayInput.addEventListener('change', calculateAssessmentAges);
+            }
+
+            document.getElementById('assessmentsContainer').addEventListener('change', function (event) {
+                if (event.target.classList.contains('assessment-date')) {
+                    calculateAssessmentAges();
+                }
+            });
+
+            // Initial calculation on page load (in case default values are present)
+            calculateAssessmentAges();
         });
     </script>
 @endsection

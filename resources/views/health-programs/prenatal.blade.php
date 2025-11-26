@@ -53,42 +53,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>PT-001</td>
-                        <td>Maria Dela Cruz</td>
-                        <td>2025-01-05</td>
-                        <td>0917 123 4567</td>
-                        <td>Purok 3</td>
-                        <td><span class="status-chip status-green">Complete</span></td>
-                        <td>
-                            <a href="javascript:void(0)" class="btn-action btn-view view-prenatal" data-record="PT-001">View</a>
-                            <a href="{{ route('health-programs.prenatal-edit', 1) }}" class="btn-action btn-edit">Edit</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>PT-002</td>
-                        <td>Ana Robles</td>
-                        <td>2025-02-10</td>
-                        <td>0918 987 6543</td>
-                        <td>Purok 1</td>
-                        <td><span class="status-chip status-amber">Follow-up</span></td>
-                        <td>
-                            <a href="javascript:void(0)" class="btn-action btn-view view-prenatal" data-record="PT-002">View</a>
-                            <a href="{{ route('health-programs.prenatal-edit', 2) }}" class="btn-action btn-edit">Edit</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>PT-003</td>
-                        <td>Liza Santos</td>
-                        <td>2025-02-25</td>
-                        <td>0916 555 8899</td>
-                        <td>Purok 5</td>
-                        <td><span class="status-chip status-blue">New</span></td>
-                        <td>
-                            <a href="javascript:void(0)" class="btn-action btn-view view-prenatal" data-record="PT-003">View</a>
-                            <a href="{{ route('health-programs.prenatal-edit', 3) }}" class="btn-action btn-edit">Edit</a>
-                        </td>
-                    </tr>
+                    @forelse ($records ?? [] as $record)
+                        <tr>
+                            <td>{{ $record->record_no ?? 'PT-' . str_pad($record->id, 3, '0', STR_PAD_LEFT) }}</td>
+                            <td>{{ $record->mother_name }}</td>
+                            <td>{{ optional($record->lmp)->format('Y-m-d') }}</td>
+                            <td>{{ $record->cell }}</td>
+                            <td>{{ $record->purok }}</td>
+                            <td><span class="status-chip status-green">Recorded</span></td>
+                            <td>
+                                <a href="javascript:void(0)" class="btn-action btn-view view-prenatal" data-record="{{ $record->record_no ?? 'PT-' . str_pad($record->id, 3, '0', STR_PAD_LEFT) }}">View</a>
+                                <a href="{{ route('health-programs.prenatal-edit', $record) }}" class="btn-action btn-edit">Edit</a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" style="text-align:center;">No prenatal records found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -117,7 +99,7 @@
             </div>
 
             <div class="wizard-content">
-                <form id="prenatalWizardForm" class="patient-form" novalidate>
+                <form id="prenatalWizardForm" class="patient-form" method="POST" action="{{ route('health-programs.prenatal-store') }}">
                     @csrf
 
                     <!-- Step 1 -->
@@ -695,10 +677,8 @@
                     return;
                 }
 
-                alertBox.className = 'alert alert-success';
-                alertBox.style.display = 'block';
-                alertBox.textContent = 'Record saved successfully (UI-only).';
-                wizardForm.scrollIntoView({ behavior: 'smooth' });
+                alertBox.style.display = 'none';
+                wizardForm.submit();
             });
         });
     </script>

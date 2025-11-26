@@ -44,7 +44,7 @@
         <div class="table-container" id="fpTablePanel">
             <div class="table-heading">
                 <h3>FP Assessment Records</h3>
-                <span class="table-note">Sample dataset for UI demo</span>
+                <span class="table-note">Latest saved family planning assessments</span>
             </div>
             <table class="data-table">
                 <thead>
@@ -53,36 +53,35 @@
                         <th>Client</th>
                         <th>Type</th>
                         <th>Reason</th>
-                        <th>Last Visit</th>
+                        <th>Last Update</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>FP-001</td>
-                        <td>Jane Villanueva</td>
-                        <td>New Acceptor</td>
-                        <td>Spacing</td>
-                        <td>2025-02-12</td>
-                        <td><span class="status-chip status-green">Cleared</span></td>
-                        <td>
-                            <a href="javascript:void(0)" class="btn-action btn-view">View</a>
-                            <a href="{{ route('health-programs.family-planning-edit', 1) }}" class="btn-action btn-edit">Edit</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>FP-002</td>
-                        <td>Rosa Alvarez</td>
-                        <td>Current User</td>
-                        <td>Limiting</td>
-                        <td>2025-01-28</td>
-                        <td><span class="status-chip status-amber">Follow-up</span></td>
-                        <td>
-                            <a href="javascript:void(0)" class="btn-action btn-view">View</a>
-                            <a href="{{ route('health-programs.family-planning-edit', 2) }}" class="btn-action btn-edit">Edit</a>
-                        </td>
-                    </tr>
+                    @forelse ($records ?? [] as $record)
+                        <tr>
+                            <td>{{ $record->record_no ?? 'FP-' . str_pad($record->id, 3, '0', STR_PAD_LEFT) }}</td>
+                            <td>{{ $record->client_name }}</td>
+                            <td>{{ $record->client_type ? ucfirst(str_replace('-', ' ', $record->client_type)) : '-' }}</td>
+                            <td>
+                                @if (is_array($record->reason) && count($record->reason))
+                                    {{ implode(', ', $record->reason) }}
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td>{{ optional($record->updated_at)->format('Y-m-d') }}</td>
+                            <td><span class="status-chip status-green">Recorded</span></td>
+                            <td>
+                                <a href="{{ route('health-programs.family-planning-edit', $record) }}" class="btn-action btn-edit">Edit</a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" style="text-align: center;">No family planning records found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -91,7 +90,7 @@
             <h2 class="form-title">Family Planning Client Assessment Record</h2>
             <div id="fp-alert" class="alert" style="display:none"></div>
 
-            <form id="fpForm" class="patient-form" novalidate>
+            <form id="fpForm" class="patient-form" method="POST" action="{{ route('health-programs.family-planning-store') }}">
                 @csrf
 
                 <div class="form-section section-patient-info">
@@ -362,10 +361,8 @@
                     return;
                 }
 
-                alertBox.className = 'alert alert-success';
-                alertBox.style.display = 'block';
-                alertBox.textContent = 'Record saved successfully (UI-only).';
-                form.scrollIntoView({ behavior: 'smooth' });
+                alertBox.style.display = 'none';
+                form.submit();
             });
         });
     </script>

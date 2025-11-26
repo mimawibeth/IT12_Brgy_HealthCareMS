@@ -45,9 +45,9 @@
                     <tr>
                         <td>Super Administrator</td>
                         <td><span class="badge badge-super-admin">Super Admin</span></td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Jan 01, 2025</td>
+                        <td>{{ $rolesSummary['super_admin']['total'] ?? 0 }}</td>
+                        <td>{{ $rolesSummary['super_admin']['active'] ?? 0 }}</td>
+                        <td>—</td>
                         <td class="actions">
                             <a href="#" class="btn-action btn-view" onclick="viewRoleDetails('super_admin')">View</a>
                         </td>
@@ -57,9 +57,9 @@
                     <tr>
                         <td>Administrator</td>
                         <td><span class="badge badge-admin">Admin</span></td>
-                        <td>2</td>
-                        <td>2</td>
-                        <td>Jan 01, 2025</td>
+                        <td>{{ $rolesSummary['admin']['total'] ?? 0 }}</td>
+                        <td>{{ $rolesSummary['admin']['active'] ?? 0 }}</td>
+                        <td>—</td>
                         <td class="actions">
                             <a href="#" class="btn-action btn-view" onclick="viewRoleDetails('admin')">View</a>
                         </td>
@@ -69,30 +69,35 @@
                     <tr>
                         <td>Barangay Health Worker</td>
                         <td><span class="badge badge-bhw">BHW</span></td>
-                        <td>2</td>
-                        <td>1</td>
-                        <td>Jan 01, 2025</td>
+                        <td>{{ $rolesSummary['bhw']['total'] ?? 0 }}</td>
+                        <td>{{ $rolesSummary['bhw']['active'] ?? 0 }}</td>
+                        <td>—</td>
                         <td class="actions">
                             <a href="#" class="btn-action btn-view" onclick="viewRoleDetails('bhw')">View</a>
                         </td>
                     </tr>
-
-                    <!-- Example Custom Role (will be dynamic when implemented) -->
-                    <!-- 
-                                    <tr>
-                                        <td>Nurse</td>
-                                        <td>Medical staff with patient care responsibilities</td>
-                                        <td><span class="badge badge-custom" style="background-color: #27ae60;">Nurse</span></td>
-                                        <td>3</td>
-                                        <td>3</td>
-                                        <td>Nov 15, 2025</td>
-                                        <td class="actions">
-                                            <a href="#" class="btn-action btn-view" onclick="viewRoleDetails('nurse')">View</a>
-                                            <a href="#" class="btn-action btn-edit" onclick="editRole('nurse')">Edit</a>
-                                            <a href="#" class="btn-action btn-delete" onclick="deleteRole('nurse')">Delete</a>
-                                        </td>
-                                    </tr>
-                                    -->
+                    @foreach($roles as $role)
+                        <tr>
+                            <td>{{ $role->name }}</td>
+                            <td>
+                                <span class="badge badge-custom" style="background-color: {{ $role->badge_color ?? '#3498db' }};">
+                                    {{ $role->name }}
+                                </span>
+                            </td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>{{ $role->created_at?->format('M d, Y') ?? '—' }}</td>
+                            <td class="actions">
+                                <a href="#" class="btn-action btn-view" onclick="viewRoleDetails('{{ $role->slug }}')">View</a>
+                                <form action="{{ route('users.roles.destroy', $role) }}" method="POST" style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-action btn-delete"
+                                        onclick="return confirm('Delete this role? Users with this role (if any) may need to be reassigned.')">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>

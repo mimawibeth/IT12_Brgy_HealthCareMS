@@ -15,7 +15,7 @@
     @stack('styles')
 </head>
 
-<body>
+<body class="{{ (auth()->user()->dark_mode ?? false) ? 'dark-mode' : '' }}">
     <!-- Main Container: holds sidebar and content -->
     <div class="app-container">
 
@@ -112,35 +112,37 @@
 
                 <!-- SYSTEM MANAGEMENT SECTION -->
                 <!-- User Management Dropdown -->
-                <div class="nav-dropdown">
-                    <button class="nav-dropdown-toggle">
-                        <i class="bi bi-person-badge icon"></i>
-                        <span>User Management</span>
-                        <i class="bi bi-chevron-down arrow"></i>
-                    </button>
-                    <div class="nav-dropdown-menu">
-                        <a href="{{ route('users.all-users') }}"
-                            class="nav-item {{ request()->routeIs('users.all-users') ? 'active' : '' }}">
-                            <i class="bi bi-people icon"></i>
-                            <span>All Users</span>
-                        </a>
-                        <a href="{{ route('users.add-new') }}"
-                            class="nav-item {{ request()->routeIs('users.add-new') ? 'active' : '' }}">
-                            <i class="bi bi-person-plus icon"></i>
-                            <span>Add New User</span>
-                        </a>
-                        <a href="{{ route('users.admin-accounts') }}"
-                            class="nav-item {{ request()->routeIs('users.admin-accounts') ? 'active' : '' }}">
-                            <i class="bi bi-person-gear icon"></i>
-                            <span>Admin Accounts</span>
-                        </a>
-                        <a href="{{ route('users.role-management') }}"
-                            class="nav-item {{ request()->routeIs('users.role-management') ? 'active' : '' }}">
-                            <i class="bi bi-shield-lock icon"></i>
-                            <span>Role Management</span>
-                        </a>
+                @if(in_array(auth()->user()->role ?? '', ['super_admin', 'admin']))
+                    <div class="nav-dropdown">
+                        <button class="nav-dropdown-toggle">
+                            <i class="bi bi-person-badge icon"></i>
+                            <span>User Management</span>
+                            <i class="bi bi-chevron-down arrow"></i>
+                        </button>
+                        <div class="nav-dropdown-menu">
+                            <a href="{{ route('users.all-users') }}"
+                                class="nav-item {{ request()->routeIs('users.all-users') ? 'active' : '' }}">
+                                <i class="bi bi-people icon"></i>
+                                <span>All Users</span>
+                            </a>
+                            <a href="{{ route('users.add-new') }}"
+                                class="nav-item {{ request()->routeIs('users.add-new') ? 'active' : '' }}">
+                                <i class="bi bi-person-plus icon"></i>
+                                <span>Add New User</span>
+                            </a>
+                            <a href="{{ route('users.admin-accounts') }}"
+                                class="nav-item {{ request()->routeIs('users.admin-accounts') ? 'active' : '' }}">
+                                <i class="bi bi-person-gear icon"></i>
+                                <span>Admin Accounts</span>
+                            </a>
+                            <a href="{{ route('users.role-management') }}"
+                                class="nav-item {{ request()->routeIs('users.role-management') ? 'active' : '' }}">
+                                <i class="bi bi-shield-lock icon"></i>
+                                <span>Role Management</span>
+                            </a>
+                        </div>
                     </div>
-                </div>
+                @endif
 
                 <!-- Reports -->
                 <a href="{{ route('reports.monthly') }}"
@@ -150,10 +152,12 @@
                 </a>
 
                 <!-- Audit Logs -->
-                <a href="{{ route('logs.audit') }}" class="nav-item {{ request()->routeIs('logs.*') ? 'active' : '' }}">
-                    <i class="bi bi-file-text icon"></i>
-                    <span>Audit Logs</span>
-                </a>
+                @if(in_array(auth()->user()->role ?? '', ['super_admin', 'admin']))
+                    <a href="{{ route('logs.audit') }}" class="nav-item {{ request()->routeIs('logs.*') ? 'active' : '' }}">
+                        <i class="bi bi-file-text icon"></i>
+                        <span>Audit Logs</span>
+                    </a>
+                @endif
             </nav>
 
             <!-- Sidebar Footer: Settings & Logout (Fixed at bottom) -->
@@ -188,7 +192,14 @@
                             <i class="bi bi-shield-lock"></i>
                             <span id="userRole">Super Admin</span>
                         </div>
-                        <div class="user-name-display">Dr. Maria Santos</div>
+                        @php($authUser = auth()->user())
+                        <div class="user-name-display">
+                            @if($authUser)
+                                {{ trim(($authUser->first_name ?? '') . ' ' . ($authUser->last_name ?? '')) ?: $authUser->name }}
+                            @else
+                                Guest
+                            @endif
+                        </div>
                     </div>
                 </div>
             </header>

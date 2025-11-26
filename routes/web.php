@@ -2,6 +2,15 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\FamilyPlanningRecordController;
+use App\Http\Controllers\PrenatalRecordController;
+use App\Http\Controllers\NipRecordController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\MedicineController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\AuditLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,11 +38,34 @@ Route::post('/login', function () {
         'password' => 'required',
     ]);
 
+    $ip = request()->ip();
+
     // Attempt to authenticate user
     if (auth()->attempt($credentials)) {
         request()->session()->regenerate();
+
+        \App\Models\AuditLog::create([
+            'user_id' => auth()->id(),
+            'user_role' => auth()->user()->role ?? null,
+            'action' => 'login',
+            'module' => 'Authentication',
+            'description' => 'User logged in successfully',
+            'ip_address' => $ip,
+            'status' => 'success',
+        ]);
+
         return redirect()->intended('dashboard');
     }
+
+    \App\Models\AuditLog::create([
+        'user_id' => null,
+        'user_role' => null,
+        'action' => 'login',
+        'module' => 'Authentication',
+        'description' => 'Failed login attempt - Invalid credentials',
+        'ip_address' => $ip,
+        'status' => 'failed',
+    ]);
 
     // Authentication failed
     return back()->withErrors([
@@ -42,6 +74,21 @@ Route::post('/login', function () {
 })->name('login.post');
 
 Route::get('/logout', function () {
+    $user = auth()->user();
+    $ip = request()->ip();
+
+    if ($user) {
+        \App\Models\AuditLog::create([
+            'user_id' => $user->id,
+            'user_role' => $user->role ?? null,
+            'action' => 'logout',
+            'module' => 'Authentication',
+            'description' => 'User logged out',
+            'ip_address' => $ip,
+            'status' => 'success',
+        ]);
+    }
+
     auth()->logout();
     request()->session()->invalidate();
     request()->session()->regenerateToken();
@@ -54,11 +101,9 @@ Route::get('/logout', function () {
 Route::middleware('auth')->group(function () {
 
     // ====================
-// DASHBOARD ROUTE
-// ====================
-    Route::get('/dashboard', function () {
-        return view('dashboard.index');
-    })->name('dashboard');
+    // DASHBOARD ROUTE
+    // ====================
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // ====================
     // PATIENT MANAGEMENT ROUTES
@@ -97,31 +142,43 @@ Route::middleware('auth')->group(function () {
     // ====================
     Route::prefix('health-programs')->name('health-programs.')->group(function () {
         // Prenatal Care
-        Route::get('/prenatal', function () {
-            return view('health-programs.prenatal');
-        })->name('prenatal-view');
+        Route::get('/prenatal', [PrenatalRecordController::class, 'index'])
+            ->name('prenatal-view');
 
-        Route::get('/prenatal/{id}/edit', function ($id) {
-            return view('health-programs.prenatal-edit', compact('id'));
-        })->name('prenatal-edit');
+        Route::post('/prenatal', [PrenatalRecordController::class, 'store'])
+            ->name('prenatal-store');
+
+        Route::get('/prenatal/{record}/edit', [PrenatalRecordController::class, 'edit'])
+            ->name('prenatal-edit');
+
+        Route::post('/prenatal/{record}/visits', [PrenatalRecordController::class, 'storeVisits'])
+            ->name('prenatal-visits-store');
 
         // Family Planning
-        Route::get('/family-planning', function () {
-            return view('health-programs.family-planning');
-        })->name('family-planning-view');
+        Route::get('/family-planning', [FamilyPlanningRecordController::class, 'index'])
+            ->name('family-planning-view');
 
-        Route::get('/family-planning/{id}/edit', function ($id) {
-            return view('health-programs.family-planning-edit', compact('id'));
-        })->name('family-planning-edit');
+        Route::post('/family-planning', [FamilyPlanningRecordController::class, 'store'])
+            ->name('family-planning-store');
+
+        Route::get('/family-planning/{record}/edit', [FamilyPlanningRecordController::class, 'edit'])
+            ->name('family-planning-edit');
+
+        Route::put('/family-planning/{record}', [FamilyPlanningRecordController::class, 'update'])
+            ->name('family-planning-update');
 
         // Immunization (NIP)
-        Route::get('/immunization', function () {
-            return view('health-programs.nip');
-        })->name('nip-view');
+        Route::get('/immunization', [NipRecordController::class, 'index'])
+            ->name('nip-view');
 
-        Route::get('/immunization/{id}/edit', function ($id) {
-            return view('health-programs.nip-edit', compact('id'));
-        })->name('nip-edit');
+        Route::post('/immunization', [NipRecordController::class, 'store'])
+            ->name('nip-store');
+
+        Route::get('/immunization/{record}/edit', [NipRecordController::class, 'edit'])
+            ->name('nip-edit');
+
+        Route::put('/immunization/{record}', [NipRecordController::class, 'update'])
+            ->name('nip-update');
     });
 
     Route::get('/health-programs/other-services', function () {
@@ -133,79 +190,48 @@ Route::middleware('auth')->group(function () {
     // ====================
     Route::prefix('medicine')->name('medicine.')->group(function () {
         // Medicine list
-        Route::get('/', function () {
-            return view('medicine.index');
-        })->name('index');
+        Route::get('/', [MedicineController::class, 'index'])->name('index');
 
         // Add medicine
-        Route::get('/create', function () {
-            return view('medicine.create');
-        })->name('create');
+        Route::get('/create', [MedicineController::class, 'create'])->name('create');
 
         // Store medicine
-        Route::post('/store', function () {
-            // TODO: Store medicine logic
-            return redirect()->route('medicine.index')->with('success', 'Medicine added successfully');
-        })->name('store');
+        Route::post('/store', [MedicineController::class, 'store'])->name('store');
 
         // Dispense medicine page
-        Route::get('/dispense', function () {
-            return view('medicine.dispense');
-        })->name('dispense');
+        Route::get('/dispense', [MedicineController::class, 'dispense'])->name('dispense');
 
         // Process dispense
-        Route::post('/dispense/store', function () {
-            // TODO: Process dispense logic
-            return redirect()->route('medicine.dispense')->with('success', 'Medicine dispensed successfully');
-        })->name('dispense.store');
+        Route::post('/dispense/store', [MedicineController::class, 'storeDispense'])->name('dispense.store');
 
         // Edit medicine
-        Route::get('/{id}/edit', function ($id) {
-            return view('medicine.edit', compact('id'));
-        })->name('edit');
+        Route::get('/{medicine}/edit', [MedicineController::class, 'edit'])->name('edit');
 
         // Update medicine
-        Route::put('/{id}', function ($id) {
-            // TODO: Update medicine logic
-            return redirect()->route('medicine.index')->with('success', 'Medicine updated successfully');
-        })->name('update');
+        Route::put('/{medicine}', [MedicineController::class, 'update'])->name('update');
 
         // Delete medicine
-        Route::delete('/{id}', function ($id) {
-            // TODO: Delete medicine logic
-            return redirect()->route('medicine.index')->with('success', 'Medicine deleted successfully');
-        })->name('destroy');
+        Route::delete('/{medicine}', [MedicineController::class, 'destroy'])->name('destroy');
     });
 
     // ====================
-    // USER MANAGEMENT ROUTES (Super Admin Access)
+    // USER MANAGEMENT ROUTES (Super Admin/Admin UI; backend checks can be added via middleware later)
     // ====================
     Route::prefix('users')->name('users.')->group(function () {
-        // All Users - View all system users (Super Admin, Admin, BHW)
-        Route::get('/all-users', function () {
-            return view('users.all-users');
-        })->name('all-users');
+        // All Users - View all system users
+        Route::get('/all-users', [UserController::class, 'index'])->name('all-users');
 
         // Add New User - Form to create new user account
-        Route::get('/add-new-user', function () {
-            return view('users.add-new-user');
-        })->name('add-new');
+        Route::get('/add-new-user', [UserController::class, 'create'])->name('add-new');
 
         // Store new user
-        Route::post('/store', function () {
-            // TODO: Store user logic with role assignment
-            return redirect()->route('users.all-users')->with('success', 'User account created successfully');
-        })->name('store');
+        Route::post('/store', [UserController::class, 'store'])->name('store');
 
         // Admin Accounts - View only Admin users
-        Route::get('/admin-accounts', function () {
-            return view('users.admin-accounts');
-        })->name('admin-accounts');
+        Route::get('/admin-accounts', [UserController::class, 'adminAccounts'])->name('admin-accounts');
 
         // Role Management - View and manage user roles and permissions
-        Route::get('/role-management', function () {
-            return view('users.role-management');
-        })->name('role-management');
+        Route::get('/role-management', [UserController::class, 'roleManagement'])->name('role-management');
 
         // View user details
         Route::get('/{id}', function ($id) {
@@ -248,34 +274,16 @@ Route::middleware('auth')->group(function () {
         })->name('toggle-status');
 
         // Store new role
-        Route::post('/roles/store', function () {
-            // TODO: Store new role logic
-            return redirect()->route('users.role-management')->with('success', 'Role created successfully');
-        })->name('roles.store');
-
-        // Edit role
-        Route::get('/roles/{id}/edit', function ($id) {
-            // TODO: Return edit role view
-            return back();
-        })->name('roles.edit');
+        Route::post('/roles/store', [RoleController::class, 'store'])->name('roles.store');
 
         // Update role
-        Route::put('/roles/{id}', function ($id) {
-            // TODO: Update role logic
-            return redirect()->route('users.role-management')->with('success', 'Role updated successfully');
-        })->name('roles.update');
+        Route::put('/roles/{role}', [RoleController::class, 'update'])->name('roles.update');
 
         // Delete role
-        Route::delete('/roles/{id}', function ($id) {
-            // TODO: Delete role logic (with validation - don't delete if users assigned)
-            return redirect()->route('users.role-management')->with('success', 'Role deleted successfully');
-        })->name('roles.destroy');
+        Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
 
         // Promote existing user to Admin
-        Route::post('/promote-admin', function () {
-            // TODO: Promote user to admin role logic
-            return redirect()->route('users.admin-accounts')->with('success', 'User promoted to Admin successfully');
-        })->name('promote-admin');
+        Route::post('/promote-admin', [UserController::class, 'promoteAdmin'])->name('promote-admin');
     });
 
     // ====================
@@ -283,48 +291,27 @@ Route::middleware('auth')->group(function () {
     // ====================
     Route::prefix('reports')->name('reports.')->group(function () {
         // Reports dashboard
-        Route::get('/monthly', function () {
-            return view('reports.index');
-        })->name('monthly');
+        Route::get('/monthly', [ReportController::class, 'monthly'])->name('monthly');
 
-        // Generate report
-        Route::post('/generate', function () {
-            // TODO: Generate report logic
-            return back()->with('success', 'Report generated successfully');
-        })->name('generate');
+        // Generate report (placeholder - can be extended later)
+        Route::post('/generate', [ReportController::class, 'monthly'])->name('generate');
 
-        // Export report
+        // Export and print remain UI-only for now
         Route::get('/export', function () {
-            // TODO: Export report logic (PDF/Excel)
             return back()->with('success', 'Report exported successfully');
         })->name('export');
 
-        // Print report
         Route::get('/print/{type}', function ($type) {
             return view('reports.print', compact('type'));
         })->name('print');
     });
 
     // ====================
-    // AUDIT LOGS ROUTES
+    // AUDIT LOGS ROUTES (Super Admin/Admin only)
     // ====================
     Route::prefix('logs')->name('logs.')->group(function () {
         // Audit logs - view all system activities
-        Route::get('/audit', function () {
-            return view('logs.audit');
-        })->name('audit');
-
-        // Filter logs by date/user/action
-        Route::get('/audit/filter', function () {
-            // TODO: Filter logs logic
-            return view('logs.audit');
-        })->name('audit.filter');
-
-        // Export logs
-        Route::get('/audit/export', function () {
-            // TODO: Export logs logic
-            return back()->with('success', 'Logs exported successfully');
-        })->name('audit.export');
+        Route::get('/audit', [AuditLogController::class, 'index'])->name('audit');
     });
 
     // ====================
@@ -338,7 +325,16 @@ Route::middleware('auth')->group(function () {
 
         // Update settings
         Route::post('/update', function () {
-            // TODO: Update settings logic
+            $data = request()->validate([
+                'dark_mode' => ['required', 'in:0,1'],
+            ]);
+
+            $user = auth()->user();
+            if ($user) {
+                $user->dark_mode = $data['dark_mode'] === '1';
+                $user->save();
+            }
+
             return back()->with('success', 'Settings updated successfully');
         })->name('update');
 

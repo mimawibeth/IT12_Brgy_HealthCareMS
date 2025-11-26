@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Patient;
 use App\Models\Assessment;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class PatientController extends Controller
 {
@@ -85,6 +86,8 @@ class PatientController extends Controller
             'ethnic_group' => ['nullable', 'string', 'max:255'],
         ]);
 
+        $smokingStatus = $request->input('smoking_status');
+
         $patient = Patient::create([
             'dateRegistered' => $validated['date_registered'],
             'patientNo' => $request->input('patient_no'),
@@ -113,9 +116,9 @@ class PatientController extends Controller
             'atRiskSuicideDate' => $request->input('at_risk_suicide_date') ?: null,
 
             'philpenDate' => $request->input('philpen_date') ?: null,
-            'currentSmoker' => $request->boolean('current_smoker'),
-            'passiveSmoker' => $request->boolean('passive_smoker'),
-            'stoppedSmoking' => $request->boolean('stopped_smoking'),
+            'currentSmoker' => $smokingStatus === 'current',
+            'passiveSmoker' => $smokingStatus === 'passive',
+            'stoppedSmoking' => $smokingStatus === 'stopped',
             'drinksAlcohol' => $request->boolean('drinks_alcohol'),
             'hadFiveDrinks' => $request->boolean('had_5_drinks'),
             'dietaryRiskFactors' => $request->boolean('dietary_risk_factors'),
@@ -162,10 +165,22 @@ class PatientController extends Controller
                 continue;
             }
 
+            $assessmentDate = $assessmentData['date'] ?? null;
+            $calculatedAge = null;
+
+            if ($patient->birthday && $assessmentDate) {
+                try {
+                    $calculatedAge = Carbon::parse($assessmentDate)
+                        ->diffInYears(Carbon::parse($patient->birthday));
+                } catch (\Exception $e) {
+                    $calculatedAge = null;
+                }
+            }
+
             Assessment::create([
                 'PatientID' => $patient->PatientID,
-                'date' => $assessmentData['date'] ?? null,
-                'age' => $assessmentData['age'] ?? null,
+                'date' => $assessmentDate,
+                'age' => $calculatedAge,
                 'cvdRisk' => $assessmentData['cvd_risk'] ?? null,
                 'bpSystolic' => $assessmentData['bp_systolic'] ?? null,
                 'bpDiastolic' => $assessmentData['bp_diastolic'] ?? null,

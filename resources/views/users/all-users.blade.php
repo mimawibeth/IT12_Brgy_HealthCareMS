@@ -58,80 +58,40 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Super Admin User -->
-                    <tr>
-                        <td>superadmin</td>
-                        <td>System Administrator</td>
-                        <td>superadmin@brgy.gov.ph</td>
-                        <td><span class="badge badge-super-admin">Super Admin</span></td>
-                        <td><span class="status-badge status-active">Active</span></td>
-                        <td>Jan 01, 2025</td>
-                        <td>Nov 22, 2025 - 8:30 AM</td>
-                        <td class="actions">
-                            <a href="#" class="btn-action btn-view">View</a>
-                            <a href="#" class="btn-action btn-edit">Edit</a>
-                        </td>
-                    </tr>
-
-                    <!-- Admin User -->
-                    <tr>
-                        <td>admin01</td>
-                        <td>Juan Dela Cruz</td>
-                        <td>juan.delacruz@brgy.gov.ph</td>
-                        <td><span class="badge badge-admin">Admin</span></td>
-                        <td><span class="status-badge status-active">Active</span></td>
-                        <td>Jan 15, 2025</td>
-                        <td>Nov 22, 2025 - 7:45 AM</td>
-                        <td class="actions">
-                            <a href="#" class="btn-action btn-view">View</a>
-                            <a href="#" class="btn-action btn-edit">Edit</a>
-                        </td>
-                    </tr>
-
-                    <!-- BHW User 1 -->
-                    <tr>
-                        <td>bhw01</td>
-                        <td>Maria Santos</td>
-                        <td>maria.santos@brgy.gov.ph</td>
-                        <td><span class="badge badge-bhw">BHW</span></td>
-                        <td><span class="status-badge status-active">Active</span></td>
-                        <td>Feb 20, 2025</td>
-                        <td>Nov 21, 2025 - 2:30 PM</td>
-                        <td class="actions">
-                            <a href="#" class="btn-action btn-view">View</a>
-                            <a href="#" class="btn-action btn-edit">Edit</a>
-                        </td>
-                    </tr>
-
-                    <!-- BHW User 2 -->
-                    <tr>
-                        <td>bhw02</td>
-                        <td>Ana Reyes</td>
-                        <td>ana.reyes@brgy.gov.ph</td>
-                        <td><span class="badge badge-bhw">BHW</span></td>
-                        <td><span class="status-badge status-inactive">Inactive</span></td>
-                        <td>Mar 10, 2025</td>
-                        <td>Nov 18, 2025 - 10:15 AM</td>
-                        <td class="actions">
-                            <a href="#" class="btn-action btn-view">View</a>
-                            <a href="#" class="btn-action btn-edit">Edit</a>
-                        </td>
-                    </tr>
-
-                    <!-- Admin User 2 -->
-                    <tr>
-                        <td>admin02</td>
-                        <td>Pedro Garcia</td>
-                        <td>pedro.garcia@brgy.gov.ph</td>
-                        <td><span class="badge badge-admin">Admin</span></td>
-                        <td><span class="status-badge status-active">Active</span></td>
-                        <td>Apr 05, 2025</td>
-                        <td>Nov 20, 2025 - 9:00 AM</td>
-                        <td class="actions">
-                            <a href="#" class="btn-action btn-view">View</a>
-                            <a href="#" class="btn-action btn-edit">Edit</a>
-                        </td>
-                    </tr>
+                    @forelse($users ?? [] as $user)
+                        @php
+                            $fullName = trim(($user->first_name ?? '') . ' ' . ($user->middle_name ? $user->middle_name . ' ' : '') . ($user->last_name ?? '')) ?: $user->name;
+                            $roleBadges = [
+                                'super_admin' => ['label' => 'Super Admin', 'class' => 'badge-super-admin'],
+                                'admin' => ['label' => 'Admin', 'class' => 'badge-admin'],
+                                'bhw' => ['label' => 'BHW', 'class' => 'badge-bhw'],
+                            ];
+                            $roleMeta = $roleBadges[$user->role] ?? ['label' => ucfirst($user->role), 'class' => 'badge-admin'];
+                        @endphp
+                        <tr>
+                            <td>{{ $user->username }}</td>
+                            <td>{{ $fullName }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td><span class="badge {{ $roleMeta['class'] }}">{{ $roleMeta['label'] }}</span></td>
+                            <td>
+                                @if($user->status === 'active')
+                                    <span class="status-badge status-active">Active</span>
+                                @else
+                                    <span class="status-badge status-inactive">Inactive</span>
+                                @endif
+                            </td>
+                            <td>{{ optional($user->created_at)->format('M d, Y') }}</td>
+                            <td>—</td>
+                            <td class="actions">
+                                <a href="#" class="btn-action btn-view">View</a>
+                                <a href="#" class="btn-action btn-edit">Edit</a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" style="text-align:center;">No users found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

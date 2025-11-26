@@ -34,7 +34,7 @@
                     <i class="bi bi-activity"></i>
                 </div>
                 <div class="stat-details">
-                    <div class="stat-value">248</div>
+                    <div class="stat-value">{{ $stats['totalToday'] ?? 0 }}</div>
                     <div class="stat-label">Total Activities Today</div>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                     <i class="bi bi-check-circle"></i>
                 </div>
                 <div class="stat-details">
-                    <div class="stat-value">235</div>
+                    <div class="stat-value">{{ $stats['successToday'] ?? 0 }}</div>
                     <div class="stat-label">Successful Actions</div>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                     <i class="bi bi-x-circle"></i>
                 </div>
                 <div class="stat-details">
-                    <div class="stat-value">13</div>
+                    <div class="stat-value">{{ $stats['failedToday'] ?? 0 }}</div>
                     <div class="stat-label">Failed Attempts</div>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                     <i class="bi bi-people"></i>
                 </div>
                 <div class="stat-details">
-                    <div class="stat-value">5</div>
+                    <div class="stat-value">{{ $stats['activeUsersToday'] ?? 0 }}</div>
                     <div class="stat-label">Active Users</div>
                 </div>
             </div>
@@ -69,72 +69,79 @@
 
         <!-- Filter Section -->
         <div class="filters-section">
-            <div class="filter-row">
-                <div class="filter-group">
-                    <label for="date-from">Date From</label>
-                    <input type="date" id="date-from" class="filter-input">
+            <form id="logs-filters-form" method="GET" action="{{ route('logs.audit') }}">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="date-from">Date From</label>
+                        <input type="date" id="date-from" name="date_from" class="filter-input"
+                            value="{{ request('date_from') }}">
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="date-to">Date To</label>
+                        <input type="date" id="date-to" name="date_to" class="filter-input"
+                            value="{{ request('date_to') }}">
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="user-filter">User</label>
+                        <select id="user-filter" name="user_id" class="filter-select">
+                            <option value="">All Users</option>
+                            @foreach($users as $u)
+                                <option value="{{ $u->id }}" @selected(request('user_id') == $u->id)>
+                                    {{ $u->name }} ({{ strtoupper($u->role) }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="action-filter">Action Type</label>
+                        <select id="action-filter" name="action" class="filter-select">
+                            <option value="">All Actions</option>
+                            @foreach($actions as $action)
+                                <option value="{{ $action }}" @selected(request('action') === $action)>{{ ucfirst($action) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="module-filter">Module</label>
+                        <select id="module-filter" name="module" class="filter-select">
+                            <option value="">All Modules</option>
+                            @foreach($modules as $module)
+                                <option value="{{ $module }}" @selected(request('module') === $module)>{{ $module }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="status-filter">Status</label>
+                        <select id="status-filter" name="status" class="filter-select">
+                            <option value="">All Statuses</option>
+                            <option value="success" @selected(request('status') === 'success')>Success</option>
+                            <option value="failed" @selected(request('status') === 'failed')>Failed</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" type="button" onclick="applyFilters()">
+                            <i class="bi bi-funnel"></i> Apply Filters
+                        </button>
+                        <button class="btn btn-secondary" type="button" onclick="clearFilters()">
+                            <i class="bi bi-x-circle"></i> Clear
+                        </button>
+                    </div>
                 </div>
 
-                <div class="filter-group">
-                    <label for="date-to">Date To</label>
-                    <input type="date" id="date-to" class="filter-input">
+                <div class="search-box">
+                    <input type="text" name="search"
+                        placeholder="Search logs by description, IP address, or details..." class="search-input"
+                        value="{{ request('search') }}">
+                    <button class="btn-search" type="button" onclick="applyFilters()"><i class="bi bi-search"></i>
+                        Search</button>
                 </div>
-
-                <div class="filter-group">
-                    <label for="user-filter">User</label>
-                    <select id="user-filter" class="filter-select">
-                        <option value="">All Users</option>
-                        <option value="superadmin">Super Admin</option>
-                        <option value="admin01">Juan Dela Cruz (Admin)</option>
-                        <option value="admin02">Pedro Garcia (Admin)</option>
-                        <option value="bhw01">Maria Santos (BHW)</option>
-                        <option value="bhw02">Ana Reyes (BHW)</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="action-filter">Action Type</label>
-                    <select id="action-filter" class="filter-select">
-                        <option value="">All Actions</option>
-                        <option value="login">Login</option>
-                        <option value="logout">Logout</option>
-                        <option value="create">Create</option>
-                        <option value="update">Update</option>
-                        <option value="delete">Delete</option>
-                        <option value="view">View</option>
-                        <option value="export">Export</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="module-filter">Module</label>
-                    <select id="module-filter" class="filter-select">
-                        <option value="">All Modules</option>
-                        <option value="users">User Management</option>
-                        <option value="patients">Patient Records</option>
-                        <option value="prenatal">Prenatal Care</option>
-                        <option value="fp">Family Planning</option>
-                        <option value="immunization">Immunization</option>
-                        <option value="nutrition">Nutrition Program</option>
-                        <option value="reports">Reports</option>
-                        <option value="settings">System Settings</option>
-                    </select>
-                </div>
-
-                <div class="filter-actions">
-                    <button class="btn btn-primary" onclick="applyFilters()">
-                        <i class="bi bi-funnel"></i> Apply Filters
-                    </button>
-                    <button class="btn btn-secondary" onclick="clearFilters()">
-                        <i class="bi bi-x-circle"></i> Clear
-                    </button>
-                </div>
-            </div>
-
-            <div class="search-box">
-                <input type="text" placeholder="Search logs by description, IP address, or details..." class="search-input">
-                <button class="btn-search"><i class="bi bi-search"></i> Search</button>
-            </div>
+            </form>
         </div>
 
         <!-- Audit Logs Table -->
@@ -152,174 +159,82 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Recent Login -->
-                    <tr>
-                        <td>Nov 22, 2025 - 8:30 AM</td>
-                        <td>
-                            <div class="user-info">
-                                <span class="user-name">System Administrator</span>
-                                <span class="user-badge badge-super-admin">Super Admin</span>
-                            </div>
-                        </td>
-                        <td><span class="action-badge action-login">Login</span></td>
-                        <td>Authentication</td>
-                        <td>User logged in successfully</td>
-                        <td>192.168.1.100</td>
-                        <td><span class="status-badge status-success">Success</span></td>
-                    </tr>
+                    @forelse($logs as $log)
+                        @php
+                            $user = $log->user;
+                            $role = $log->user_role ?? ($user->role ?? null);
+                            $roleBadgeClass = 'badge-unknown';
+                            $roleLabel = 'N/A';
+                            if ($role === 'super_admin') {
+                                $roleBadgeClass = 'badge-super-admin';
+                                $roleLabel = 'Super Admin';
+                            } elseif ($role === 'admin') {
+                                $roleBadgeClass = 'badge-admin';
+                                $roleLabel = 'Admin';
+                            } elseif ($role === 'bhw') {
+                                $roleBadgeClass = 'badge-bhw';
+                                $roleLabel = 'BHW';
+                            }
 
-                    <!-- Patient Record Created -->
-                    <tr>
-                        <td>Nov 22, 2025 - 7:45 AM</td>
-                        <td>
-                            <div class="user-info">
-                                <span class="user-name">Juan Dela Cruz</span>
-                                <span class="user-badge badge-admin">Admin</span>
-                            </div>
-                        </td>
-                        <td><span class="action-badge action-create">Create</span></td>
-                        <td>Patient Records</td>
-                        <td>Created new patient record: Maria Garcia (ITR-2025-001)</td>
-                        <td>192.168.1.105</td>
-                        <td><span class="status-badge status-success">Success</span></td>
-                    </tr>
+                            $actionClass = 'action-view';
+                            if ($log->action === 'login') {
+                                $actionClass = 'action-login';
+                            } elseif ($log->action === 'logout') {
+                                $actionClass = 'action-logout';
+                            } elseif ($log->action === 'create') {
+                                $actionClass = 'action-create';
+                            } elseif ($log->action === 'update') {
+                                $actionClass = 'action-update';
+                            } elseif ($log->action === 'delete') {
+                                $actionClass = 'action-delete';
+                            } elseif ($log->action === 'export') {
+                                $actionClass = 'action-export';
+                            }
 
-                    <!-- Failed Login Attempt -->
-                    <tr>
-                        <td>Nov 22, 2025 - 7:30 AM</td>
-                        <td>
-                            <div class="user-info">
-                                <span class="user-name">Unknown User</span>
-                                <span class="user-badge badge-unknown">N/A</span>
-                            </div>
-                        </td>
-                        <td><span class="action-badge action-login">Login</span></td>
-                        <td>Authentication</td>
-                        <td>Failed login attempt - Invalid credentials</td>
-                        <td>192.168.1.200</td>
-                        <td><span class="status-badge status-failed">Failed</span></td>
-                    </tr>
-
-                    <!-- Prenatal Record Updated -->
-                    <tr>
-                        <td>Nov 21, 2025 - 3:15 PM</td>
-                        <td>
-                            <div class="user-info">
-                                <span class="user-name">Maria Santos</span>
-                                <span class="user-badge badge-bhw">BHW</span>
-                            </div>
-                        </td>
-                        <td><span class="action-badge action-update">Update</span></td>
-                        <td>Prenatal Care</td>
-                        <td>Updated prenatal record for Ana Reyes - Added checkup details</td>
-                        <td>192.168.1.110</td>
-                        <td><span class="status-badge status-success">Success</span></td>
-                    </tr>
-
-                    <!-- Report Exported -->
-                    <tr>
-                        <td>Nov 21, 2025 - 2:00 PM</td>
-                        <td>
-                            <div class="user-info">
-                                <span class="user-name">Pedro Garcia</span>
-                                <span class="user-badge badge-admin">Admin</span>
-                            </div>
-                        </td>
-                        <td><span class="action-badge action-export">Export</span></td>
-                        <td>Reports</td>
-                        <td>Exported monthly health report (October 2025)</td>
-                        <td>192.168.1.105</td>
-                        <td><span class="status-badge status-success">Success</span></td>
-                    </tr>
-
-                    <!-- User Account Created -->
-                    <tr>
-                        <td>Nov 20, 2025 - 10:00 AM</td>
-                        <td>
-                            <div class="user-info">
-                                <span class="user-name">System Administrator</span>
-                                <span class="user-badge badge-super-admin">Super Admin</span>
-                            </div>
-                        </td>
-                        <td><span class="action-badge action-create">Create</span></td>
-                        <td>User Management</td>
-                        <td>Created new user account: Ana Reyes (BHW)</td>
-                        <td>192.168.1.100</td>
-                        <td><span class="status-badge status-success">Success</span></td>
-                    </tr>
-
-                    <!-- Immunization Record Viewed -->
-                    <tr>
-                        <td>Nov 20, 2025 - 9:30 AM</td>
-                        <td>
-                            <div class="user-info">
-                                <span class="user-name">Maria Santos</span>
-                                <span class="user-badge badge-bhw">BHW</span>
-                            </div>
-                        </td>
-                        <td><span class="action-badge action-view">View</span></td>
-                        <td>Immunization</td>
-                        <td>Viewed immunization records for Patient ID: ITR-2025-045</td>
-                        <td>192.168.1.110</td>
-                        <td><span class="status-badge status-success">Success</span></td>
-                    </tr>
-
-                    <!-- Role Updated -->
-                    <tr>
-                        <td>Nov 19, 2025 - 4:00 PM</td>
-                        <td>
-                            <div class="user-info">
-                                <span class="user-name">System Administrator</span>
-                                <span class="user-badge badge-super-admin">Super Admin</span>
-                            </div>
-                        </td>
-                        <td><span class="action-badge action-update">Update</span></td>
-                        <td>User Management</td>
-                        <td>Updated role permissions for Admin role</td>
-                        <td>192.168.1.100</td>
-                        <td><span class="status-badge status-success">Success</span></td>
-                    </tr>
-
-                    <!-- Logout -->
-                    <tr>
-                        <td>Nov 19, 2025 - 5:30 PM</td>
-                        <td>
-                            <div class="user-info">
-                                <span class="user-name">Juan Dela Cruz</span>
-                                <span class="user-badge badge-admin">Admin</span>
-                            </div>
-                        </td>
-                        <td><span class="action-badge action-logout">Logout</span></td>
-                        <td>Authentication</td>
-                        <td>User logged out successfully</td>
-                        <td>192.168.1.105</td>
-                        <td><span class="status-badge status-success">Success</span></td>
-                    </tr>
-
-                    <!-- System Settings Changed -->
-                    <tr>
-                        <td>Nov 18, 2025 - 11:00 AM</td>
-                        <td>
-                            <div class="user-info">
-                                <span class="user-name">System Administrator</span>
-                                <span class="user-badge badge-super-admin">Super Admin</span>
-                            </div>
-                        </td>
-                        <td><span class="action-badge action-update">Update</span></td>
-                        <td>System Settings</td>
-                        <td>Updated system configuration: Session timeout changed to 30 minutes</td>
-                        <td>192.168.1.100</td>
-                        <td><span class="status-badge status-success">Success</span></td>
-                    </tr>
+                            $statusClass = $log->status === 'failed' ? 'status-failed' : 'status-success';
+                        @endphp
+                        <tr>
+                            <td>{{ $log->created_at?->format('M d, Y - h:i A') ?? '—' }}</td>
+                            <td>
+                                <div class="user-info">
+                                    <span class="user-name">{{ $user->name ?? 'System' }}</span>
+                                    <span class="user-badge {{ $roleBadgeClass }}">{{ $roleLabel }}</span>
+                                </div>
+                            </td>
+                            <td><span class="action-badge {{ $actionClass }}">{{ ucfirst($log->action ?? 'other') }}</span>
+                            </td>
+                            <td>{{ $log->module }}</td>
+                            <td>{{ $log->description }}</td>
+                            <td>{{ $log->ip_address }}</td>
+                            <td><span class="status-badge {{ $statusClass }}">{{ ucfirst($log->status ?? 'unknown') }}</span>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" style="text-align: center;">No logs found for the selected filters.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
         <!-- Pagination -->
         <div class="pagination">
-            <button class="btn-page">« Previous</button>
-            <span class="page-info">Page 1 of 5 (50 total logs)</span>
-            <button class="btn-page">Next »</button>
+            @if($logs->onFirstPage())
+                <button class="btn-page" disabled>« Previous</button>
+            @else
+                <a class="btn-page" href="{{ $logs->previousPageUrl() }}">« Previous</a>
+            @endif
+
+            <span class="page-info">
+                Page {{ $logs->currentPage() }} of {{ $logs->lastPage() }} ({{ $logs->total() }} total logs)
+            </span>
+
+            @if($logs->hasMorePages())
+                <a class="btn-page" href="{{ $logs->nextPageUrl() }}">Next »</a>
+            @else
+                <button class="btn-page" disabled>Next »</button>
+            @endif
         </div>
 
     </div>
@@ -328,36 +243,17 @@
 @push('scripts')
     <script>
         function applyFilters() {
-            const dateFrom = document.getElementById('date-from').value;
-            const dateTo = document.getElementById('date-to').value;
-            const userFilter = document.getElementById('user-filter').value;
-            const actionFilter = document.getElementById('action-filter').value;
-            const moduleFilter = document.getElementById('module-filter').value;
-
-            // TODO: Implement filter logic
-            console.log('Applying filters:', {
-                dateFrom,
-                dateTo,
-                userFilter,
-                actionFilter,
-                moduleFilter
-            });
+            const form = document.getElementById('logs-filters-form');
+            if (form) {
+                form.submit();
+            }
         }
 
         function clearFilters() {
-            document.getElementById('date-from').value = '';
-            document.getElementById('date-to').value = '';
-            document.getElementById('user-filter').value = '';
-            document.getElementById('action-filter').value = '';
-            document.getElementById('module-filter').value = '';
-
-            // TODO: Reload logs without filters
-            console.log('Filters cleared');
+            window.location.href = '{{ route('logs.audit') }}';
         }
 
         function exportLogs() {
-            // TODO: Implement export logic
-            console.log('Exporting logs...');
             alert('Export functionality will be implemented with backend');
         }
     </script>

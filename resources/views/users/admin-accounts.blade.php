@@ -79,35 +79,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Admin Account 1 -->
-                    <tr>
-                        <td>admin01</td>
-                        <td>Juan Dela Cruz</td>
-                        <td>juan.delacruz@brgy.gov.ph</td>
-                        <td>Health Center Administrator</td>
-                        <td><span class="status-badge status-active">Active</span></td>
-                        <td>Jan 15, 2025</td>
-                        <td>Nov 22, 2025 - 7:45 AM</td>
-                        <td class="actions">
-                            <a href="#" class="btn-action btn-view">View</a>
-                            <a href="#" class="btn-action btn-edit">Edit</a>
-                        </td>
-                    </tr>
-
-                    <!-- Admin Account 2 -->
-                    <tr>
-                        <td>admin02</td>
-                        <td>Pedro Garcia</td>
-                        <td>pedro.garcia@brgy.gov.ph</td>
-                        <td>Records Administrator</td>
-                        <td><span class="status-badge status-active">Active</span></td>
-                        <td>Apr 05, 2025</td>
-                        <td>Nov 20, 2025 - 9:00 AM</td>
-                        <td class="actions">
-                            <a href="#" class="btn-action btn-view">View</a>
-                            <a href="#" class="btn-action btn-edit">Edit</a>
-                        </td>
-                    </tr>
+                    @forelse($admins ?? [] as $admin)
+                        @php
+                            $fullName = trim(($admin->first_name ?? '') . ' ' . ($admin->middle_name ? $admin->middle_name . ' ' : '') . ($admin->last_name ?? '')) ?: $admin->name;
+                        @endphp
+                        <tr>
+                            <td>{{ $admin->username }}</td>
+                            <td>{{ $fullName }}</td>
+                            <td>{{ $admin->email }}</td>
+                            <td>System Administrator</td>
+                            <td>
+                                @if($admin->status === 'active')
+                                    <span class="status-badge status-active">Active</span>
+                                @else
+                                    <span class="status-badge status-inactive">Inactive</span>
+                                @endif
+                            </td>
+                            <td>{{ optional($admin->created_at)->format('M d, Y') }}</td>
+                            <td>—</td>
+                            <td class="actions">
+                                <a href="#" class="btn-action btn-view">View</a>
+                                <a href="#" class="btn-action btn-edit">Edit</a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" style="text-align:center;">No admin accounts found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -131,8 +130,12 @@
                         <label for="user_id">Select User *</label>
                         <select id="user_id" name="user_id" class="form-control" required>
                             <option value="">-- Select a User --</option>
-                            <option value="1">bhw01 - Maria Santos (BHW)</option>
-                            <option value="2">bhw02 - Ana Reyes (BHW)</option>
+                            @foreach(\App\Models\User::whereNotIn('role', ['admin', 'super_admin'])->orderBy('name')->get() as $user)
+                                @php
+                                    $fullName = trim(($user->first_name ?? '') . ' ' . ($user->middle_name ? $user->middle_name . ' ' : '') . ($user->last_name ?? '')) ?: $user->name;
+                                @endphp
+                                <option value="{{ $user->id }}">{{ $user->username }} - {{ $fullName }} ({{ strtoupper($user->role) }})</option>
+                            @endforeach
                         </select>
                         <small class="form-text">Only non-admin users are shown in this list</small>
                     </div>

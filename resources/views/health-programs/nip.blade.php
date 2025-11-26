@@ -43,7 +43,7 @@
         <div class="table-container" id="nipTablePanel">
             <div class="table-heading">
                 <h3>Recent NIP Records</h3>
-                <span class="table-note">Sample data for UI preview</span>
+                <span class="table-note">Latest saved NIP records</span>
             </div>
             <table class="data-table">
                 <thead>
@@ -58,32 +58,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>NIP-2025-001</td>
-                        <td>Baby Liam Cruz</td>
-                        <td>2025-01-18</td>
-                        <td>Jasmine Cruz</td>
-                        <td>2 months</td>
-                        <td><span class="status-chip status-green">On schedule</span></td>
-                        <td>
-                            <a href="javascript:void(0)" class="btn-action btn-view view-nip"
-                                data-record="NIP-2025-001">View</a>
-                            <a href="{{ route('health-programs.nip-edit', 1) }}" class="btn-action btn-edit">Edit</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>NIP-2025-002</td>
-                        <td>Baby Sofia Reyes</td>
-                        <td>2024-12-02</td>
-                        <td>May Reyes</td>
-                        <td>5 months</td>
-                        <td><span class="status-chip status-amber">Visit due</span></td>
-                        <td>
-                            <a href="javascript:void(0)" class="btn-action btn-view view-nip"
-                                data-record="NIP-2025-002">View</a>
-                            <a href="{{ route('health-programs.nip-edit', 2) }}" class="btn-action btn-edit">Edit</a>
-                        </td>
-                    </tr>
+                    @forelse ($records ?? [] as $record)
+                        <tr>
+                            <td>{{ $record->record_no ?? 'NIP-' . str_pad($record->id, 3, '0', STR_PAD_LEFT) }}</td>
+                            <td>{{ $record->child_name }}</td>
+                            <td>{{ optional($record->dob)->format('Y-m-d') }}</td>
+                            <td>{{ $record->mother_name }}</td>
+                            <td>
+                                @php($lastVisit = $record->visits->sortByDesc('age_months')->first())
+                                {{ $lastVisit ? $lastVisit->age_months . ' months' : '—' }}
+                            </td>
+                            <td><span class="status-chip status-green">Recorded</span></td>
+                            <td>
+                                <a href="javascript:void(0)" class="btn-action btn-view view-nip"
+                                    data-record="{{ $record->record_no ?? 'NIP-' . str_pad($record->id, 3, '0', STR_PAD_LEFT) }}">View</a>
+                                <a href="{{ route('health-programs.nip-edit', $record) }}" class="btn-action btn-edit">Edit</a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" style="text-align:center;">No NIP records found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -92,7 +88,7 @@
             <h2 class="form-title">Newborn / Immunization Form</h2>
             <div id="form-alert" class="alert" style="display:none"></div>
 
-            <form id="nipForm" class="patient-form" novalidate>
+            <form id="nipForm" class="patient-form" method="POST" action="{{ route('health-programs.nip-store') }}" novalidate>
                 @csrf
 
                 <div class="form-section section-patient-info">
@@ -375,55 +371,8 @@
                         return;
                     }
 
-                    const visitCards = visitsContainer.querySelectorAll('.visit-box');
-                    const filledVisits = [];
-                    visitCards.forEach((card, idx) => {
-                        const inputs = card.querySelectorAll('input, select');
-                        const visitData = { index: idx };
-                        let hasValue = false;
-                        inputs.forEach(input => {
-                            const value = input.value.trim();
-                            visitData[input.name] = value;
-                            if (value) {
-                                hasValue = true;
-                            }
-                        });
-                        if (hasValue) {
-                            filledVisits.push({
-                                age: visitData[`visits[${idx}][age]`] || '-',
-                                weight: visitData[`visits[${idx}][weight]`] || '-',
-                                length: visitData[`visits[${idx}][length]`] || '-',
-                                breast: visitData[`visits[${idx}][breast]`] || '-',
-                                temp: visitData[`visits[${idx}][temp]`] || '-',
-                                vaccine: visitData[`visits[${idx}][vaccine]`] || '-'
-                            });
-                        }
-                    });
-
-                    visitSummaryBody.innerHTML = '';
-                    if (filledVisits.length) {
-                        filledVisits.forEach((visit, idx) => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                            <td>${idx + 1}</td>
-                                            <td>${visit.age}</td>
-                                            <td>${visit.weight}</td>
-                                            <td>${visit.length}</td>
-                                            <td>${visit.breast}</td>
-                                            <td>${visit.temp}</td>
-                                            <td>${visit.vaccine}</td>
-                                        `;
-                            visitSummaryBody.appendChild(row);
-                        });
-                        visitSummary.style.display = 'block';
-                    } else {
-                        visitSummary.style.display = 'none';
-                    }
-
-                    alertBox.className = 'alert alert-success';
-                    alertBox.style.display = 'block';
-                    alertBox.textContent = 'Record saved successfully (UI-only).';
-                    visitSummary.scrollIntoView({ behavior: 'smooth' });
+                    alertBox.style.display = 'none';
+                    form.submit();
                 });
             });
         </script>

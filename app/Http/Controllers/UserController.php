@@ -1,0 +1,118 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use App\Models\Role;
+use App\Models\AuditLog;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
+class UserController extends Controller
+{
+    public function index(Request $request)
+    {
+        $users = User::orderBy('name')->get();
+
+        return view('users.all-users', compact('users'));
+    }
+
+    public function create()
+    {
+        return view('users.add-new-user');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'username' => ['required', 'string', 'max:50', 'alpha_dash', 'unique:users,username'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'middle_name' => ['nullable', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'contact_number' => ['required', 'string', 'max:50'],
+            'role' => ['required', 'in:super_admin,admin,bhw'],
+            'status' => ['required', 'in:active,inactive'],
+        ]);
+
+        $fullName = trim($validated['first_name'] . ' ' . ($validated['middle_name'] ? $validated['middle_name'] . ' ' : '') . $validated['last_name']);
+
+        $user = User::create([
+            'name' => $fullName,
+            'first_name' => $validated['first_name'],
+            'middle_name' => $validated['middle_name'] ?? null,
+            'last_name' => $validated['last_name'],
+            'email' => $validated['email'],
+            'username' => $validated['username'],
+            'password' => Hash::make($validated['password']),
+            'role' => $validated['role'],
+            'contact_number' => $validated['contact_number'],
+            'status' => $validated['status'],
+        ]);
+
+        AuditLog::create([
+            'user_id' => $request->user()->id ?? null,
+            'user_role' => $request->user()->role ?? null,
+            'action' => 'create',
+            'module' => 'User Management',
+            'description' => 'Created new user account: '.$user->name.' ('.$user->role.')',
+            'ip_address' => $request->ip(),
+            'status' => 'success',
+        ]);
+
+        return redirect()->route('users.all-users')->with('success', 'User account created successfully');
+    }
+
+    public function adminAccounts()
+    {
+        $admins = User::whereIn('role', ['super_admin', 'admin'])->orderBy('name')->get();
+
+        return view('users.admin-accounts', compact('admins'));
+    }
+
+    public function roleManagement()
+    {
+        $rolesSummary = [
+            'super_admin' => [
+                'total' => User::where('role', 'super_admin')->count(),
+                'active' => User::where('role', 'super_admin')->where('status', 'active')->count(),
+            ],
+            'admin' => [
+                'total' => User::where('role', 'admin')->count(),
+                'active' => User::where('role', 'admin')->where('status', 'active')->count(),
+            ],
+            'bhw' => [
+                'total' => User::where('role', 'bhw')->count(),
+                'active' => User::where('role', 'bhw')->where('status', 'active')->count(),
+            ],
+        ];
+
+        $roles = Role::orderBy('name')->get();
+
+        return view('users.role-management', compact('rolesSummary', 'roles'));
+    }
+
+    public function promoteAdmin(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => ['required', 'exists:users,id'],
+        ]);
+
+        $user = User::findOrFail($validated['user_id']);
+        $user->role = 'admin';
+        $user->save();
+
+        AuditLog::create([
+            'user_id' => $request->user()->id ?? null,
+            'user_role' => $request->user()->role ?? null,
+            'action' => 'update',
+            'module' => 'User Management',
+            'description' => 'Promoted user '.$user->name.' to Admin',
+            'ip_address' => $request->ip(),
+            'status' => 'success',
+        ]);
+
+        return redirect()->route('users.admin-accounts')->with('success', 'User promoted to Admin successfully');
+    }
+}

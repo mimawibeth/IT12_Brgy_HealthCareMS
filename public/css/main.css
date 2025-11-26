@@ -18,6 +18,69 @@ body {
     background-color: #f5f5f5;
 }
 
+/* === DARK MODE SUPPORT === */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode .sidebar {
+    background-color: #111827;
+}
+
+body.dark-mode .sidebar-header {
+    background-color: #1f2933;
+    border-bottom-color: #0b1120;
+}
+
+body.dark-mode .nav-item:hover,
+body.dark-mode .nav-dropdown-toggle:hover {
+    background-color: #1f2933;
+}
+
+body.dark-mode .nav-dropdown-menu {
+    background-color: #050816;
+}
+
+body.dark-mode .main-content {
+    background-color: #0f172a;
+}
+
+body.dark-mode .top-bar {
+    background-color: #020617;
+    border-bottom-color: #111827;
+}
+
+body.dark-mode .page-title,
+body.dark-mode .user-name-display {
+    color: #e5e7eb;
+}
+
+body.dark-mode .content-wrapper,
+body.dark-mode .card,
+body.dark-mode .data-table {
+    background-color: #020617;
+    color: #e5e7eb;
+}
+
+body.dark-mode .data-table thead {
+    background-color: #111827;
+}
+
+body.dark-mode .data-table tbody tr:hover {
+    background-color: #020617;
+}
+
+body.dark-mode .form-control {
+    background-color: #020617;
+    border-color: #1f2933;
+    color: #e5e7eb;
+}
+
+body.dark-mode .form-group label {
+    color: #e5e7eb;
+}
+
 /* === APP LAYOUT === */
 .app-container {
     display: flex;

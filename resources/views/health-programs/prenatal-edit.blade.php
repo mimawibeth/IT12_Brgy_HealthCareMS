@@ -10,26 +10,26 @@
 @section('content')
     <div class="page-content">
         <div class="form-container">
-            <h2 class="form-title">Editing Prenatal Record #{{ $id }}</h2>
+            <h2 class="form-title">Editing Prenatal Record #{{ $record->record_no ?? ('PT-' . str_pad($record->id, 3, '0', STR_PAD_LEFT)) }}</h2>
 
             <div class="form-section section-patient-info">
                 <h3 class="section-header"><span class="section-indicator"></span>Mother Summary</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Name</label>
-                        <input type="text" class="form-control" value="Maria Dela Cruz">
+                        <input type="text" class="form-control" value="{{ $record->mother_name }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>LMP</label>
-                        <input type="date" class="form-control" value="2025-01-05">
+                        <input type="date" class="form-control" value="{{ optional($record->lmp)->format('Y-m-d') }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>EDC</label>
-                        <input type="date" class="form-control" value="2025-10-12">
+                        <input type="date" class="form-control" value="{{ optional($record->edc)->format('Y-m-d') }}" readonly>
                     </div>
                     <div class="form-group">
                         <label>Contact #</label>
-                        <input type="text" class="form-control" value="0917 123 4567">
+                        <input type="text" class="form-control" value="{{ $record->cell }}" readonly>
                     </div>
                 </div>
             </div>
@@ -49,22 +49,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>2025-02-03</td>
-                                <td>1st</td>
-                                <td>LR</td>
-                                <td>Normal pregnancy, mild nausea</td>
-                                <td>Follow-up after 4 weeks</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>2025-03-10</td>
-                                <td>2nd</td>
-                                <td>LR</td>
-                                <td>Improved appetite, gaining weight</td>
-                                <td>Continue prenatal vitamins</td>
-                            </tr>
+                            @forelse ($record->visits as $index => $visit)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ optional($visit->date)->format('Y-m-d') }}</td>
+                                    <td>{{ $visit->trimester }}</td>
+                                    <td>{{ $visit->risk }}</td>
+                                    <td>{{ $visit->assessment }}</td>
+                                    <td>{{ $visit->plan }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" style="text-align:center;">No visits recorded yet.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -78,11 +76,12 @@
                 <p class="form-note">Capture S/O/A/P details for follow-up visits. Previously saved visits appear in the
                     table above.</p>
 
-                <form id="followUpForm">
+                <form id="followUpForm" method="POST" action="{{ route('health-programs.prenatal-visits-store', $record) }}">
+                    @csrf
                     <div id="followUpContainer"></div>
 
                     <div class="form-actions">
-                        <button type="button" class="btn btn-primary">Save Visits</button>
+                        <button type="submit" class="btn btn-primary">Save Visits</button>
                         <a href="{{ route('health-programs.prenatal-view') }}" class="btn btn-secondary">Back to Records</a>
                     </div>
                 </form>

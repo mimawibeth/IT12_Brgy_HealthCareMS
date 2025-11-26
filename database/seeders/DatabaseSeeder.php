@@ -29,9 +29,14 @@ class DatabaseSeeder extends Seeder
             ['username' => 'superadmin'],
             [
                 'name' => 'Super Administrator',
+                'first_name' => 'Super',
+                'middle_name' => null,
+                'last_name' => 'Administrator',
                 'email' => 'superadmin@bhc.com',
                 'password' => Hash::make('superadmin123'),
                 'role' => 'super_admin',
+                'contact_number' => '09170000001',
+                'status' => 'active',
             ]
         );
 
@@ -40,9 +45,14 @@ class DatabaseSeeder extends Seeder
             ['username' => 'admin'],
             [
                 'name' => 'Admin User',
+                'first_name' => 'Admin',
+                'middle_name' => null,
+                'last_name' => 'User',
                 'email' => 'admin@bhc.com',
                 'password' => Hash::make('admin123'),
                 'role' => 'admin',
+                'contact_number' => '09170000002',
+                'status' => 'active',
             ]
         );
 
@@ -51,9 +61,14 @@ class DatabaseSeeder extends Seeder
             ['username' => 'worker'],
             [
                 'name' => 'Barangay Health Worker',
+                'first_name' => 'Barangay',
+                'middle_name' => 'Health',
+                'last_name' => 'Worker',
                 'email' => 'worker@bhc.com',
                 'password' => Hash::make('worker123'),
-                'role' => 'worker',
+                'role' => 'bhw',
+                'contact_number' => '09170000003',
+                'status' => 'active',
             ]
         );
     }

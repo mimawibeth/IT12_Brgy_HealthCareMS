@@ -31,9 +31,11 @@
                     <i class="bi bi-people"></i>
                 </div>
                 <div class="stat-details">
-                    <div class="stat-value">152</div>
-                    <div class="stat-label">Total Patients</div>
-                    <div class="stat-change positive">+12 from last month</div>
+                    <div class="stat-value">{{ number_format($totalPatients ?? 0) }}</div>
+                    <div class="stat-label">Total Patients ({{ $selectedMonthLabel ?? '' }})</div>
+                    <div class="stat-change">
+                        {{ $selectedMonthLabel ?? '' }}
+                    </div>
                 </div>
             </div>
 
@@ -42,9 +44,11 @@
                     <i class="bi bi-heart-pulse"></i>
                 </div>
                 <div class="stat-details">
-                    <div class="stat-value">48</div>
+                    <div class="stat-value">{{ number_format($prenatalCount ?? 0) }}</div>
                     <div class="stat-label">Prenatal Consultations</div>
-                    <div class="stat-change positive">+5 from last month</div>
+                    <div class="stat-change">
+                        {{ $selectedMonthLabel ?? '' }}
+                    </div>
                 </div>
             </div>
 
@@ -53,9 +57,11 @@
                     <i class="bi bi-shield-check"></i>
                 </div>
                 <div class="stat-details">
-                    <div class="stat-value">89</div>
+                    <div class="stat-value">{{ number_format($nipCount ?? 0) }}</div>
                     <div class="stat-label">Immunizations Given</div>
-                    <div class="stat-change positive">+15 from last month</div>
+                    <div class="stat-change">
+                        {{ $selectedMonthLabel ?? '' }}
+                    </div>
                 </div>
             </div>
 
@@ -64,44 +70,57 @@
                     <i class="bi bi-people-fill"></i>
                 </div>
                 <div class="stat-details">
-                    <div class="stat-value">34</div>
+                    <div class="stat-value">{{ number_format($fpCount ?? 0) }}</div>
                     <div class="stat-label">Family Planning Clients</div>
-                    <div class="stat-change">No change</div>
+                    <div class="stat-change">
+                        {{ $selectedMonthLabel ?? '' }}
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Report Filter Section -->
         <div class="report-filters">
-            <div class="filter-row">
-                <div class="filter-group">
-                    <label for="report-month">Month</label>
-                    <select id="report-month" class="filter-select">
-                        <option value="11">November 2025</option>
-                        <option value="10">October 2025</option>
-                        <option value="9">September 2025</option>
-                        <option value="8">August 2025</option>
-                        <option value="7">July 2025</option>
-                        <option value="6">June 2025</option>
-                    </select>
-                </div>
+            <form id="report-filters-form" method="GET" action="{{ route('reports.monthly') }}">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="report-month">Month</label>
+                        <select id="report-month" name="month" class="filter-select">
+                            @for ($m = 1; $m <= 12; $m++)
+                                @php
+                                    $label = \Carbon\Carbon::create(2000, $m, 1)->format('F');
+                                @endphp
+                                <option value="{{ $m }}" @selected(($selectedMonthValue ?? null) == $m)>{{ $label }}</option>
+                            @endfor
+                        </select>
+                    </div>
 
-                <div class="filter-group">
-                    <label for="report-type">Report Type</label>
-                    <select id="report-type" class="filter-select">
-                        <option value="summary">Summary Report</option>
-                        <option value="patients">Patient Statistics</option>
-                        <option value="prenatal">Prenatal Services</option>
-                        <option value="fp">Family Planning</option>
-                        <option value="immunization">Immunization</option>
-                        <option value="medicine">Medicine Inventory</option>
-                    </select>
-                </div>
+                    <div class="filter-group">
+                        <label for="report-year">Year</label>
+                        <select id="report-year" name="year" class="filter-select">
+                            @for ($y = now()->year; $y >= now()->year - 5; $y--)
+                                <option value="{{ $y }}" @selected(($selectedYearValue ?? null) == $y)>{{ $y }}</option>
+                            @endfor
+                        </select>
+                    </div>
 
-                <button class="btn btn-primary" onclick="generateReport()">
-                    <i class="bi bi-file-earmark-bar-graph"></i> Generate Report
-                </button>
-            </div>
+                    <div class="filter-group">
+                        <label for="report-type">Report Type</label>
+                        <select id="report-type" name="type" class="filter-select">
+                            <option value="summary">Summary Report</option>
+                            <option value="patients">Patient Statistics</option>
+                            <option value="prenatal">Prenatal Services</option>
+                            <option value="fp">Family Planning</option>
+                            <option value="immunization">Immunization</option>
+                            <option value="medicine">Medicine Inventory</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-file-earmark-bar-graph"></i> Generate Report
+                    </button>
+                </div>
+            </form>
         </div>
 
         <!-- Charts Section -->
@@ -187,7 +206,7 @@
         <div class="report-section">
             <div class="section-header">
                 <h3>Detailed Monthly Statistics</h3>
-                <p>November 2025 Summary Report</p>
+                <p>{{ $selectedMonthLabel ?? '' }} Summary Report</p>
             </div>
 
             <div class="table-container">
@@ -205,26 +224,26 @@
                     <tbody>
                         <tr>
                             <td><strong>Prenatal Care</strong></td>
-                            <td>48</td>
-                            <td>12</td>
-                            <td>36</td>
-                            <td>8</td>
-                            <td>40</td>
+                            <td>{{ $prenatalCount ?? 0 }}</td>
+                            <td>—</td>
+                            <td>—</td>
+                            <td>—</td>
+                            <td>—</td>
                         </tr>
                         <tr>
                             <td><strong>Family Planning</strong></td>
-                            <td>34</td>
-                            <td>5</td>
-                            <td>29</td>
-                            <td>30</td>
-                            <td>4</td>
+                            <td>{{ $fpCount ?? 0 }}</td>
+                            <td>—</td>
+                            <td>—</td>
+                            <td>—</td>
+                            <td>—</td>
                         </tr>
                         <tr>
                             <td><strong>Immunization (NIP)</strong></td>
-                            <td>89</td>
-                            <td>45</td>
-                            <td>44</td>
-                            <td>89</td>
+                            <td>{{ $nipCount ?? 0 }}</td>
+                            <td>—</td>
+                            <td>—</td>
+                            <td>{{ $nipCount ?? 0 }}</td>
                             <td>0</td>
                         </tr>
                         <tr>
@@ -251,13 +270,16 @@
                             <td>120</td>
                             <td>0</td>
                         </tr>
+                        @php
+                            $totalCases = ($prenatalCount ?? 0) + ($fpCount ?? 0) + ($nipCount ?? 0) + 56 + 67 + 120;
+                        @endphp
                         <tr class="table-total">
                             <td><strong>TOTAL</strong></td>
-                            <td><strong>414</strong></td>
-                            <td><strong>223</strong></td>
-                            <td><strong>191</strong></td>
-                            <td><strong>364</strong></td>
-                            <td><strong>50</strong></td>
+                            <td><strong>{{ $totalCases }}</strong></td>
+                            <td><strong>—</strong></td>
+                            <td><strong>—</strong></td>
+                            <td><strong>—</strong></td>
+                            <td><strong>—</strong></td>
                         </tr>
                     </tbody>
                 </table>
@@ -272,6 +294,11 @@
             </div>
 
             <div class="table-container">
+                @php
+                    $grandMale = array_sum($ageMale ?? []);
+                    $grandFemale = array_sum($ageFemale ?? []);
+                    $grandTotal = $grandMale + $grandFemale;
+                @endphp
                 <table class="report-table">
                     <thead>
                         <tr>
@@ -283,47 +310,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><strong>0-5 years (Infant/Toddler)</strong></td>
-                            <td>28</td>
-                            <td>25</td>
-                            <td>53</td>
-                            <td>34.9%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>6-12 years (Children)</strong></td>
-                            <td>18</td>
-                            <td>20</td>
-                            <td>38</td>
-                            <td>25.0%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>13-19 years (Adolescent)</strong></td>
-                            <td>8</td>
-                            <td>12</td>
-                            <td>20</td>
-                            <td>13.2%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>20-59 years (Adult)</strong></td>
-                            <td>5</td>
-                            <td>32</td>
-                            <td>37</td>
-                            <td>24.3%</td>
-                        </tr>
-                        <tr>
-                            <td><strong>60+ years (Senior)</strong></td>
-                            <td>2</td>
-                            <td>2</td>
-                            <td>4</td>
-                            <td>2.6%</td>
-                        </tr>
+                        @foreach(($ageLabels ?? []) as $i => $label)
+                            @php
+                                $male = $ageMale[$i] ?? 0;
+                                $female = $ageFemale[$i] ?? 0;
+                                $total = $male + $female;
+                                $percent = $grandTotal > 0 ? round(($total / $grandTotal) * 100, 1) : 0;
+                            @endphp
+                            <tr>
+                                <td><strong>{{ $label }}</strong></td>
+                                <td>{{ $male }}</td>
+                                <td>{{ $female }}</td>
+                                <td>{{ $total }}</td>
+                                <td>{{ $percent }}%</td>
+                            </tr>
+                        @endforeach
                         <tr class="table-total">
                             <td><strong>TOTAL</strong></td>
-                            <td><strong>61</strong></td>
-                            <td><strong>91</strong></td>
-                            <td><strong>152</strong></td>
-                            <td><strong>100%</strong></td>
+                            <td><strong>{{ $grandMale }}</strong></td>
+                            <td><strong>{{ $grandFemale }}</strong></td>
+                            <td><strong>{{ $grandTotal }}</strong></td>
+                            <td><strong>{{ $grandTotal > 0 ? '100%' : '0%' }}</strong></td>
                         </tr>
                     </tbody>
                 </table>
@@ -350,16 +357,21 @@
             }
         };
 
+        const monthLabels = @json($monthLabels ?? []);
+        const prenatalSeries = @json($prenatalSeries ?? []);
+        const fpSeries = @json($fpSeries ?? []);
+        const nipSeries = @json($nipSeries ?? []);
+
         // Initialize Monthly Services Trend Chart
         const servicesCtx = document.getElementById('servicesChart').getContext('2d');
         new Chart(servicesCtx, {
             type: 'line',
             data: {
-                labels: ['June', 'July', 'August', 'September', 'October', 'November'],
+                labels: monthLabels,
                 datasets: [
                     {
                         label: 'Prenatal Care',
-                        data: [42, 45, 44, 46, 45, 48],
+                        data: prenatalSeries,
                         borderColor: '#e74c3c',
                         backgroundColor: 'rgba(231, 76, 60, 0.1)',
                         borderWidth: 2,
@@ -368,7 +380,7 @@
                     },
                     {
                         label: 'Family Planning',
-                        data: [110, 115, 120, 122, 118, 125],
+                        data: fpSeries,
                         borderColor: '#3498db',
                         backgroundColor: 'rgba(52, 152, 219, 0.1)',
                         borderWidth: 2,
@@ -377,7 +389,7 @@
                     },
                     {
                         label: 'Immunization',
-                        data: [75, 80, 85, 90, 95, 89],
+                        data: nipSeries,
                         borderColor: '#2ecc71',
                         backgroundColor: 'rgba(46, 204, 113, 0.1)',
                         borderWidth: 2,
@@ -399,9 +411,13 @@
         new Chart(programCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Prenatal Care', 'Family Planning', 'Immunization', 'Nutrition Program', 'Child Care'],
+                labels: ['Prenatal Care', 'Family Planning', 'Immunization'],
                 datasets: [{
-                    data: [48, 125, 89, 56, 67],
+                    data: [
+                        {{ $programDistribution['prenatal'] ?? 0 }},
+                        {{ $programDistribution['fp'] ?? 0 }},
+                        {{ $programDistribution['nip'] ?? 0 }},
+                    ],
                     backgroundColor: [
                         '#e74c3c',
                         '#3498db',
@@ -417,18 +433,31 @@
         });
 
         // Initialize Patient Demographics Chart
+        const ageLabels = @json($ageLabels ?? []);
+        const ageMale = @json($ageMale ?? []);
+        const ageFemale = @json($ageFemale ?? []);
+
         const demographicsCtx = document.getElementById('demographicsChart').getContext('2d');
         new Chart(demographicsCtx, {
             type: 'bar',
             data: {
-                labels: ['0-5 years', '6-12 years', '13-19 years', '20-59 years', '60+ years'],
-                datasets: [{
-                    label: 'Number of Patients',
-                    data: [53, 38, 20, 37, 4],
-                    backgroundColor: '#3498db',
-                    borderColor: '#2980b9',
-                    borderWidth: 1
-                }]
+                labels: ageLabels,
+                datasets: [
+                    {
+                        label: 'Male',
+                        data: ageMale,
+                        backgroundColor: '#3498db',
+                        borderColor: '#2980b9',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Female',
+                        data: ageFemale,
+                        backgroundColor: '#e74c3c',
+                        borderColor: '#c0392b',
+                        borderWidth: 1
+                    }
+                ]
             },
             options: {
                 ...chartOptions,
@@ -445,7 +474,7 @@
             data: {
                 labels: ['Completed', 'Pending', 'Follow-ups'],
                 datasets: [{
-                    data: [364, 50, 191],
+                    data: @json($completionData ?? [0, 0, 0]),
                     backgroundColor: [
                         '#2ecc71',
                         '#e74c3c',
@@ -461,13 +490,12 @@
         // Initialize Top Health Programs Chart
         const topProgramsCtx = document.getElementById('topProgramsChart').getContext('2d');
         new Chart(topProgramsCtx, {
-            type: 'horizontalBar',
             type: 'bar',
             data: {
                 labels: ['Deworming', 'Immunization', 'Prenatal Care', 'Family Planning', 'Nutrition'],
                 datasets: [{
                     label: 'Cases Handled',
-                    data: [120, 89, 48, 34, 56],
+                    data: @json($topProgramsData),
                     backgroundColor: ['#3498db', '#2ecc71', '#e74c3c', '#9b59b6', '#f39c12'],
                     borderColor: ['#2980b9', '#27ae60', '#c0392b', '#8e44ad', '#d68910'],
                     borderWidth: 1
@@ -489,7 +517,10 @@
             data: {
                 labels: ['Female', 'Male'],
                 datasets: [{
-                    data: [91, 61],
+                    data: [
+                        {{ $genderCounts['F'] ?? 0 }},
+                        {{ $genderCounts['M'] ?? 0 }},
+                    ],
                     backgroundColor: ['#e74c3c', '#3498db'],
                     borderColor: '#fff',
                     borderWidth: 2
