@@ -34,14 +34,19 @@ Route::get('/login', function () {
 Route::post('/login', function () {
     // Validate login credentials
     $credentials = request()->validate([
-        'username' => 'required',
-        'password' => 'required',
+        'email' => ['required', 'email'],
+        'password' => ['required'],
     ]);
 
     $ip = request()->ip();
 
     // Attempt to authenticate user
-    if (auth()->attempt($credentials)) {
+    $remember = request()->boolean('remember');
+
+    if (auth()->attempt([
+        'email' => $credentials['email'],
+        'password' => $credentials['password'],
+    ], $remember)) {
         request()->session()->regenerate();
 
         \App\Models\AuditLog::create([
@@ -69,8 +74,8 @@ Route::post('/login', function () {
 
     // Authentication failed
     return back()->withErrors([
-        'username' => 'Invalid credentials. Please try again.',
-    ])->onlyInput('username');
+        'email' => 'Invalid credentials. Please try again.',
+    ])->onlyInput('email');
 })->name('login.post');
 
 Route::get('/logout', function () {
@@ -298,10 +303,16 @@ Route::middleware('auth')->group(function () {
 
         // Export and print remain UI-only for now
         Route::get('/export', function () {
+            if ((auth()->user()->role ?? null) === 'bhw') {
+                abort(403);
+            }
             return back()->with('success', 'Report exported successfully');
         })->name('export');
 
         Route::get('/print/{type}', function ($type) {
+            if ((auth()->user()->role ?? null) === 'bhw') {
+                abort(403);
+            }
             return view('reports.print', compact('type'));
         })->name('print');
     });

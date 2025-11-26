@@ -18,11 +18,26 @@ class NipRecord extends Model
         'place_delivery',
         'attended_by',
         'sex_baby',
+        'nhts_4ps_id',
+        'phic_id',
+        'tt_status_mother',
+        'birth_length',
+        'birth_weight',
+        'delivery_type',
+        'initiated_breastfeeding',
+        'birth_order',
+        'newborn_screening_date',
+        'newborn_screening_result',
+        'hearing_test_screened',
+        'vit_k',
+        'bcg',
+        'hepa_b_24h',
     ];
 
     protected $casts = [
         'date' => 'date',
         'dob' => 'date',
+        'newborn_screening_date' => 'date',
     ];
 
     public function visits()

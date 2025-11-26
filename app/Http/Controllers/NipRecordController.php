@@ -28,6 +28,20 @@ class NipRecordController extends Controller
             'place_delivery' => $request->input('place_delivery'),
             'attended_by' => $request->input('attended_by'),
             'sex_baby' => $request->input('sex_baby'),
+            'nhts_4ps_id' => $request->input('nhts_4ps_id'),
+            'phic_id' => $request->input('phic_id'),
+            'tt_status_mother' => $request->input('tt_status_mother'),
+            'birth_length' => $request->input('birth_length'),
+            'birth_weight' => $request->input('birth_weight'),
+            'delivery_type' => $request->input('delivery_type'),
+            'initiated_breastfeeding' => $request->input('initiated_breastfeeding'),
+            'birth_order' => $request->input('birth_order') ?: null,
+            'newborn_screening_date' => $request->input('newborn_screening_date') ?: null,
+            'newborn_screening_result' => $request->input('newborn_screening_result'),
+            'hearing_test_screened' => $request->input('hearing_test_screened'),
+            'vit_k' => $request->input('vit_k'),
+            'bcg' => $request->input('bcg'),
+            'hepa_b_24h' => $request->input('hepa_b_24h'),
         ];
     }
 
@@ -40,9 +54,11 @@ class NipRecordController extends Controller
 
             NipVisit::create([
                 'nip_record_id' => $record->id,
+                'visit_date' => $visit['date'] ?? null,
                 'age_months' => $visit['age'] ?? null,
                 'weight' => $visit['weight'] ?? null,
                 'length' => $visit['length'] ?? null,
+                'status' => $visit['status'] ?? null,
                 'breastfeeding' => $visit['breast'] ?? null,
                 'temperature' => $visit['temp'] ?? null,
                 'vaccine' => $visit['vaccine'] ?? null,
@@ -57,6 +73,22 @@ class NipRecordController extends Controller
             'child_name' => ['required', 'string', 'max:255'],
             'dob' => ['required', 'date'],
             'address' => ['required', 'string', 'max:255'],
+            'mother_name' => ['required', 'string', 'max:255'],
+            'contact' => ['required', 'string', 'max:50'],
+            'place_delivery' => ['required', 'string', 'max:255'],
+            'attended_by' => ['required', 'string', 'max:255'],
+            'sex_baby' => ['required', 'in:M,F'],
+            'tt_status_mother' => ['required', 'string', 'max:255'],
+            'birth_weight' => ['required', 'string', 'max:50'],
+            'delivery_type' => ['required', 'string', 'max:50'],
+            'initiated_breastfeeding' => ['required', 'string', 'max:10'],
+            'newborn_screening_date' => ['required', 'date'],
+            'newborn_screening_result' => ['required', 'string', 'max:255'],
+            'hearing_test_screened' => ['required', 'string', 'max:50'],
+            'vit_k' => ['required', 'string', 'max:50'],
+            'bcg' => ['required', 'string', 'max:50'],
+            'hepa_b_24h' => ['required', 'string', 'max:50'],
+            'birth_order' => ['nullable', 'integer', 'min:1'],
         ]);
 
         $record = NipRecord::create($this->mapRecordData($request));
@@ -83,7 +115,11 @@ class NipRecordController extends Controller
 
     public function update(Request $request, NipRecord $record)
     {
-        $record->update($this->mapRecordData($request));
+        $record->update([
+            'child_name' => $request->input('child_name', $record->child_name),
+            'dob' => $request->input('dob') ?: $record->dob,
+            'mother_name' => $request->input('mother_name', $record->mother_name),
+        ]);
 
         $visitData = [
             'age' => $request->input('edit_visit_age'),

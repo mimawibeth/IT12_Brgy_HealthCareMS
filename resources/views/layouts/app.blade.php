@@ -130,26 +130,30 @@
                                 <i class="bi bi-person-plus icon"></i>
                                 <span>Add New User</span>
                             </a>
-                            <a href="{{ route('users.admin-accounts') }}"
-                                class="nav-item {{ request()->routeIs('users.admin-accounts') ? 'active' : '' }}">
-                                <i class="bi bi-person-gear icon"></i>
-                                <span>Admin Accounts</span>
-                            </a>
-                            <a href="{{ route('users.role-management') }}"
-                                class="nav-item {{ request()->routeIs('users.role-management') ? 'active' : '' }}">
-                                <i class="bi bi-shield-lock icon"></i>
-                                <span>Role Management</span>
-                            </a>
+                            @if((auth()->user()->role ?? '') === 'super_admin')
+                                <a href="{{ route('users.admin-accounts') }}"
+                                    class="nav-item {{ request()->routeIs('users.admin-accounts') ? 'active' : '' }}">
+                                    <i class="bi bi-person-gear icon"></i>
+                                    <span>Admin Accounts</span>
+                                </a>
+                                <a href="{{ route('users.role-management') }}"
+                                    class="nav-item {{ request()->routeIs('users.role-management') ? 'active' : '' }}">
+                                    <i class="bi bi-shield-lock icon"></i>
+                                    <span>Role Management</span>
+                                </a>
+                            @endif
                         </div>
                     </div>
                 @endif
 
                 <!-- Reports -->
-                <a href="{{ route('reports.monthly') }}"
-                    class="nav-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
-                    <i class="bi bi-bar-chart icon"></i>
-                    <span>Reports</span>
-                </a>
+                @if((auth()->user()->role ?? '') !== 'bhw')
+                    <a href="{{ route('reports.monthly') }}"
+                        class="nav-item {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                        <i class="bi bi-bar-chart icon"></i>
+                        <span>Reports</span>
+                    </a>
+                @endif
 
                 <!-- Audit Logs -->
                 @if(in_array(auth()->user()->role ?? '', ['super_admin', 'admin']))

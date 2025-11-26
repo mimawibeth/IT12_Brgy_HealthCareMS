@@ -21,6 +21,20 @@ return new class extends Migration
             $table->string('place_delivery')->nullable();
             $table->string('attended_by')->nullable();
             $table->string('sex_baby', 1)->nullable();
+            $table->string('nhts_4ps_id')->nullable();
+            $table->string('phic_id')->nullable();
+            $table->string('tt_status_mother')->nullable();
+            $table->string('birth_length')->nullable();
+            $table->string('birth_weight')->nullable();
+            $table->string('delivery_type')->nullable();
+            $table->string('initiated_breastfeeding')->nullable();
+            $table->unsignedTinyInteger('birth_order')->nullable();
+            $table->date('newborn_screening_date')->nullable();
+            $table->string('newborn_screening_result')->nullable();
+            $table->string('hearing_test_screened')->nullable();
+            $table->string('vit_k')->nullable();
+            $table->string('bcg')->nullable();
+            $table->string('hepa_b_24h')->nullable();
             $table->timestamps();
         });
     }

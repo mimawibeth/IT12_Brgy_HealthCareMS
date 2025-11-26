@@ -15,6 +15,10 @@ class ReportController extends Controller
 {
     public function monthly(Request $request)
     {
+        if (($request->user()->role ?? null) === 'bhw') {
+            abort(403);
+        }
+
         $now = Carbon::now();
         $month = (int)($request->input('month', $now->month));
         $year = (int)($request->input('year', $now->year));

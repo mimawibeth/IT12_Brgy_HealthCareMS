@@ -8,9 +8,11 @@ class NipVisit extends Model
 {
     protected $fillable = [
         'nip_record_id',
+        'visit_date',
         'age_months',
         'weight',
         'length',
+        'status',
         'breastfeeding',
         'temperature',
         'vaccine',

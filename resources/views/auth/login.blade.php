@@ -41,9 +41,9 @@
                     </div>
                 @endif
 
-                <!-- Username Input -->
+                <!-- Email Input -->
                 <div class="form-group">
-                    <label for="username">Username</label>
+                    <label for="email">Email address</label>
                     <div class="input-wrapper">
                         <span class="input-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -53,8 +53,8 @@
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                         </span>
-                        <input type="text" id="username" name="username" class="form-control"
-                            value="{{ old('username') }}" required autofocus placeholder="Enter your username">
+                        <input type="email" id="email" name="email" class="form-control"
+                            value="{{ old('email') }}" required autofocus placeholder="Enter your email address">
                     </div>
                 </div>
 

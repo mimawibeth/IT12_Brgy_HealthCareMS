@@ -11,9 +11,11 @@ return new class extends Migration
         Schema::create('nip_visits', function (Blueprint $table) {
             $table->id();
             $table->foreignId('nip_record_id')->constrained('nip_records')->cascadeOnDelete();
+            $table->date('visit_date')->nullable();
             $table->unsignedTinyInteger('age_months')->nullable();
             $table->string('weight')->nullable();
             $table->string('length')->nullable();
+            $table->string('status')->nullable();
             $table->string('breastfeeding')->nullable();
             $table->string('temperature')->nullable();
             $table->string('vaccine')->nullable();

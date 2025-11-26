@@ -11,6 +11,10 @@ class RoleController extends Controller
 {
     public function store(Request $request)
     {
+        if (($request->user()->role ?? null) !== 'super_admin') {
+            abort(403);
+        }
+
         $validated = $request->validate([
             'role_name' => ['required', 'string', 'max:255'],
             'role_color' => ['nullable', 'string', 'max:20'],
@@ -42,6 +46,10 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
+        if (($request->user()->role ?? null) !== 'super_admin') {
+            abort(403);
+        }
+
         $validated = $request->validate([
             'role_name' => ['required', 'string', 'max:255'],
             'role_color' => ['nullable', 'string', 'max:20'],
@@ -73,6 +81,10 @@ class RoleController extends Controller
 
     public function destroy(Role $role, Request $request)
     {
+        if (($request->user()->role ?? null) !== 'super_admin') {
+            abort(403);
+        }
+
         $name = $role->name;
         $role->delete();
 
