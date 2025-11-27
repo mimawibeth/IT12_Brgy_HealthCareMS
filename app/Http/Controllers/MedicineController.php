@@ -12,7 +12,7 @@ class MedicineController extends Controller
 {
     public function index()
     {
-        $medicines = Medicine::orderBy('name')->get();
+        $medicines = Medicine::orderBy('name')->paginate(10);
 
         return view('medicine.index', compact('medicines'));
     }
@@ -106,7 +106,10 @@ class MedicineController extends Controller
     public function dispense()
     {
         $medicines = Medicine::orderBy('name')->get();
-        $dispenses = MedicineDispense::with('medicine')->orderByDesc('dispensed_at')->orderByDesc('created_at')->get();
+        $dispenses = MedicineDispense::with('medicine')
+            ->orderByDesc('dispensed_at')
+            ->orderByDesc('created_at')
+            ->paginate(10);
 
         return view('medicine.dispense', compact('medicines', 'dispenses'));
     }

@@ -60,7 +60,7 @@ class PatientController extends Controller
             }
         }
 
-        $patients = $query->orderByDesc('dateRegistered')->get();
+        $patients = $query->orderByDesc('dateRegistered')->paginate(10)->withQueryString();
 
         return view('patients.index', compact('patients', 'search', 'gender', 'ageGroup'));
     }

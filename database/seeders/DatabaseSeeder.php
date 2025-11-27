@@ -17,6 +17,16 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->createDefaultUsers();
+
+        $this->call([
+            PatientSeeder::class,
+            PrenatalSeeder::class,
+            FamilyPlanningSeeder::class,
+            NipSeeder::class,
+            MedicineSeeder::class,
+            AssessmentSeeder::class,
+            MedicineDispenseSeeder::class,
+        ]);
     }
 
     /**

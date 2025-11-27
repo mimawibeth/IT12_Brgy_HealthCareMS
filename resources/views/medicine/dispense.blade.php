@@ -94,5 +94,38 @@
                 </tbody>
             </table>
         </div>
+
+        @if($dispenses->hasPages())
+            <div class="pagination">
+                @if($dispenses->onFirstPage())
+                    <button class="btn-page" disabled>« Previous</button>
+                @else
+                    <a class="btn-page" href="{{ $dispenses->previousPageUrl() }}">« Previous</a>
+                @endif
+
+                @php
+                    $start = max(1, $dispenses->currentPage() - 2);
+                    $end = min($dispenses->lastPage(), $dispenses->currentPage() + 2);
+                @endphp
+
+                @for ($page = $start; $page <= $end; $page++)
+                    @if ($page === $dispenses->currentPage())
+                        <span class="btn-page active">{{ $page }}</span>
+                    @else
+                        <a class="btn-page" href="{{ $dispenses->url($page) }}">{{ $page }}</a>
+                    @endif
+                @endfor
+
+                <span class="page-info">
+                    Page {{ $dispenses->currentPage() }} of {{ $dispenses->lastPage() }} ({{ $dispenses->total() }} total dispenses)
+                </span>
+
+                @if($dispenses->hasMorePages())
+                    <a class="btn-page" href="{{ $dispenses->nextPageUrl() }}">Next »</a>
+                @else
+                    <button class="btn-page" disabled>Next »</button>
+                @endif
+            </div>
+        @endif
     </div>
 @endsection

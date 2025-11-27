@@ -10,7 +10,7 @@ class NipRecordController extends Controller
 {
     public function index()
     {
-        $records = NipRecord::orderByDesc('created_at')->get();
+        $records = NipRecord::with('visits')->orderByDesc('created_at')->paginate(10);
 
         return view('health-programs.nip', compact('records'));
     }

@@ -102,12 +102,38 @@
             </table>
         </div>
 
-        <!-- Pagination -->
-        <div class="pagination">
-            <button class="btn-page">« Previous</button>
-            <span class="page-info">Page 1 of 1</span>
-            <button class="btn-page">Next »</button>
-        </div>
+        @if($users->hasPages())
+            <div class="pagination">
+                @if($users->onFirstPage())
+                    <button class="btn-page" disabled>« Previous</button>
+                @else
+                    <a class="btn-page" href="{{ $users->previousPageUrl() }}">« Previous</a>
+                @endif
+
+                @php
+                    $start = max(1, $users->currentPage() - 2);
+                    $end = min($users->lastPage(), $users->currentPage() + 2);
+                @endphp
+
+                @for ($page = $start; $page <= $end; $page++)
+                    @if ($page === $users->currentPage())
+                        <span class="btn-page active">{{ $page }}</span>
+                    @else
+                        <a class="btn-page" href="{{ $users->url($page) }}">{{ $page }}</a>
+                    @endif
+                @endfor
+
+                <span class="page-info">
+                    Page {{ $users->currentPage() }} of {{ $users->lastPage() }} ({{ $users->total() }} total users)
+                </span>
+
+                @if($users->hasMorePages())
+                    <a class="btn-page" href="{{ $users->nextPageUrl() }}">Next »</a>
+                @else
+                    <button class="btn-page" disabled>Next »</button>
+                @endif
+            </div>
+        @endif
 
     </div>
 @endsection

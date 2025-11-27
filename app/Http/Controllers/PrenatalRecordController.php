@@ -11,7 +11,7 @@ class PrenatalRecordController extends Controller
 {
     public function index()
     {
-        $records = PrenatalRecord::orderByDesc('created_at')->get();
+        $records = PrenatalRecord::orderByDesc('created_at')->paginate(10);
 
         return view('health-programs.prenatal', compact('records'));
     }

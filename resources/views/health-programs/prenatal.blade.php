@@ -79,6 +79,39 @@
             </table>
         </div>
 
+        @if($records->hasPages())
+            <div class="pagination">
+                @if($records->onFirstPage())
+                    <button class="btn-page" disabled>« Previous</button>
+                @else
+                    <a class="btn-page" href="{{ $records->previousPageUrl() }}">« Previous</a>
+                @endif
+
+                @php
+                    $start = max(1, $records->currentPage() - 2);
+                    $end = min($records->lastPage(), $records->currentPage() + 2);
+                @endphp
+
+                @for ($page = $start; $page <= $end; $page++)
+                    @if ($page === $records->currentPage())
+                        <span class="btn-page active">{{ $page }}</span>
+                    @else
+                        <a class="btn-page" href="{{ $records->url($page) }}">{{ $page }}</a>
+                    @endif
+                @endfor
+
+                <span class="page-info">
+                    Page {{ $records->currentPage() }} of {{ $records->lastPage() }} ({{ $records->total() }} total records)
+                </span>
+
+                @if($records->hasMorePages())
+                    <a class="btn-page" href="{{ $records->nextPageUrl() }}">Next »</a>
+                @else
+                    <button class="btn-page" disabled>Next »</button>
+                @endif
+            </div>
+        @endif
+
 
 
         <div class="form-container wizard-container" id="prenatalFormPanel" style="display:none;">

@@ -226,6 +226,19 @@
                 <a class="btn-page" href="{{ $logs->previousPageUrl() }}">« Previous</a>
             @endif
 
+            @php
+                $start = max(1, $logs->currentPage() - 2);
+                $end = min($logs->lastPage(), $logs->currentPage() + 2);
+            @endphp
+
+            @for ($page = $start; $page <= $end; $page++)
+                @if ($page === $logs->currentPage())
+                    <span class="btn-page active">{{ $page }}</span>
+                @else
+                    <a class="btn-page" href="{{ $logs->url($page) }}">{{ $page }}</a>
+                @endif
+            @endfor
+
             <span class="page-info">
                 Page {{ $logs->currentPage() }} of {{ $logs->lastPage() }} ({{ $logs->total() }} total logs)
             </span>

@@ -10,7 +10,7 @@ class FamilyPlanningRecordController extends Controller
 {
     public function index()
     {
-        $records = FamilyPlanningRecord::orderByDesc('created_at')->get();
+        $records = FamilyPlanningRecord::orderByDesc('created_at')->paginate(10);
 
         return view('health-programs.family-planning', compact('records'));
     }

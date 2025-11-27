@@ -74,5 +74,38 @@
                 </table>
             </div>
         </div>
+
+        @if($medicines->hasPages())
+            <div class="pagination">
+                @if($medicines->onFirstPage())
+                    <button class="btn-page" disabled>« Previous</button>
+                @else
+                    <a class="btn-page" href="{{ $medicines->previousPageUrl() }}">« Previous</a>
+                @endif
+
+                @php
+                    $start = max(1, $medicines->currentPage() - 2);
+                    $end = min($medicines->lastPage(), $medicines->currentPage() + 2);
+                @endphp
+
+                @for ($page = $start; $page <= $end; $page++)
+                    @if ($page === $medicines->currentPage())
+                        <span class="btn-page active">{{ $page }}</span>
+                    @else
+                        <a class="btn-page" href="{{ $medicines->url($page) }}">{{ $page }}</a>
+                    @endif
+                @endfor
+
+                <span class="page-info">
+                    Page {{ $medicines->currentPage() }} of {{ $medicines->lastPage() }} ({{ $medicines->total() }} total medicines)
+                </span>
+
+                @if($medicines->hasMorePages())
+                    <a class="btn-page" href="{{ $medicines->nextPageUrl() }}">Next »</a>
+                @else
+                    <button class="btn-page" disabled>Next »</button>
+                @endif
+            </div>
+        @endif
     </div>
 @endsection
