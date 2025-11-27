@@ -136,7 +136,7 @@
                 </div>
 
                 <div class="search-box">
-                    <input type="text" name="search" placeholder="Search logs by description, IP address, or details..."
+                    <input type="text" name="search" placeholder="Search logs by description or details..."
                         class="search-input" value="{{ request('search') }}">
                     <button class="btn-search" type="button" onclick="applyFilters()"><i class="bi bi-search"></i>
                         Search</button>
@@ -154,7 +154,6 @@
                         <th>Action</th>
                         <th>Module</th>
                         <th>Description</th>
-                        <th>IP Address</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -205,13 +204,12 @@
                             </td>
                             <td>{{ $log->module }}</td>
                             <td>{{ $log->description }}</td>
-                            <td>{{ $log->ip_address }}</td>
                             <td><span class="status-badge {{ $statusClass }}">{{ ucfirst($log->status ?? 'unknown') }}</span>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" style="text-align: center;">No logs found for the selected filters.</td>
+                            <td colspan="6" style="text-align: center;">No logs found for the selected filters.</td>
                         </tr>
                     @endforelse
                 </tbody>
