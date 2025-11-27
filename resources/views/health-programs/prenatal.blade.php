@@ -79,8 +79,11 @@
             </table>
         </div>
 
-        @if($records->hasPages())
-            <div class="pagination">
+        @php
+            $showPagination = !empty($records) && method_exists($records, 'hasPages') && $records->hasPages();
+        @endphp
+        @if($showPagination)
+            <div class="pagination" id="prenatalPagination">
                 @if($records->onFirstPage())
                     <button class="btn-page" disabled>« Previous</button>
                 @else
@@ -111,8 +114,6 @@
                 @endif
             </div>
         @endif
-
-
 
         <div class="form-container wizard-container" id="prenatalFormPanel" style="display:none;">
             <h2 class="form-title">Prenatal Care Intake Form</h2>
@@ -661,11 +662,14 @@
                     });
                 });
 
+                const pagination = document.getElementById('prenatalPagination');
+                
                 const toggleForm = (showForm) => {
                     formPanel.style.display = showForm ? 'block' : 'none';
                     tablePanel.style.display = showForm ? 'none' : 'block';
                     filters.style.display = showForm ? 'none' : 'block';
                     openBtn.style.display = showForm ? 'none' : 'inline-flex';
+                    if (pagination) pagination.style.display = showForm ? 'none' : 'block';
                     if (backBtn) backBtn.style.display = showForm ? 'inline-flex' : 'none';
 
                     if (!showForm) {

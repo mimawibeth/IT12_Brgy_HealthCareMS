@@ -239,38 +239,22 @@ Route::middleware('auth')->group(function () {
         Route::get('/role-management', [UserController::class, 'roleManagement'])->name('role-management');
 
         // View user details
-        Route::get('/{id}', function ($id) {
-            return view('users.show', compact('id'));
-        })->name('show');
+        Route::get('/{id}', [UserController::class, 'show'])->name('show');
 
         // Edit user
-        Route::get('/{id}/edit', function ($id) {
-            return view('users.edit', compact('id'));
-        })->name('edit');
+        Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit');
 
         // Update user
-        Route::put('/{id}', function ($id) {
-            // TODO: Update user logic
-            return redirect()->route('users.all-users')->with('success', 'User updated successfully');
-        })->name('update');
+        Route::put('/{id}', [UserController::class, 'update'])->name('update');
 
         // Delete user
-        Route::delete('/{id}', function ($id) {
-            // TODO: Delete user logic
-            return redirect()->route('users.all-users')->with('success', 'User deleted successfully');
-        })->name('destroy');
+        Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
 
         // Update user role
-        Route::post('/{id}/update-role', function ($id) {
-            // TODO: Update user role logic (Super Admin, Admin, BHW)
-            return back()->with('success', 'User role updated successfully');
-        })->name('update-role');
+        Route::post('/{id}/update-role', [UserController::class, 'updateRole'])->name('update-role');
 
         // Reset password
-        Route::post('/{id}/reset-password', function ($id) {
-            // TODO: Reset password logic
-            return back()->with('success', 'Password reset successfully');
-        })->name('reset-password');
+        Route::post('/{id}/reset-password', [UserController::class, 'resetPassword'])->name('reset-password');
 
         // Toggle user status (Active/Inactive)
         Route::post('/{id}/toggle-status', function ($id) {

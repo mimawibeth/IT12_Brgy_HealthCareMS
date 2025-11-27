@@ -91,14 +91,7 @@
                     </div>
                 </div>
 
-                <!-- Remember Me -->
-                <div class="form-group checkbox-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" name="remember">
-                        <span class="checkmark"></span>
-                        Remember me
-                    </label>
-                </div>
+                
 
                 <!-- Login Button -->
                 <button type="submit" class="btn btn-primary btn-block">

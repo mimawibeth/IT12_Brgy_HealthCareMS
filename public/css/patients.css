@@ -126,6 +126,12 @@
     border: 1px solid;
     transition: all 0.3s ease;
     font-weight: 500;
+    cursor: pointer;
+}
+
+button.btn-action {
+    background-color: transparent;
+    font-family: inherit;
 }
 
 .btn-view {

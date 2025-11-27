@@ -10,7 +10,6 @@
 
 @section('content')
     <div class="page-content">
-
         <!-- Header with Add Button -->
         <div class="content-header">
             <div>
@@ -89,8 +88,9 @@
                             <td>{{ optional($user->created_at)->format('M d, Y') }}</td>
                             <td>—</td>
                             <td class="actions">
-                                <a href="#" class="btn-action btn-view">View</a>
-                                <a href="#" class="btn-action btn-edit">Edit</a>
+                                <a href="{{ route('users.show', $user) }}" class="btn-action btn-view">View</a>
+                                <a href="{{ route('users.edit', $user) }}" class="btn-action btn-edit">Edit</a>
+                               
                             </td>
                         </tr>
                     @empty
@@ -102,7 +102,10 @@
             </table>
         </div>
 
-        @if($users->hasPages())
+        @php
+            $showPagination = !empty($users) && method_exists($users, 'hasPages') && $users->hasPages();
+        @endphp
+        @if($showPagination)
             <div class="pagination">
                 @if($users->onFirstPage())
                     <button class="btn-page" disabled>« Previous</button>

@@ -65,7 +65,7 @@
                     <td>{{ optional($record->dob)->format('Y-m-d') }}</td>
                     <td>{{ $record->mother_name }}</td>
                     <td>
-                        @php($lastVisit = $record->visits->sortByDesc('age_months')->first())
+                        @php($lastVisit = optional($record->visits)->sortByDesc('age_months')->first())
                         {{ $lastVisit ? $lastVisit->age_months . ' months' : '—' }}
                     </td>
                     <td><span class="status-chip status-green">Recorded</span></td>
@@ -84,8 +84,11 @@
         </table>
     </div>
 
-    @if($records->hasPages())
-        <div class="pagination">
+    @php
+        $showPagination = !empty($records) && method_exists($records, 'hasPages') && $records->hasPages();
+    @endphp
+    @if($showPagination)
+        <div class="pagination" id="nipPagination">
             @if($records->onFirstPage())
                 <button class="btn-page" disabled>« Previous</button>
             @else
@@ -345,29 +348,29 @@
             <tbody id="visitSummaryBody"></tbody>
         </table>
     </div>
-</div>
 
-<div class="modal" id="nipViewModal" style="display:none;">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>NIP Record Details</h3>
-            <span class="close-modal" id="closeNipModal">&times;</span>
-        </div>
-        <div class="modal-body">
-            <div class="form-section section-patient-info">
-                <h3 class="section-header"><span class="section-indicator"></span>Summary</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Record #</label>
-                        <p id="nipModalRecord">NIP-2025-001</p>
-                    </div>
-                    <div class="form-group">
-                        <label>Child</label>
-                        <p id="nipModalChild">Baby Liam Cruz</p>
-                    </div>
-                    <div class="form-group">
-                        <label>Last Visit</label>
-                        <p id="nipModalVisit">2 months</p>
+    <div class="modal" id="nipViewModal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>NIP Record Details</h3>
+                <span class="close-modal" id="closeNipModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-section section-patient-info">
+                    <h3 class="section-header"><span class="section-indicator"></span>Summary</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Record #</label>
+                            <p id="nipModalRecord">NIP-2025-001</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Child</label>
+                            <p id="nipModalChild">Baby Liam Cruz</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Visit</label>
+                            <p id="nipModalVisit">2 months</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -393,12 +396,15 @@
             const closeModal = document.getElementById('closeNipModal');
             let visitCount = 0;
 
+            const pagination = document.getElementById('nipPagination');
+            
             const toggleForm = (showForm) => {
                 formPanel.style.display = showForm ? 'block' : 'none';
                 tablePanel.style.display = showForm ? 'none' : 'block';
                 filters.style.display = showForm ? 'none' : 'block';
                 openBtn.style.display = showForm ? 'none' : 'inline-flex';
                 backBtn.style.display = showForm ? 'inline-flex' : 'none';
+                if (pagination) pagination.style.display = showForm ? 'none' : 'block';
 
                 if (!showForm) {
                     alertBox.style.display = 'none';

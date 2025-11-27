@@ -133,4 +133,158 @@ class UserController extends Controller
 
         return redirect()->route('users.admin-accounts')->with('success', 'User promoted to Admin successfully');
     }
+
+    public function show($id)
+    {
+        $user = User::findOrFail($id);
+
+        return view('users.show', compact('user'));
+    }
+
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+
+        return view('users.edit', compact('user'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'password' => [
+                'nullable',
+                'string',
+                'min:12',
+                'confirmed',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/',
+            ],
+            'first_name' => ['required', 'string', 'max:255'],
+            'middle_name' => ['nullable', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'contact_number' => ['required', 'string', 'max:50'],
+            'role' => ['required', 'in:super_admin,admin,bhw'],
+            'status' => ['required', 'in:active,inactive'],
+        ]);
+
+        $fullName = trim($validated['first_name'] . ' ' . ($validated['middle_name'] ? $validated['middle_name'] . ' ' : '') . $validated['last_name']);
+
+        $updateData = [
+            'name' => $fullName,
+            'first_name' => $validated['first_name'],
+            'middle_name' => $validated['middle_name'] ?? null,
+            'last_name' => $validated['last_name'],
+            'email' => $validated['email'],
+            'role' => $validated['role'],
+            'contact_number' => $validated['contact_number'],
+            'status' => $validated['status'],
+        ];
+
+        // Only update password if provided
+        if (!empty($validated['password'])) {
+            $updateData['password'] = Hash::make($validated['password']);
+        }
+
+        $user->update($updateData);
+
+        AuditLog::create([
+            'user_id' => $request->user()->id ?? null,
+            'user_role' => $request->user()->role ?? null,
+            'action' => 'update',
+            'module' => 'User Management',
+            'description' => 'Updated user account: '.$user->name.' ('.$user->role.')',
+            'ip_address' => $request->ip(),
+            'status' => 'success',
+        ]);
+
+        return redirect()->route('users.all-users')->with('success', 'User updated successfully');
+    }
+
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+
+        // Prevent deleting yourself
+        if (auth()->id() === $user->id) {
+            return redirect()->route('users.all-users')->with('error', 'You cannot delete your own account');
+        }
+
+        $userName = $user->name;
+        $userRole = $user->role;
+
+        $user->delete();
+
+        AuditLog::create([
+            'user_id' => auth()->id(),
+            'user_role' => auth()->user()->role ?? null,
+            'action' => 'delete',
+            'module' => 'User Management',
+            'description' => 'Deleted user account: '.$userName.' ('.$userRole.')',
+            'ip_address' => request()->ip(),
+            'status' => 'success',
+        ]);
+
+        return redirect()->route('users.all-users')->with('success', 'User deleted successfully');
+    }
+
+    public function updateRole(Request $request, $id)
+    {
+        if ((auth()->user()->role ?? null) !== 'super_admin') {
+            abort(403);
+        }
+
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'role' => ['required', 'in:super_admin,admin,bhw'],
+        ]);
+
+        $oldRole = $user->role;
+        $user->role = $validated['role'];
+        $user->save();
+
+        AuditLog::create([
+            'user_id' => auth()->id(),
+            'user_role' => auth()->user()->role ?? null,
+            'action' => 'update',
+            'module' => 'User Management',
+            'description' => 'Updated role for '.$user->name.' from '.$oldRole.' to '.$validated['role'],
+            'ip_address' => request()->ip(),
+            'status' => 'success',
+        ]);
+
+        return back()->with('success', 'User role updated successfully');
+    }
+
+    public function resetPassword(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'password' => [
+                'required',
+                'string',
+                'min:12',
+                'confirmed',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/',
+            ],
+        ]);
+
+        $user->password = Hash::make($validated['password']);
+        $user->save();
+
+        AuditLog::create([
+            'user_id' => auth()->id(),
+            'user_role' => auth()->user()->role ?? null,
+            'action' => 'update',
+            'module' => 'User Management',
+            'description' => 'Reset password for user: '.$user->name,
+            'ip_address' => request()->ip(),
+            'status' => 'success',
+        ]);
+
+        return back()->with('success', 'Password reset successfully');
+    }
 }

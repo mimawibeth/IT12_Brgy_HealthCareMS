@@ -5,15 +5,18 @@
 @section('page-title', 'Monthly Reports')
 
 @push('styles')
+    <link rel="stylesheet" href="{{ asset('css/patients.css') }}">
     <link rel="stylesheet" href="{{ asset('css/reports.css') }}">
 @endpush
 
 @section('content')
     <div class="page-content">
-
         <!-- Header -->
         <div class="content-header">
-            <h2>Monthly Health Reports</h2>
+            <div>
+                <h2>Monthly Health Reports</h2>
+                <p class="content-subtitle">Generate comprehensive reports and analyze health center performance metrics.</p>
+            </div>
             <div class="header-actions">
                 <button class="btn btn-secondary" onclick="printReport()">
                     <i class="bi bi-printer"></i> Print Report
@@ -24,98 +27,31 @@
             </div>
         </div>
 
-        <!-- Summary Statistics -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="bi bi-people"></i>
-                </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ number_format($totalPatients ?? 0) }}</div>
-                    <div class="stat-label">Total Patients ({{ $selectedMonthLabel ?? '' }})</div>
-                    <div class="stat-change">
-                        {{ $selectedMonthLabel ?? '' }}
-                    </div>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="bi bi-heart-pulse"></i>
-                </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ number_format($prenatalCount ?? 0) }}</div>
-                    <div class="stat-label">Prenatal Consultations</div>
-                    <div class="stat-change">
-                        {{ $selectedMonthLabel ?? '' }}
-                    </div>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="bi bi-shield-check"></i>
-                </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ number_format($nipCount ?? 0) }}</div>
-                    <div class="stat-label">Immunizations Given</div>
-                    <div class="stat-change">
-                        {{ $selectedMonthLabel ?? '' }}
-                    </div>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="bi bi-people-fill"></i>
-                </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ number_format($fpCount ?? 0) }}</div>
-                    <div class="stat-label">Family Planning Clients</div>
-                    <div class="stat-change">
-                        {{ $selectedMonthLabel ?? '' }}
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Report Filter Section -->
-        <div class="report-filters">
+        <div class="filters">
             <form id="report-filters-form" method="GET" action="{{ route('reports.monthly') }}">
-                <div class="filter-row">
-                    <div class="filter-group">
-                        <label for="report-month">Month</label>
-                        <select id="report-month" name="month" class="filter-select">
-                            @for ($m = 1; $m <= 12; $m++)
-                                @php
-                                    $label = \Carbon\Carbon::create(2000, $m, 1)->format('F');
-                                @endphp
-                                <option value="{{ $m }}" @selected(($selectedMonthValue ?? null) == $m)>{{ $label }}</option>
-                            @endfor
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label for="report-year">Year</label>
-                        <select id="report-year" name="year" class="filter-select">
-                            @for ($y = now()->year; $y >= now()->year - 5; $y--)
-                                <option value="{{ $y }}" @selected(($selectedYearValue ?? null) == $y)>{{ $y }}</option>
-                            @endfor
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label for="report-type">Report Type</label>
-                        <select id="report-type" name="type" class="filter-select">
-                            <option value="summary">Summary Report</option>
-                            <option value="patients">Patient Statistics</option>
-                            <option value="prenatal">Prenatal Services</option>
-                            <option value="fp">Family Planning</option>
-                            <option value="immunization">Immunization</option>
-                            <option value="medicine">Medicine Inventory</option>
-                        </select>
-                    </div>
-
+                <div class="filter-options">
+                    <select name="month" class="filter-select">
+                        @for ($m = 1; $m <= 12; $m++)
+                            @php
+                                $label = \Carbon\Carbon::create(2000, $m, 1)->format('F');
+                            @endphp
+                            <option value="{{ $m }}" @selected(($selectedMonthValue ?? null) == $m)>{{ $label }}</option>
+                        @endfor
+                    </select>
+                    <select name="year" class="filter-select">
+                        @for ($y = now()->year; $y >= now()->year - 5; $y--)
+                            <option value="{{ $y }}" @selected(($selectedYearValue ?? null) == $y)>{{ $y }}</option>
+                        @endfor
+                    </select>
+                    <select name="type" class="filter-select">
+                        <option value="summary">Summary Report</option>
+                        <option value="patients">Patient Statistics</option>
+                        <option value="prenatal">Prenatal Services</option>
+                        <option value="fp">Family Planning</option>
+                        <option value="immunization">Immunization</option>
+                        <option value="medicine">Medicine Inventory</option>
+                    </select>
                     <button class="btn btn-primary" type="submit">
                         <i class="bi bi-file-earmark-bar-graph"></i> Generate Report
                     </button>
@@ -123,9 +59,57 @@
             </form>
         </div>
 
+        <!-- Summary Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card stat-card-primary">
+                <div class="stat-icon">
+                    <i class="bi bi-people"></i>
+                </div>
+                <div class="stat-details">
+                    <div class="stat-value">{{ number_format($totalPatients ?? 0) }}</div>
+                    <div class="stat-label">Total Patients</div>
+                    <div class="stat-change">{{ $selectedMonthLabel ?? '' }}</div>
+                </div>
+            </div>
+
+            <div class="stat-card stat-card-danger">
+                <div class="stat-icon">
+                    <i class="bi bi-heart-pulse"></i>
+                </div>
+                <div class="stat-details">
+                    <div class="stat-value">{{ number_format($prenatalCount ?? 0) }}</div>
+                    <div class="stat-label">Prenatal Consultations</div>
+                    <div class="stat-change">{{ $selectedMonthLabel ?? '' }}</div>
+                </div>
+            </div>
+
+            <div class="stat-card stat-card-success">
+                <div class="stat-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <div class="stat-details">
+                    <div class="stat-value">{{ number_format($nipCount ?? 0) }}</div>
+                    <div class="stat-label">Immunizations Given</div>
+                    <div class="stat-change">{{ $selectedMonthLabel ?? '' }}</div>
+                </div>
+            </div>
+
+            <div class="stat-card stat-card-info">
+                <div class="stat-icon">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="stat-details">
+                    <div class="stat-value">{{ number_format($fpCount ?? 0) }}</div>
+                    <div class="stat-label">Family Planning Clients</div>
+                    <div class="stat-change">{{ $selectedMonthLabel ?? '' }}</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Charts Section -->
         <div class="charts-section-title">
             <h2>Statistical Analysis & Trends</h2>
+            <p>Visual representation of health center data and performance metrics</p>
         </div>
 
         <div class="charts-grid">
@@ -145,7 +129,7 @@
             <div class="chart-card">
                 <div class="chart-header">
                     <h3><i class="bi bi-pie-chart"></i> Health Program Distribution</h3>
-                    <span class="chart-period">November 2025</span>
+                    <span class="chart-period">{{ $selectedMonthLabel ?? 'Current Month' }}</span>
                 </div>
                 <div class="chart-placeholder">
                     <canvas id="programDistributionChart"></canvas>
@@ -169,7 +153,7 @@
             <div class="chart-card">
                 <div class="chart-header">
                     <h3><i class="bi bi-check-circle"></i> Service Completion Rate</h3>
-                    <span class="chart-period">November 2025</span>
+                    <span class="chart-period">{{ $selectedMonthLabel ?? 'Current Month' }}</span>
                 </div>
                 <div class="chart-placeholder">
                     <canvas id="completionChart"></canvas>
@@ -246,32 +230,8 @@
                             <td>{{ $nipCount ?? 0 }}</td>
                             <td>0</td>
                         </tr>
-                        <tr>
-                            <td><strong>Nutrition Program</strong></td>
-                            <td>56</td>
-                            <td>18</td>
-                            <td>38</td>
-                            <td>52</td>
-                            <td>4</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Child Care Services</strong></td>
-                            <td>67</td>
-                            <td>23</td>
-                            <td>44</td>
-                            <td>65</td>
-                            <td>2</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Deworming</strong></td>
-                            <td>120</td>
-                            <td>120</td>
-                            <td>0</td>
-                            <td>120</td>
-                            <td>0</td>
-                        </tr>
                         @php
-                            $totalCases = ($prenatalCount ?? 0) + ($fpCount ?? 0) + ($nipCount ?? 0) + 56 + 67 + 120;
+                            $totalCases = ($prenatalCount ?? 0) + ($fpCount ?? 0) + ($nipCount ?? 0);
                         @endphp
                         <tr class="table-total">
                             <td><strong>TOTAL</strong></td>
@@ -336,11 +296,11 @@
                 </table>
             </div>
         </div>
-
     </div>
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Chart configuration
         const chartOptions = {
@@ -353,6 +313,12 @@
                         usePointStyle: true,
                         padding: 15
                     }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    titleFont: { size: 14 },
+                    bodyFont: { size: 13 }
                 }
             }
         };
@@ -363,185 +329,185 @@
         const nipSeries = @json($nipSeries ?? []);
 
         // Initialize Monthly Services Trend Chart
-        const servicesCtx = document.getElementById('servicesChart').getContext('2d');
-        new Chart(servicesCtx, {
-            type: 'line',
-            data: {
-                labels: monthLabels,
-                datasets: [
-                    {
-                        label: 'Prenatal Care',
-                        data: prenatalSeries,
-                        borderColor: '#e74c3c',
-                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    },
-                    {
-                        label: 'Family Planning',
-                        data: fpSeries,
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    },
-                    {
-                        label: 'Immunization',
-                        data: nipSeries,
-                        borderColor: '#2ecc71',
-                        backgroundColor: 'rgba(46, 204, 113, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
+        const servicesCtx = document.getElementById('servicesChart');
+        if (servicesCtx) {
+            new Chart(servicesCtx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: monthLabels,
+                    datasets: [
+                        {
+                            label: 'Prenatal Care',
+                            data: prenatalSeries,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Family Planning',
+                            data: fpSeries,
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Immunization',
+                            data: nipSeries,
+                            borderColor: '#2ecc71',
+                            backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    ...chartOptions,
+                    scales: {
+                        y: { beginAtZero: true }
                     }
-                ]
-            },
-            options: {
-                ...chartOptions,
-                scales: {
-                    y: { beginAtZero: true }
                 }
-            }
-        });
+            });
+        }
 
         // Initialize Program Distribution Chart
-        const programCtx = document.getElementById('programDistributionChart').getContext('2d');
-        new Chart(programCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Prenatal Care', 'Family Planning', 'Immunization'],
-                datasets: [{
-                    data: [
-                        {{ $programDistribution['prenatal'] ?? 0 }},
-                        {{ $programDistribution['fp'] ?? 0 }},
-                        {{ $programDistribution['nip'] ?? 0 }},
-                    ],
-                    backgroundColor: [
-                        '#e74c3c',
-                        '#3498db',
-                        '#2ecc71',
-                        '#f39c12',
-                        '#9b59b6'
-                    ],
-                    borderColor: '#fff',
-                    borderWidth: 2
-                }]
-            },
-            options: chartOptions
-        });
+        const programCtx = document.getElementById('programDistributionChart');
+        if (programCtx) {
+            new Chart(programCtx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Prenatal Care', 'Family Planning', 'Immunization'],
+                    datasets: [{
+                        data: [
+                            {{ $programDistribution['prenatal'] ?? 0 }},
+                            {{ $programDistribution['fp'] ?? 0 }},
+                            {{ $programDistribution['nip'] ?? 0 }},
+                        ],
+                        backgroundColor: [
+                            '#e74c3c',
+                            '#3498db',
+                            '#2ecc71',
+                        ],
+                        borderColor: '#fff',
+                        borderWidth: 3
+                    }]
+                },
+                options: chartOptions
+            });
+        }
 
         // Initialize Patient Demographics Chart
         const ageLabels = @json($ageLabels ?? []);
         const ageMale = @json($ageMale ?? []);
         const ageFemale = @json($ageFemale ?? []);
 
-        const demographicsCtx = document.getElementById('demographicsChart').getContext('2d');
-        new Chart(demographicsCtx, {
-            type: 'bar',
-            data: {
-                labels: ageLabels,
-                datasets: [
-                    {
-                        label: 'Male',
-                        data: ageMale,
-                        backgroundColor: '#3498db',
-                        borderColor: '#2980b9',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Female',
-                        data: ageFemale,
-                        backgroundColor: '#e74c3c',
-                        borderColor: '#c0392b',
-                        borderWidth: 1
+        const demographicsCtx = document.getElementById('demographicsChart');
+        if (demographicsCtx) {
+            new Chart(demographicsCtx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ageLabels,
+                    datasets: [
+                        {
+                            label: 'Male',
+                            data: ageMale,
+                            backgroundColor: '#3498db',
+                            borderColor: '#2980b9',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Female',
+                            data: ageFemale,
+                            backgroundColor: '#e74c3c',
+                            borderColor: '#c0392b',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    ...chartOptions,
+                    scales: {
+                        y: { beginAtZero: true }
                     }
-                ]
-            },
-            options: {
-                ...chartOptions,
-                scales: {
-                    y: { beginAtZero: true }
                 }
-            }
-        });
-
-        // Initialize Service Completion Rate Chart
-        const completionCtx = document.getElementById('completionChart').getContext('2d');
-        new Chart(completionCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Completed', 'Pending', 'Follow-ups'],
-                datasets: [{
-                    data: @json($completionData ?? [0, 0, 0]),
-                    backgroundColor: [
-                        '#2ecc71',
-                        '#e74c3c',
-                        '#f39c12'
-                    ],
-                    borderColor: '#fff',
-                    borderWidth: 2
-                }]
-            },
-            options: chartOptions
-        });
-
-        // Initialize Top Health Programs Chart
-        const topProgramsCtx = document.getElementById('topProgramsChart').getContext('2d');
-        new Chart(topProgramsCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Deworming', 'Immunization', 'Prenatal Care', 'Family Planning', 'Nutrition'],
-                datasets: [{
-                    label: 'Cases Handled',
-                    data: @json($topProgramsData),
-                    backgroundColor: ['#3498db', '#2ecc71', '#e74c3c', '#9b59b6', '#f39c12'],
-                    borderColor: ['#2980b9', '#27ae60', '#c0392b', '#8e44ad', '#d68910'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                ...chartOptions,
-                indexAxis: 'y',
-                scales: {
-                    x: { beginAtZero: true }
-                }
-            }
-        });
-
-        // Initialize Gender Distribution Chart
-        const genderCtx = document.getElementById('genderChart').getContext('2d');
-        new Chart(genderCtx, {
-            type: 'pie',
-            data: {
-                labels: ['Female', 'Male'],
-                datasets: [{
-                    data: [
-                        {{ $genderCounts['F'] ?? 0 }},
-                        {{ $genderCounts['M'] ?? 0 }},
-                    ],
-                    backgroundColor: ['#e74c3c', '#3498db'],
-                    borderColor: '#fff',
-                    borderWidth: 2
-                }]
-            },
-            options: chartOptions
-        });
-
-        // Report Functions
-        function generateReport() {
-            const month = document.getElementById('report-month').value;
-            const type = document.getElementById('report-type').value;
-
-            // TODO: Implement report generation logic
-            console.log('Generating report:', { month, type });
-            alert('Report generation will be implemented with backend');
+            });
         }
 
+        // Initialize Service Completion Rate Chart
+        const completionCtx = document.getElementById('completionChart');
+        if (completionCtx) {
+            new Chart(completionCtx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'Pending', 'Follow-ups'],
+                    datasets: [{
+                        data: @json($completionData ?? [0, 0, 0]),
+                        backgroundColor: [
+                            '#2ecc71',
+                            '#e74c3c',
+                            '#f39c12'
+                        ],
+                        borderColor: '#fff',
+                        borderWidth: 3
+                    }]
+                },
+                options: chartOptions
+            });
+        }
+
+        // Initialize Top Health Programs Chart
+        const topProgramsCtx = document.getElementById('topProgramsChart');
+        if (topProgramsCtx) {
+            new Chart(topProgramsCtx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Deworming', 'Immunization', 'Prenatal Care', 'Family Planning', 'Nutrition'],
+                    datasets: [{
+                        label: 'Cases Handled',
+                        data: @json($topProgramsData ?? []),
+                        backgroundColor: ['#3498db', '#2ecc71', '#e74c3c', '#9b59b6', '#f39c12'],
+                        borderColor: ['#2980b9', '#27ae60', '#c0392b', '#8e44ad', '#d68910'],
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    indexAxis: 'y',
+                    scales: {
+                        x: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // Initialize Gender Distribution Chart
+        const genderCtx = document.getElementById('genderChart');
+        if (genderCtx) {
+            new Chart(genderCtx.getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: ['Female', 'Male'],
+                    datasets: [{
+                        data: [
+                            {{ $genderCounts['F'] ?? 0 }},
+                            {{ $genderCounts['M'] ?? 0 }},
+                        ],
+                        backgroundColor: ['#e74c3c', '#3498db'],
+                        borderColor: '#fff',
+                        borderWidth: 3
+                    }]
+                },
+                options: chartOptions
+            });
+        }
+
+        // Report Functions
         function exportReport() {
-            // TODO: Implement export logic
-            console.log('Exporting report...');
             alert('Export functionality will be implemented with backend');
         }
 
