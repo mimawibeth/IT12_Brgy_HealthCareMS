@@ -9,106 +9,149 @@
 </head>
 
 <body>
-    <!-- Background Decorative Elements -->
-    <div class="bg-decoration">
-        <div class="circle circle-1"></div>
-        <div class="circle circle-2"></div>
-        <div class="circle circle-3"></div>
-        <div class="circle circle-4"></div>
+    <!-- Animated Background -->
+    <div class="background-wrapper">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+        <div class="grid-overlay"></div>
     </div>
 
-    <!-- Login Container -->
-    <div class="login-container">
-        <div class="login-box">
-            <!-- Header with Logo -->
-            <div class="login-header">
-                <div class="logo-wrapper">
-                    <img src="{{ asset('images/brgy.logo.png') }}" alt="Barangay Logo" class="logo-image">
+    <!-- Main Container -->
+    <div class="login-wrapper">
+        <!-- Left Panel - Branding -->
+        <div class="branding-panel">
+            <div class="branding-content">
+                <div class="logo-container">
+                    <div class="logo-circle">
+                        <img src="{{ asset('images/brgy.logo.png') }}" alt="Barangay Logo" class="logo-img">
+                    </div>
+                    <div class="logo-rings">
+                        <div class="ring ring-1"></div>
+                        <div class="ring ring-2"></div>
+                    </div>
                 </div>
-                <h1>Barangay Health Center</h1>
-                <p>Secure Login Portal</p>
+                <h1 class="brand-title">Barangay Sto. Niño</h1>
+                <p class="brand-subtitle">Integrated Healthcare and Community Services Management System</p>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Healthcare Services</span>
+                    </div>
+                    <div class="feature-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Health Programs</span>
+                    </div>
+                    <div class="feature-item">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Records Management</span>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <!-- Login Form -->
-            <form method="POST" action="{{ route('login.post') }}" class="login-form">
-                @csrf
-
-                <!-- Error Messages -->
-                @if($errors->any())
-                    <div class="alert alert-error">
-                        <span class="alert-icon">⚠</span>
-                        <span>{{ $errors->first() }}</span>
-                    </div>
-                @endif
-
-                <!-- Email Input -->
-                <div class="form-group">
-                    <label for="email">Email address</label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                        </span>
-                        <input type="email" id="email" name="email" class="form-control"
-                            value="{{ old('email') }}" required autofocus placeholder="Enter your email address">
-                    </div>
+        <!-- Right Panel - Login Form -->
+        <div class="form-panel">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Welcome Back</h2>
+                    <p>Please sign in to continue</p>
                 </div>
 
-                <!-- Password Input -->
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="input-wrapper">
-                        <span class="input-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                <!-- Login Form -->
+                <form method="POST" action="{{ route('login.post') }}" class="login-form">
+                    @csrf
+
+                    <!-- Error Messages -->
+                    @if($errors->any())
+                        <div class="alert alert-error">
+                            <svg class="alert-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
                             </svg>
-                        </span>
-                        <input type="password" id="password" name="password" class="form-control" required
-                            placeholder="Enter your password">
-                        <span class="password-toggle" onclick="togglePassword()">
-                            <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                            </svg>
-                            <svg id="eye-off-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="20"
-                                height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path
-                                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
-                                </path>
-                                <line x1="1" y1="1" x2="23" y2="23"></line>
-                            </svg>
-                        </span>
+                            <span>{{ $errors->first() }}</span>
+                        </div>
+                    @endif
+
+                    <!-- Email Input -->
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <div class="input-group">
+                            <div class="input-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path
+                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                    </path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                            </div>
+                            <input type="email" id="email" name="email" class="form-input" value="{{ old('email') }}"
+                                required autofocus placeholder="example@email.com">
+                        </div>
                     </div>
+
+                    <!-- Password Input -->
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <div class="input-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                            </div>
+                            <input type="password" id="password" name="password" class="form-input" required
+                                placeholder="Enter your password">
+                            <button type="button" class="password-toggle" onclick="togglePassword()">
+                                <svg id="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <svg id="eye-off-icon" style="display: none;" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <path
+                                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                                    </path>
+                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Forgot Password -->
+                    <div class="form-options">
+                        <a href="#" class="forgot-password-link">Forgot password?</a>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button type="submit" class="btn-login">
+                        <span>Sign In</span>
+                        <svg class="btn-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </form>
+
+                <!-- Footer -->
+                <div class="form-footer">
+                    <p>Need assistance? Contact your administrator</p>
                 </div>
-
-                <!-- Remember Me -->
-                <div class="form-group checkbox-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" name="remember">
-                        <span class="checkmark"></span>
-                        Remember me
-                    </label>
-                </div>
-
-                <!-- Login Button -->
-                <button type="submit" class="btn btn-primary btn-block">
-                    Sign In
-                </button>
-            </form>
-
-            <!-- Footer -->
-            <div class="login-footer">
-                <p>&copy; 2025 Barangay Health Center System</p>
             </div>
         </div>
     </div>

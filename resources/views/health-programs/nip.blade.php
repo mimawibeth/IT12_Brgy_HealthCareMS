@@ -12,17 +12,18 @@
     <div class="content-header">
         <div>
             <h2>National Immunization Program Records</h2>
-            <p class="content-subtitle">Track newborn visits, vaccines, and monitoring follow-ups.</p>
+            <p class="content-subtitle">
+                Track newborn visits, vaccines, and monitoring follow-ups.
+            </p>
         </div>
         <div class="header-actions">
             <button class="btn btn-primary" id="openNipForm">+ Add New Record</button>
-            <button class="btn btn-secondary" id="backToNipList" style="display:none;">← Back to Records</button>
         </div>
     </div>
 
     <div class="filters" id="nipFilters">
         <div class="search-box">
-            <input type="text" class="search-input" placeholder="Search child name or record ID">
+            <input type="text" class="search-input" id="nipSearch" placeholder="Search child name or record ID">
             <button class="btn btn-search" type="button">Search</button>
         </div>
         <div class="filter-options">
@@ -30,6 +31,7 @@
                 <option value="">Age Group</option>
                 <option value="0-3">0-3 months</option>
                 <option value="4-6">4-6 months</option>
+                <option value="7-12">7-12 months</option>
             </select>
             <select class="filter-select">
                 <option value="">Visit Status</option>
@@ -41,10 +43,6 @@
     </div>
 
     <div class="table-container" id="nipTablePanel">
-        <div class="table-heading">
-            <h3>Recent NIP Records</h3>
-            <span class="table-note">Latest saved NIP records</span>
-        </div>
         <table class="data-table">
             <thead>
                 <tr>
@@ -117,235 +115,259 @@
         </div>
     @endif
 
-    <div class="form-container" id="nipFormPanel" style="display:none;">
-        <h2 class="form-title">Newborn / Immunization Form</h2>
-        <div id="form-alert" class="alert" style="display:none"></div>
 
-        <form id="nipForm" class="patient-form" method="POST" action="{{ route('health-programs.nip-store') }}"
-            novalidate>
-            @csrf
 
-            <div class="form-section section-patient-info">
-                <h3 class="section-header">
-                    <span class="section-indicator"></span>Baby / Mother Details
-                </h3>
+    <div class="form-container wizard-container" id="nipFormPanel" style="display:none;">
+        <h2 class="form-title">Newborn / Immunization Intake Form</h2>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="nip_date">Date <span class="required-asterisk">*</span></label>
-                        <input type="date" id="nip_date" name="nip_date" class="form-control" required>
-                        <span class="error-message" data-for="nip_date"></span>
-                    </div>
+        <div id="nip-alert" class="alert" style="display:none"></div>
 
-                    <div class="form-group">
-                        <label for="child_name">Name of child <span class="required-asterisk">*</span></label>
-                        <input type="text" id="child_name" name="child_name" class="form-control" required>
-                        <span class="error-message" data-for="child_name"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="dob">Date of Birth <span class="required-asterisk">*</span></label>
-                        <input type="date" id="dob" name="dob" class="form-control" required>
-                        <span class="error-message" data-for="dob"></span>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group full-width">
-                        <label for="address">Complete Purok Address <span class="required-asterisk">*</span></label>
-                        <input type="text" id="address" name="address" class="form-control" required>
-                        <span class="error-message" data-for="address"></span>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="mother_name">Complete Name of Mother <span class="required-asterisk">*</span></label>
-                        <input type="text" id="mother_name" name="mother_name" class="form-control" required>
-                        <span class="error-message" data-for="mother_name"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="father_name">Name of Father</label>
-                        <input type="text" id="father_name" name="father_name" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="contact">Cell # <span class="required-asterisk">*</span></label>
-                        <input type="text" id="contact" name="contact" class="form-control" required>
-                        <span class="error-message" data-for="contact"></span>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="nhts_4ps_id">NHTS / 4Ps CCT ID Number</label>
-                        <input type="text" id="nhts_4ps_id" name="nhts_4ps_id" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="phic_id">PHIC ID Number</label>
-                        <input type="text" id="phic_id" name="phic_id" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="birth_order">No. of child</label>
-                        <input type="number" id="birth_order" name="birth_order" class="form-control" min="1">
-                    </div>
-                </div>
+        <div class="wizard-steps">
+            <div class="step active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Baby & Mother Info</div>
             </div>
-
-            <div class="form-section section-history">
-                <h3 class="section-header">
-                    <span class="section-indicator"></span>Newborn Screening & Immunizations
-                </h3>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="place_delivery">Place of delivery <span class="required-asterisk">*</span></label>
-                        <input type="text" id="place_delivery" name="place_delivery" class="form-control" required>
-                        <span class="error-message" data-for="place_delivery"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="attended_by">Attended by <span class="required-asterisk">*</span></label>
-                        <input type="text" id="attended_by" name="attended_by" class="form-control" required>
-                        <span class="error-message" data-for="attended_by"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="sex_baby">Sex of baby <span class="required-asterisk">*</span></label>
-                        <select id="sex_baby" name="sex_baby" class="form-control" required>
-                            <option value="">Select</option>
-                            <option value="M">Male</option>
-                            <option value="F">Female</option>
-                        </select>
-                        <span class="error-message" data-for="sex_baby"></span>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="tt_status_mother">TT status of Mother <span class="required-asterisk">*</span></label>
-                        <input type="text" id="tt_status_mother" name="tt_status_mother" class="form-control" required>
-                        <span class="error-message" data-for="tt_status_mother"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="birth_length">Length at birth</label>
-                        <input type="text" id="birth_length" name="birth_length" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="birth_weight">Birth weight <span class="required-asterisk">*</span></label>
-                        <input type="text" id="birth_weight" name="birth_weight" class="form-control" required>
-                        <span class="error-message" data-for="birth_weight"></span>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="delivery_type">Type of delivery <span class="required-asterisk">*</span></label>
-                        <input type="text" id="delivery_type" name="delivery_type" class="form-control" required>
-                        <span class="error-message" data-for="delivery_type"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="initiated_breastfeeding">Initiated breastfeeding after birth <span class="required-asterisk">*</span></label>
-                        <select id="initiated_breastfeeding" name="initiated_breastfeeding" class="form-control" required>
-                            <option value="">Select</option>
-                            <option value="yes">Yes</option>
-                            <option value="no">No</option>
-                        </select>
-                        <span class="error-message" data-for="initiated_breastfeeding"></span>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="newborn_screening_date">Date of Newborn Screening <span class="required-asterisk">*</span></label>
-                        <input type="date" id="newborn_screening_date" name="newborn_screening_date" class="form-control" required>
-                        <span class="error-message" data-for="newborn_screening_date"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="newborn_screening_result">Result of Newborn Screening <span class="required-asterisk">*</span></label>
-                        <input type="text" id="newborn_screening_result" name="newborn_screening_result" class="form-control" required>
-                        <span class="error-message" data-for="newborn_screening_result"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="hearing_test_screened">Screened Hearing Test <span class="required-asterisk">*</span></label>
-                        <select id="hearing_test_screened" name="hearing_test_screened" class="form-control" required>
-                            <option value="">Select</option>
-                            <option value="pass">Pass</option>
-                            <option value="fail">Fail</option>
-                        </select>
-                        <span class="error-message" data-for="hearing_test_screened"></span>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="vit_k">Vit. K <span class="required-asterisk">*</span></label>
-                        <select id="vit_k" name="vit_k" class="form-control" required>
-                            <option value="">Select</option>
-                            <option value="given">Given</option>
-                            <option value="not_given">Not Given</option>
-                        </select>
-                        <span class="error-message" data-for="vit_k"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="bcg">BCG <span class="required-asterisk">*</span></label>
-                        <select id="bcg" name="bcg" class="form-control" required>
-                            <option value="">Select</option>
-                            <option value="given">Given</option>
-                            <option value="not_given">Not Given</option>
-                        </select>
-                        <span class="error-message" data-for="bcg"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="hepa_b_24h">Hepa B birth dose within 24 hrs <span class="required-asterisk">*</span></label>
-                        <select id="hepa_b_24h" name="hepa_b_24h" class="form-control" required>
-                            <option value="">Select</option>
-                            <option value="yes">Yes</option>
-                            <option value="no">No</option>
-                        </select>
-                        <span class="error-message" data-for="hepa_b_24h"></span>
-                    </div>
-                </div>
+            <div class="step" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Birth Details</div>
             </div>
-
-            <div class="form-section section-assessment">
-                <div class="section-header section-between">
-                    <div>
-                        <span class="section-indicator"></span>Visit Monitoring
-                    </div>
-                    <button type="button" class="btn btn-outline" id="addVisitBtn">
-                        + Add Monitoring Visit
-                    </button>
-                </div>
-
-                <div id="nipVisitsContainer"></div>
+            <div class="step" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Visit Monitoring</div>
             </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Save Record</button>
-                <button type="reset" class="btn btn-secondary">Reset</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="table-container" id="visitSummary" style="display:none;">
-        <div class="table-heading">
-            <h3>Visit Summary (UI Preview)</h3>
-            <span class="table-note">Only visits with values are shown after saving.</span>
         </div>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Age (mos)</th>
-                    <th>Weight</th>
-                    <th>Length</th>
-                    <th>Breastfeeding</th>
-                    <th>Temperature</th>
-                    <th>Vaccine</th>
-                </tr>
-            </thead>
-            <tbody id="visitSummaryBody"></tbody>
-        </table>
+
+        <div class="wizard-content">
+            <form id="nipWizardForm" class="patient-form" method="POST"
+                action="{{ route('health-programs.nip-store') }}">
+                @csrf
+
+                <!-- Step 1: Baby & Mother Info -->
+                <div class="step-content active" data-step="1">
+                    <div class="form-section section-patient-info">
+                        <h3 class="section-header">
+                            <span class="section-indicator"></span>Baby / Mother Details
+                        </h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nip_date">Date <span class="required-asterisk">*</span></label>
+                                <input type="date" id="nip_date" name="nip_date" class="form-control" required>
+                                <span class="error-message" data-for="nip_date"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="child_name">Name of child <span class="required-asterisk">*</span></label>
+                                <input type="text" id="child_name" name="child_name" class="form-control" required>
+                                <span class="error-message" data-for="child_name"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="dob">Date of Birth <span class="required-asterisk">*</span></label>
+                                <input type="date" id="dob" name="dob" class="form-control" required>
+                                <span class="error-message" data-for="dob"></span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="sex_baby">Sex of baby <span class="required-asterisk">*</span></label>
+                                <select id="sex_baby" name="sex_baby" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                </select>
+                                <span class="error-message" data-for="sex_baby"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="birth_weight">Birth weight <span class="required-asterisk">*</span></label>
+                                <input type="text" id="birth_weight" name="birth_weight" class="form-control"
+                                    placeholder="e.g., 3.2 kg" required>
+                                <span class="error-message" data-for="birth_weight"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="birth_length">Length at birth</label>
+                                <input type="text" id="birth_length" name="birth_length" class="form-control"
+                                    placeholder="e.g., 50 cm">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="address">Complete Purok Address <span
+                                        class="required-asterisk">*</span></label>
+                                <input type="text" id="address" name="address" class="form-control" required>
+                                <span class="error-message" data-for="address"></span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="mother_name">Complete Name of Mother <span
+                                        class="required-asterisk">*</span></label>
+                                <input type="text" id="mother_name" name="mother_name" class="form-control" required>
+                                <span class="error-message" data-for="mother_name"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="father_name">Name of Father</label>
+                                <input type="text" id="father_name" name="father_name" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="contact">Cell # <span class="required-asterisk">*</span></label>
+                                <input type="text" id="contact" name="contact" class="form-control" required>
+                                <span class="error-message" data-for="contact"></span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nhts_4ps_id">NHTS / 4Ps CCT ID Number</label>
+                                <input type="text" id="nhts_4ps_id" name="nhts_4ps_id" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="phic_id">PHIC ID Number</label>
+                                <input type="text" id="phic_id" name="phic_id" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="birth_order">No. of child</label>
+                                <input type="number" id="birth_order" name="birth_order" class="form-control" min="1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Birth Details -->
+                <div class="step-content" data-step="2">
+                    <div class="form-section section-history">
+                        <h3 class="section-header">
+                            <span class="section-indicator"></span>Birth & Delivery Information
+                        </h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="place_delivery">Place of delivery <span
+                                        class="required-asterisk">*</span></label>
+                                <input type="text" id="place_delivery" name="place_delivery" class="form-control"
+                                    required>
+                                <span class="error-message" data-for="place_delivery"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="attended_by">Attended by <span class="required-asterisk">*</span></label>
+                                <input type="text" id="attended_by" name="attended_by" class="form-control" required>
+                                <span class="error-message" data-for="attended_by"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="delivery_type">Type of delivery <span
+                                        class="required-asterisk">*</span></label>
+                                <input type="text" id="delivery_type" name="delivery_type" class="form-control"
+                                    placeholder="e.g., Normal, CS" required>
+                                <span class="error-message" data-for="delivery_type"></span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tt_status_mother">TT status of Mother <span
+                                        class="required-asterisk">*</span></label>
+                                <input type="text" id="tt_status_mother" name="tt_status_mother" class="form-control"
+                                    required>
+                                <span class="error-message" data-for="tt_status_mother"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="initiated_breastfeeding">Initiated breastfeeding after birth <span
+                                        class="required-asterisk">*</span></label>
+                                <select id="initiated_breastfeeding" name="initiated_breastfeeding" class="form-control"
+                                    required>
+                                    <option value="">Select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                                <span class="error-message" data-for="initiated_breastfeeding"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section section-screening">
+                        <h3 class="section-header">
+                            <span class="section-indicator"></span>Newborn Screening & Immunizations
+                        </h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newborn_screening_date">Date of Newborn Screening <span
+                                        class="required-asterisk">*</span></label>
+                                <input type="date" id="newborn_screening_date" name="newborn_screening_date"
+                                    class="form-control" required>
+                                <span class="error-message" data-for="newborn_screening_date"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="newborn_screening_result">Result of Newborn Screening <span
+                                        class="required-asterisk">*</span></label>
+                                <input type="text" id="newborn_screening_result" name="newborn_screening_result"
+                                    class="form-control" required>
+                                <span class="error-message" data-for="newborn_screening_result"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="hearing_test_screened">Screened Hearing Test <span
+                                        class="required-asterisk">*</span></label>
+                                <select id="hearing_test_screened" name="hearing_test_screened" class="form-control"
+                                    required>
+                                    <option value="">Select</option>
+                                    <option value="pass">Pass</option>
+                                    <option value="fail">Fail</option>
+                                </select>
+                                <span class="error-message" data-for="hearing_test_screened"></span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="vit_k">Vit. K <span class="required-asterisk">*</span></label>
+                                <select id="vit_k" name="vit_k" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <option value="given">Given</option>
+                                    <option value="not_given">Not Given</option>
+                                </select>
+                                <span class="error-message" data-for="vit_k"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="bcg">BCG <span class="required-asterisk">*</span></label>
+                                <select id="bcg" name="bcg" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <option value="given">Given</option>
+                                    <option value="not_given">Not Given</option>
+                                </select>
+                                <span class="error-message" data-for="bcg"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="hepa_b_24h">Hepa B birth dose within 24 hrs <span
+                                        class="required-asterisk">*</span></label>
+                                <select id="hepa_b_24h" name="hepa_b_24h" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                                <span class="error-message" data-for="hepa_b_24h"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Visit Monitoring -->
+                <div class="step-content" data-step="3">
+                    <div class="form-section section-assessment">
+                        <div class="section-header">
+                            <span class="section-indicator"></span>Immunization Visit Monitoring
+                        </div>
+                        <div id="nipVisitsContainer"></div>
+                    </div>
+                </div>
+
+                <div class="wizard-buttons">
+                    <a href="{{ route('health-programs.nip-view') }}" class="btn btn-cancel">Cancel</a>
+                    <div class="wizard-nav">
+                        <button type="button" class="btn btn-prev" id="nipPrevBtn">← Previous</button>
+                        <button type="button" class="btn btn-next" id="nipNextBtn">Next →</button>
+                        <button type="submit" class="btn btn-submit" id="nipSubmitBtn" style="display:none;">Save
+                            Record</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
 
 <div class="modal" id="nipViewModal" style="display:none;">
     <div class="modal-content">
@@ -355,11 +377,11 @@
         </div>
         <div class="modal-body">
             <div class="form-section section-patient-info">
-                <h3 class="section-header"><span class="section-indicator"></span>Summary</h3>
+                <h3 class="section-header"><span class="section-indicator"></span>Child & Mother Info</h3>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Record #</label>
-                        <p id="nipModalRecord">NIP-2025-001</p>
+                        <p id="nipModalRecord">NIP-001</p>
                     </div>
                     <div class="form-group">
                         <label>Child</label>
@@ -383,110 +405,177 @@
             const filters = document.getElementById('nipFilters');
             const openBtn = document.getElementById('openNipForm');
             const backBtn = document.getElementById('backToNipList');
-            const form = document.getElementById('nipForm');
-            const alertBox = document.getElementById('form-alert');
+            const wizardForm = document.getElementById('nipWizardForm');
+            const alertBox = document.getElementById('nip-alert');
             const visitsContainer = document.getElementById('nipVisitsContainer');
-            const addVisitBtn = document.getElementById('addVisitBtn');
-            const visitSummary = document.getElementById('visitSummary');
-            const visitSummaryBody = document.getElementById('visitSummaryBody');
             const modal = document.getElementById('nipViewModal');
             const closeModal = document.getElementById('closeNipModal');
+
+            const wizardSteps = document.querySelectorAll('.wizard-steps .step');
+            const stepContents = document.querySelectorAll('.step-content');
+            const prevBtn = document.getElementById('nipPrevBtn');
+            const nextBtn = document.getElementById('nipNextBtn');
+            const submitBtn = document.getElementById('nipSubmitBtn');
+
+            let currentStep = 1;
+            const totalSteps = 3;
             let visitCount = 0;
 
-            const toggleForm = (showForm) => {
-                formPanel.style.display = showForm ? 'block' : 'none';
-                tablePanel.style.display = showForm ? 'none' : 'block';
-                filters.style.display = showForm ? 'none' : 'block';
-                openBtn.style.display = showForm ? 'none' : 'inline-flex';
-                backBtn.style.display = showForm ? 'inline-flex' : 'none';
-
-                if (!showForm) {
-                    alertBox.style.display = 'none';
-                    form.reset();
-                    visitsContainer.innerHTML = '';
-                    visitCount = 0;
-                    addVisitCard();
-                }
-            };
 
             const visitTemplate = (index) => `
-                                                <div class="visit-box" data-index="${index}">
-                                                    <div class="visit-box-header">
-                                                        <h4>Visit ${index + 1}</h4>
-                                                        <button type="button" class="btn btn-link remove-visit" data-index="${index}" ${index === 0 ? 'disabled' : ''}>Remove</button>
-                                                    </div>
-                                                    <div class="form-row small-row">
-                                                        <div class="form-group">
-                                                            <label>Date</label>
-                                                            <input type="date" name="visits[${index}][date]" class="form-control">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>Age in months</label>
-                                                            <input type="text" name="visits[${index}][age]" class="form-control">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>Weight</label>
-                                                            <input type="text" name="visits[${index}][weight]" class="form-control">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>Length for age</label>
-                                                            <input type="text" name="visits[${index}][length]" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-row small-row">
-                                                        <div class="form-group">
-                                                            <label>Status</label>
-                                                            <input type="text" name="visits[${index}][status]" class="form-control">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>Breastfeeding</label>
-                                                            <select name="visits[${index}][breast]" class="form-control">
-                                                                <option value="">Select</option>
-                                                                <option value="yes">Yes</option>
-                                                                <option value="no">No</option>
-                                                            </select>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>Temperature</label>
-                                                            <input type="text" name="visits[${index}][temp]" class="form-control">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>Vaccine</label>
-                                                            <input type="text" name="visits[${index}][vaccine]" class="form-control">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            `;
+                        <div class="visit-box" data-index="${index}">
+                            <div class="visit-box-header">
+                                <h4>Visit ${index + 1}</h4>
+                                <button type="button" class="btn btn-link remove-visit" data-index="${index}" ${index === 0 ? 'disabled' : ''}>Remove</button>
+                            </div>
+                            <div class="form-row small-row">
+                                <div class="form-group">
+                                    <label>Date</label>
+                                    <input type="date" name="visits[${index}][date]" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Age in months</label>
+                                    <input type="text" name="visits[${index}][age]" class="form-control" placeholder="e.g., 2">
+                                </div>
+                                <div class="form-group">
+                                    <label>Weight</label>
+                                    <input type="text" name="visits[${index}][weight]" class="form-control" placeholder="kg">
+                                </div>
+                                <div class="form-group">
+                                    <label>Length for age</label>
+                                    <input type="text" name="visits[${index}][length]" class="form-control" placeholder="cm">
+                                </div>
+                            </div>
+                            <div class="form-row small-row">
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <input type="text" name="visits[${index}][status]" class="form-control" placeholder="Normal, Underweight, etc.">
+                                </div>
+                                <div class="form-group">
+                                    <label>Breastfeeding</label>
+                                    <select name="visits[${index}][breast]" class="form-control">
+                                        <option value="">Select</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Temperature</label>
+                                    <input type="text" name="visits[${index}][temp]" class="form-control" placeholder="°C">
+                                </div>
+                                <div class="form-group">
+                                    <label>Vaccine</label>
+                                    <input type="text" name="visits[${index}][vaccine]" class="form-control" placeholder="Vaccine given">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+            const refreshVisitHeadings = () => {
+                const visitBoxes = visitsContainer.querySelectorAll('.visit-box');
+                visitBoxes.forEach((box, idx) => {
+                    const header = box.querySelector('h4');
+                    const removeBtn = box.querySelector('.remove-visit');
+                    if (header) {
+                        header.textContent = `Visit ${idx + 1}`;
+                    }
+                    if (removeBtn) {
+                        removeBtn.disabled = idx === 0;
+                    }
+                });
+            };
 
             const addVisitCard = () => {
                 const wrapper = document.createElement('div');
                 wrapper.innerHTML = visitTemplate(visitCount);
                 visitsContainer.appendChild(wrapper.firstElementChild);
                 visitCount++;
+                refreshVisitHeadings();
             };
 
+            addVisitCard();
+
             visitsContainer.addEventListener('click', (event) => {
-                if (event.target.classList.contains('remove-visit')) {
-                    const index = parseInt(event.target.getAttribute('data-index'), 10);
-                    if (visitsContainer.children.length > 1 && !event.target.disabled) {
-                        const card = visitsContainer.querySelector(`.visit-box[data-index="${index}"]`);
-                        if (card) card.remove();
+                if (event.target.classList.contains('remove-visit') && !event.target.disabled) {
+                    const card = event.target.closest('.visit-box');
+                    if (card) {
+                        card.remove();
+                        refreshVisitHeadings();
                     }
                 }
             });
 
-            addVisitBtn.addEventListener('click', addVisitCard);
-            addVisitCard(); // load first visit
+            const updateWizard = () => {
+                stepContents.forEach((section, idx) => {
+                    const stepNum = idx + 1;
+                    section.classList.toggle('active', stepNum === currentStep);
+                });
 
-            openBtn.addEventListener('click', () => toggleForm(true));
-            backBtn.addEventListener('click', () => toggleForm(false));
+                wizardSteps.forEach(step => {
+                    const stepNum = parseInt(step.getAttribute('data-step'), 10);
+                    step.classList.toggle('active', stepNum === currentStep);
+                    step.classList.toggle('completed', stepNum < currentStep);
+                });
+
+                prevBtn.style.display = currentStep === 1 ? 'none' : 'inline-flex';
+                nextBtn.style.display = currentStep === totalSteps ? 'none' : 'inline-flex';
+                submitBtn.style.display = currentStep === totalSteps ? 'inline-flex' : 'none';
+            };
+
+            const changeStep = (direction) => {
+                const newStep = currentStep + direction;
+                if (newStep < 1 || newStep > totalSteps) return;
+                currentStep = newStep;
+                updateWizard();
+                document.querySelector('.wizard-content').scrollTop = 0;
+            };
+
+            prevBtn.addEventListener('click', () => changeStep(-1));
+            nextBtn.addEventListener('click', () => changeStep(1));
+
+            wizardSteps.forEach(step => {
+                step.addEventListener('click', () => {
+                    const stepNum = parseInt(step.getAttribute('data-step'), 10);
+                    if (stepNum < currentStep) {
+                        currentStep = stepNum;
+                        updateWizard();
+                    }
+                });
+            });
+
+            const toggleForm = (showForm) => {
+                formPanel.style.display = showForm ? 'block' : 'none';
+                tablePanel.style.display = showForm ? 'none' : 'block';
+                filters.style.display = showForm ? 'none' : 'block';
+                openBtn.style.display = showForm ? 'none' : 'inline-flex';
+                if (backBtn) backBtn.style.display = showForm ? 'inline-flex' : 'none';
+
+                if (!showForm) {
+                    alertBox.style.display = 'none';
+                    wizardForm.reset();
+                    visitsContainer.innerHTML = '';
+                    visitCount = 0;
+                    addVisitCard();
+                    currentStep = 1;
+                    updateWizard();
+                }
+            };
+
+            openBtn.addEventListener('click', () => {
+                toggleForm(true);
+                currentStep = 1;
+                updateWizard();
+            });
+            if (backBtn) backBtn.addEventListener('click', () => toggleForm(false));
+            updateWizard();
+
 
             document.querySelectorAll('.view-nip').forEach(button => {
                 button.addEventListener('click', () => {
-                    const row = button.closest('tr');
-                    document.getElementById('nipModalRecord').textContent = row.children[0].textContent;
-                    document.getElementById('nipModalChild').textContent = row.children[1].textContent;
-                    document.getElementById('nipModalVisit').textContent = row.children[4].textContent;
+                    const recordId = button.getAttribute('data-record');
+                    document.getElementById('nipModalRecord').textContent = recordId;
+                    document.getElementById('nipModalChild').textContent = button.closest('tr').children[1].textContent;
+                    document.getElementById('nipModalVisit').textContent = button.closest('tr').children[4].textContent;
                     modal.style.display = 'flex';
                 });
             });
@@ -498,17 +587,17 @@
                 }
             });
 
-            form.addEventListener('submit', function (e) {
+            wizardForm.addEventListener('submit', function (e) {
                 e.preventDefault();
-                const requiredEls = form.querySelectorAll('[required]');
+                const requiredEls = wizardForm.querySelectorAll('[required]');
                 let valid = true;
                 requiredEls.forEach(function (el) {
-                    const err = form.querySelector('.error-message[data-for="' + el.id + '"]');
+                    const err = wizardForm.querySelector('.error-message[data-for="' + el.id + '"]');
                     if (!el.value) {
                         valid = false;
                         if (err) err.textContent = 'This field is required.';
-                    } else {
-                        if (err) err.textContent = '';
+                    } else if (err) {
+                        err.textContent = '';
                     }
                 });
 
@@ -520,10 +609,9 @@
                 }
 
                 alertBox.style.display = 'none';
-                form.submit();
+                wizardForm.submit();
             });
         });
     </script>
 @endpush
-
 @endsection

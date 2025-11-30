@@ -19,7 +19,7 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('users.add-new-user');
+        return view('users.create');
     }
 
     public function store(Request $request)
@@ -62,12 +62,18 @@ class UserController extends Controller
             'user_role' => $request->user()->role ?? null,
             'action' => 'create',
             'module' => 'User Management',
-            'description' => 'Created new user account: '.$user->name.' ('.$user->role.')',
+            'description' => 'Created new user account: ' . $user->name . ' (' . $user->role . ')',
             'ip_address' => $request->ip(),
             'status' => 'success',
         ]);
 
         return redirect()->route('users.all-users')->with('success', 'User account created successfully');
+    }
+
+    public function show($id)
+    {
+        $user = User::findOrFail($id);
+        return response()->json($user);
     }
 
     public function adminAccounts()
@@ -126,7 +132,7 @@ class UserController extends Controller
             'user_role' => $request->user()->role ?? null,
             'action' => 'update',
             'module' => 'User Management',
-            'description' => 'Promoted user '.$user->name.' to Admin',
+            'description' => 'Promoted user ' . $user->name . ' to Admin',
             'ip_address' => $request->ip(),
             'status' => 'success',
         ]);

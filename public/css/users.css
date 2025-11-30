@@ -253,15 +253,35 @@
     border-bottom: 2px solid #ecf0f1;
 }
 
+.compact-form .form-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+}
+
 .form-title {
     font-size: 24px;
     color: #2c3e50;
     margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.compact-form .form-title {
+    font-size: 20px;
+}
+
+.form-title i {
+    color: #3498db;
 }
 
 .form-subtitle {
     font-size: 14px;
     color: #7f8c8d;
+}
+
+.compact-form .form-subtitle {
+    font-size: 13px;
 }
 
 /* === FORM SECTIONS === */
@@ -273,12 +293,33 @@
     border-left: 4px solid #3498db;
 }
 
+.compact-form .form-section {
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.compact-section {
+    padding: 18px !important;
+    margin-bottom: 18px !important;
+}
+
 .section-header {
     font-size: 18px;
     color: #2c3e50;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
+    gap: 8px;
+}
+
+.compact-section .section-header {
+    font-size: 16px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.section-header i {
+    color: #3498db;
 }
 
 .section-indicator {
@@ -296,8 +337,41 @@
     margin-bottom: 20px;
 }
 
+.compact-form .form-row {
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
 .form-row:last-child {
     margin-bottom: 0;
+}
+
+.form-row.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-row.three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 15px;
+}
+
+.form-group.col-span-2 {
+    grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+
+    .form-row.two-col,
+    .form-row.three-col {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.col-span-2 {
+        grid-column: span 1;
+    }
 }
 
 .form-group {
@@ -314,6 +388,19 @@
     color: #2c3e50;
     font-weight: 600;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.compact-form .form-group label {
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.form-group label i {
+    color: #3498db;
+    font-size: 14px;
 }
 
 .form-control {
@@ -323,6 +410,11 @@
     border-radius: 5px;
     font-size: 14px;
     transition: all 0.3s ease;
+}
+
+.compact-form .form-control {
+    padding: 8px 12px;
+    font-size: 13px;
 }
 
 .form-control:focus {
@@ -343,9 +435,18 @@
     color: #7f8c8d;
 }
 
+.form-text.text-muted {
+    font-style: italic;
+    color: #95a5a6;
+}
+
 textarea.form-control {
     resize: vertical;
     min-height: 80px;
+}
+
+.compact-form textarea.form-control {
+    min-height: 60px;
 }
 
 /* === FORM ACTIONS === */
@@ -773,7 +874,7 @@ textarea.form-control {
 
 .modal-header {
     padding: 25px 30px;
-    background-color: #f8f9fa;
+    background-color: #fff;
     border-bottom: 2px solid #ecf0f1;
     display: flex;
     justify-content: space-between;

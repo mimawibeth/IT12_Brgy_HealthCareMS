@@ -4,6 +4,11 @@
 @section('title', 'Dispense Medicine')
 @section('page-title', 'Dispense Medicine')
 
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/patients.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/medicine.css') }}">
+@endpush
+
 @section('content')
     <div class="page-content">
         <div class="content-header">
@@ -11,7 +16,7 @@
         </div>
 
         <div class="card">
-        <form method="POST" action="{{ route('medicine.dispense.store') }}" class="patient-form">
+            <form method="POST" action="{{ route('medicine.dispense.store') }}" class="patient-form">
                 @csrf
 
                 <div class="form-group">
@@ -117,7 +122,8 @@
                 @endfor
 
                 <span class="page-info">
-                    Page {{ $dispenses->currentPage() }} of {{ $dispenses->lastPage() }} ({{ $dispenses->total() }} total dispenses)
+                    Page {{ $dispenses->currentPage() }} of {{ $dispenses->lastPage() }} ({{ $dispenses->total() }} total
+                    records)
                 </span>
 
                 @if($dispenses->hasMorePages())

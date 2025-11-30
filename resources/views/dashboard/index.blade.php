@@ -27,7 +27,7 @@
 
             <!-- Total Registered Patients Card -->
             <div class="stat-card">
-                <div class="stat-icon"><i class="bi bi-people"></i></div>
+                <div class="stat-icon stat-icon-blue"><i class="bi bi-people"></i></div>
                 <div class="stat-details">
                     <h3>Registered Patients</h3>
                     <p class="stat-number">{{ number_format($registeredPatients ?? 0) }}</p>
@@ -37,7 +37,7 @@
 
             <!-- Active Health Programs Card -->
             <div class="stat-card">
-                <div class="stat-icon"><i class="bi bi-heart-pulse"></i></div>
+                <div class="stat-icon stat-icon-green"><i class="bi bi-heart-pulse"></i></div>
                 <div class="stat-details">
                     <h3>Health Programs</h3>
                     <p class="stat-number">{{ number_format($healthPrograms ?? 0) }}</p>
@@ -47,7 +47,7 @@
 
             <!-- Monthly Services Card -->
             <div class="stat-card">
-                <div class="stat-icon"><i class="bi bi-clipboard2-pulse"></i></div>
+                <div class="stat-icon stat-icon-orange"><i class="bi bi-clipboard2-pulse"></i></div>
                 <div class="stat-details">
                     <h3>Monthly Services</h3>
                     <p class="stat-number">{{ number_format($monthlyServices ?? 0) }}</p>
@@ -57,7 +57,7 @@
 
             <!-- Medicine Inventory Card -->
             <div class="stat-card">
-                <div class="stat-icon"><i class="bi bi-capsule"></i></div>
+                <div class="stat-icon stat-icon-purple"><i class="bi bi-capsule"></i></div>
                 <div class="stat-details">
                     <h3>Medicine Stock</h3>
                     <p class="stat-number">{{ number_format($medicineStock ?? 0) }}</p>

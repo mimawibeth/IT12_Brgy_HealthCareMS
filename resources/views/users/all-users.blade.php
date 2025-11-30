@@ -5,6 +5,7 @@
 @section('page-title', 'All Users')
 
 @push('styles')
+    <link rel="stylesheet" href="{{ asset('css/patients.css') }}">
     <link rel="stylesheet" href="{{ asset('css/users.css') }}">
 @endpush
 
@@ -89,8 +90,9 @@
                             <td>{{ optional($user->created_at)->format('M d, Y') }}</td>
                             <td>—</td>
                             <td class="actions">
-                                <a href="#" class="btn-action btn-view">View</a>
-                                <a href="#" class="btn-action btn-edit">Edit</a>
+                                <a href="javascript:void(0)" class="btn-action btn-view view-user"
+                                    data-id="{{ $user->id }}">View</a>
+                                <a href="{{ route('users.edit', $user->id) }}" class="btn-action btn-edit">Edit</a>
                             </td>
                         </tr>
                     @empty
@@ -136,4 +138,6 @@
         @endif
 
     </div>
+
+    @include('users.partials.view-modal')
 @endsection

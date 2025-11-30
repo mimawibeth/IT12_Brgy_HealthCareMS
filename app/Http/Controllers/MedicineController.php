@@ -14,7 +14,19 @@ class MedicineController extends Controller
     {
         $medicines = Medicine::orderBy('name')->paginate(10);
 
-        return view('medicine.index', compact('medicines'));
+        // Calculate statistics
+        $totalMedicines = Medicine::count();
+        $totalStock = Medicine::sum('quantity_on_hand');
+        $lowStock = Medicine::whereRaw('quantity_on_hand <= reorder_level')->count();
+        $expired = Medicine::where('expiry_date', '<', now())->count();
+        $expiringSoon = Medicine::whereBetween('expiry_date', [now(), now()->addDays(30)])->count();
+
+        return view('medicine.index', compact('medicines', 'totalMedicines', 'totalStock', 'lowStock', 'expired', 'expiringSoon'));
+    }
+
+    public function show(Medicine $medicine)
+    {
+        return response()->json($medicine);
     }
 
     public function create()
@@ -43,7 +55,7 @@ class MedicineController extends Controller
             'user_role' => $request->user()->role ?? null,
             'action' => 'create',
             'module' => 'Medicine',
-            'description' => 'Added medicine: '.$medicine->name,
+            'description' => 'Added medicine: ' . $medicine->name,
             'ip_address' => $request->ip(),
             'status' => 'success',
         ]);
@@ -77,7 +89,7 @@ class MedicineController extends Controller
             'user_role' => $request->user()->role ?? null,
             'action' => 'update',
             'module' => 'Medicine',
-            'description' => 'Updated medicine: '.$medicine->name,
+            'description' => 'Updated medicine: ' . $medicine->name,
             'ip_address' => $request->ip(),
             'status' => 'success',
         ]);
@@ -95,7 +107,7 @@ class MedicineController extends Controller
             'user_role' => request()->user()->role ?? null,
             'action' => 'delete',
             'module' => 'Medicine',
-            'description' => 'Deleted medicine: '.$name,
+            'description' => 'Deleted medicine: ' . $name,
             'ip_address' => request()->ip(),
             'status' => 'success',
         ]);
@@ -145,7 +157,7 @@ class MedicineController extends Controller
             'user_role' => $request->user()->role ?? null,
             'action' => 'dispense',
             'module' => 'Medicine',
-            'description' => 'Dispensed '.$dispense->quantity.' '.$medicine->unit.' of '.$medicine->name,
+            'description' => 'Dispensed ' . $dispense->quantity . ' ' . $medicine->unit . ' of ' . $medicine->name,
             'ip_address' => $request->ip(),
             'status' => 'success',
         ]);

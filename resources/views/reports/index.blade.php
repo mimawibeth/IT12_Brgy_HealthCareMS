@@ -27,7 +27,7 @@
         <!-- Summary Statistics -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon">
+                <div class="stat-icon stat-icon-blue">
                     <i class="bi bi-people"></i>
                 </div>
                 <div class="stat-details">
@@ -40,7 +40,7 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon">
+                <div class="stat-icon stat-icon-green">
                     <i class="bi bi-heart-pulse"></i>
                 </div>
                 <div class="stat-details">
@@ -53,7 +53,7 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon">
+                <div class="stat-icon stat-icon-orange">
                     <i class="bi bi-shield-check"></i>
                 </div>
                 <div class="stat-details">
@@ -66,7 +66,7 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon">
+                <div class="stat-icon stat-icon-purple">
                     <i class="bi bi-people-fill"></i>
                 </div>
                 <div class="stat-details">
@@ -414,9 +414,9 @@
                 labels: ['Prenatal Care', 'Family Planning', 'Immunization'],
                 datasets: [{
                     data: [
-                        {{ $programDistribution['prenatal'] ?? 0 }},
-                        {{ $programDistribution['fp'] ?? 0 }},
-                        {{ $programDistribution['nip'] ?? 0 }},
+                            {{ $programDistribution['prenatal'] ?? 0 }},
+                            {{ $programDistribution['fp'] ?? 0 }},
+                            {{ $programDistribution['nip'] ?? 0 }},
                     ],
                     backgroundColor: [
                         '#e74c3c',
@@ -518,8 +518,8 @@
                 labels: ['Female', 'Male'],
                 datasets: [{
                     data: [
-                        {{ $genderCounts['F'] ?? 0 }},
-                        {{ $genderCounts['M'] ?? 0 }},
+                            {{ $genderCounts['F'] ?? 0 }},
+                            {{ $genderCounts['M'] ?? 0 }},
                     ],
                     backgroundColor: ['#e74c3c', '#3498db'],
                     borderColor: '#fff',

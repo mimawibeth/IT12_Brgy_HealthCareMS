@@ -16,6 +16,12 @@ class PrenatalRecordController extends Controller
         return view('health-programs.prenatal', compact('records'));
     }
 
+    public function show(PrenatalRecord $record)
+    {
+        $record->load('visits');
+        return response()->json($record);
+    }
+
     protected function mapRecordData(Request $request): array
     {
         $dob = $request->input('dob');

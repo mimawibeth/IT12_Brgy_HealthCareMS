@@ -15,6 +15,11 @@ class FamilyPlanningRecordController extends Controller
         return view('health-programs.family-planning', compact('records'));
     }
 
+    public function show(FamilyPlanningRecord $record)
+    {
+        return response()->json($record);
+    }
+
     protected function mapRequestToData(Request $request): array
     {
         $dob = $request->input('fp_dob');

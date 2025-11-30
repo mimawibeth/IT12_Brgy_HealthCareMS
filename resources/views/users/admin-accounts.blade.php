@@ -5,6 +5,7 @@
 @section('page-title', 'Admin Accounts')
 
 @push('styles')
+    <link rel="stylesheet" href="{{ asset('css/patients.css') }}">
     <link rel="stylesheet" href="{{ asset('css/users.css') }}">
 @endpush
 
@@ -94,8 +95,9 @@
                             <td>{{ optional($admin->created_at)->format('M d, Y') }}</td>
                             <td>—</td>
                             <td class="actions">
-                                <a href="#" class="btn-action btn-view">View</a>
-                                <a href="#" class="btn-action btn-edit">Edit</a>
+                                <a href="javascript:void(0)" class="btn-action btn-view view-user"
+                                    data-id="{{ $admin->id }}">View</a>
+                                <a href="{{ route('users.edit', $admin->id) }}" class="btn-action btn-edit">Edit</a>
                             </td>
                         </tr>
                     @empty
@@ -178,4 +180,6 @@
             }
         }
     </script>
+
+    @include('users.partials.view-modal')
 @endsection

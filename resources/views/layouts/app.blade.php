@@ -167,11 +167,7 @@
             <!-- Sidebar Footer: Settings & Logout (Fixed at bottom) -->
             <div class="sidebar-footer">
                 <!-- Settings -->
-                <a href="{{ route('settings.index') }}"
-                    class="nav-item {{ request()->routeIs('settings.*') ? 'active' : '' }}">
-                    <i class="bi bi-gear icon"></i>
-                    <span>Settings</span>
-                </a>
+
 
                 <!-- Logout Button -->
                 <a href="{{ route('logout') }}" class="nav-item logout-btn">

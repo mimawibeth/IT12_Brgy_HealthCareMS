@@ -1,6 +1,6 @@
 /* ==============================================
-   MAIN STYLES - Barangay Health Center System
-   Simple and clean design for easy understanding
+   SIDEBAR REDESIGN - Modern & Clean
+   Barangay Sto. Niño Health Center System
    ============================================== */
 
 /* === RESET AND BASE === */
@@ -18,79 +18,10 @@ body {
     background-color: #f5f5f5;
 }
 
-/* === DARK MODE SUPPORT === */
-body.dark-mode {
-    background-color: #121212;
-    color: #e0e0e0;
-}
-
-body.dark-mode .sidebar {
-    background-color: #111827;
-}
-
-body.dark-mode .sidebar-header {
-    background-color: #1f2933;
-    border-bottom-color: #0b1120;
-}
-
-body.dark-mode .nav-item:hover,
-body.dark-mode .nav-dropdown-toggle:hover {
-    background-color: #1f2933;
-}
-
-body.dark-mode .nav-dropdown-menu {
-    background-color: #050816;
-}
-
-body.dark-mode .main-content {
-    background-color: #0f172a;
-}
-
-body.dark-mode .top-bar {
-    background-color: #020617;
-    border-bottom-color: #111827;
-}
-
-body.dark-mode .page-title,
-body.dark-mode .user-name-display {
-    color: #e5e7eb;
-}
-
-body.dark-mode .content-wrapper,
-body.dark-mode .card,
-body.dark-mode .data-table {
-    background-color: #020617;
-    color: #e5e7eb;
-}
-
-body.dark-mode .data-table thead {
-    background-color: #111827;
-}
-
-body.dark-mode .data-table tbody tr:hover {
-    background-color: #020617;
-}
-
-body.dark-mode .form-control {
-    background-color: #020617;
-    border-color: #1f2933;
-    color: #e5e7eb;
-}
-
-body.dark-mode .form-group label {
-    color: #e5e7eb;
-}
-
-/* === APP LAYOUT === */
-.app-container {
-    display: flex;
-    min-height: 100vh;
-}
-
 /* === SIDEBAR NAVIGATION === */
 .sidebar {
-    width: 260px;
-    background-color: #2c3e50;
+    width: 280px;
+    background: linear-gradient(180deg, #1a252f 0%, #2c3e50 100%);
     color: #ecf0f1;
     height: 100vh;
     position: fixed;
@@ -99,95 +30,112 @@ body.dark-mode .form-group label {
     display: flex;
     flex-direction: column;
     z-index: 1000;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
 }
 
 .sidebar-header {
-    padding: 20px;
-    background-color: #34495e;
-    border-bottom: 2px solid #1a252f;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.15), rgba(41, 128, 185, 0.1));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
+
+
 .sidebar-logo {
-    width: 60px;
-    height: 60px;
-    margin-bottom: 10px;
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 15px;
     border-radius: 50%;
     object-fit: cover;
+    border: 3px solid #3498db;
+    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+    background: white;
+    position: relative;
+    z-index: 1;
 }
 
 .sidebar-header h2 {
-    font-size: 18px;
+    font-size: 16px;
     margin-bottom: 5px;
     color: #fff;
     font-weight: 600;
+    line-height: 1.4;
 }
 
 .sidebar-header .user-role {
-    font-size: 12px;
-    color: #bdc3c7;
-    text-transform: capitalize;
+    font-size: 11px;
+    color: #95a5a6;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* === SIDEBAR NAVIGATION ITEMS === */
 .sidebar-nav {
-    padding: 15px 0;
+    padding: 20px 0;
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Custom scrollbar */
+.sidebar-nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background: rgba(52, 152, 219, 0.5);
+    border-radius: 10px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(52, 152, 219, 0.7);
 }
 
 .nav-item {
     display: flex;
     align-items: center;
-    padding: 12px 20px;
-    color: #ecf0f1;
+    padding: 13px 20px;
+    margin: 4px 12px;
+    color: #bdc3c7;
     text-decoration: none;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    position: relative;
+    font-size: 14px;
 }
 
 .nav-item:hover {
-    background-color: #34495e;
-}
-
-.nav-item.active {
-    background-color: #3498db;
-    border-left: 4px solid #fff;
-}
-
-.nav-item .icon {
-    margin-right: 10px;
-    font-size: 18px;
-}
-
-/* === SUB ITEMS (indented) === */
-.nav-item.sub-item {
-    padding-left: 50px;
-    font-size: 13px;
-    color: #bdc3c7;
-}
-
-.nav-item.sub-item:hover {
+    background: rgba(52, 152, 219, 0.12);
     color: #fff;
 }
 
-/* === NAV GROUPS === */
-.nav-group {
-    margin: 10px 0;
+.nav-item.active {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+    border-left: none;
 }
 
-.nav-group-title {
-    padding: 10px 20px;
-    font-size: 11px;
-    text-transform: uppercase;
-    color: #95a5a6;
-    font-weight: 600;
-    letter-spacing: 1px;
-    margin-top: 10px;
+.nav-item.active .icon {
+    color: #fff;
+}
+
+.nav-item .icon {
+    margin-right: 12px;
+    font-size: 18px;
+    min-width: 20px;
 }
 
 /* === DROPDOWN NAVIGATION === */
 .nav-dropdown {
-    margin: 5px 0;
+    margin: 6px 0;
 }
 
 .nav-dropdown-toggle {
@@ -195,34 +143,42 @@ body.dark-mode .form-group label {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 12px 20px;
+    padding: 13px 20px;
+    margin: 0 12px;
+    width: calc(100% - 24px);
     background: none;
     border: none;
-    color: #ecf0f1;
+    color: #bdc3c7;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease;
     text-align: left;
+    border-radius: 10px;
+    position: relative;
+    font-size: 14px;
 }
 
 .nav-dropdown-toggle:hover {
-    background-color: #34495e;
+    background: rgba(52, 152, 219, 0.12);
+    color: #fff;
 }
 
 /* Active/open dropdown toggle */
 .nav-dropdown.open .nav-dropdown-toggle {
-    background-color: #34495e;
-    border-left: 4px solid #3498db;
+    background: rgba(52, 152, 219, 0.15);
+    color: #3498db;
+    border-left: none;
 }
 
 .nav-dropdown-toggle .icon {
-    margin-right: 10px;
+    margin-right: 12px;
     font-size: 18px;
+    min-width: 20px;
 }
 
 .nav-dropdown-toggle .arrow {
     margin-left: auto;
-    font-size: 12px;
-    transition: transform 0.3s;
+    font-size: 14px;
+    transition: all 0.3s ease;
 }
 
 /* Rotate arrow when dropdown is open */
@@ -235,55 +191,68 @@ body.dark-mode .form-group label {
 .nav-dropdown-menu {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease;
-    background-color: #1a252f;
+    transition: max-height 0.4s ease;
+    background: rgba(0, 0, 0, 0.15);
+    margin: 0 12px 8px;
+    border-radius: 10px;
+    padding: 0;
 }
 
 /* Show dropdown menu when open */
 .nav-dropdown.open .nav-dropdown-menu {
-    max-height: 500px;
+    max-height: 600px;
+    padding: 8px 0;
 }
 
 /* Dropdown menu items */
 .nav-dropdown-menu .nav-item {
-    padding: 10px 20px 10px 45px;
+    padding: 11px 20px 11px 48px;
+    margin: 2px 8px;
     font-size: 13px;
+    color: #95a5a6;
+}
+
+.nav-dropdown-menu .nav-item:hover {
+    color: #fff;
+    background: rgba(52, 152, 219, 0.15);
 }
 
 /* Active dropdown menu item */
 .nav-dropdown-menu .nav-item.active {
-    background-color: #3498db;
-    border-left: 4px solid #fff;
-}
-
-.nav-dropdown-menu .nav-item.sub-item {
-    padding-left: 60px;
-    font-size: 12px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: #fff;
+    border-left: none;
 }
 
 /* === SIDEBAR FOOTER (Settings & Logout) === */
 .sidebar-footer {
-    border-top: 1px solid #34495e;
-    background-color: #2c3e50;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 12px 0;
 }
 
 .sidebar-footer .nav-item {
-    border-bottom: none;
+    margin: 4px 12px;
 }
 
 /* === LOGOUT BUTTON === */
 .logout-btn {
     background-color: transparent;
-    color: #ecf0f1 !important;
+    color: #e74c3c !important;
 }
 
 .logout-btn:hover {
-    background-color: #34495e;
+    background: rgba(231, 76, 60, 0.15) !important;
+    color: #e74c3c !important;
+}
+
+.logout-btn .icon {
+    color: #e74c3c;
 }
 
 /* === MAIN CONTENT AREA === */
 .main-content {
-    margin-left: 260px;
+    margin-left: 280px;
     flex: 1;
     min-height: 100vh;
     background-color: #f5f5f5;
@@ -296,14 +265,14 @@ body.dark-mode .form-group label {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid #e8ecef;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .page-title {
-    font-size: 24px;
+    font-size: 26px;
     color: #2c3e50;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .user-info {
@@ -341,7 +310,7 @@ body.dark-mode .form-group label {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: #3498db;
     text-transform: uppercase;
@@ -349,7 +318,7 @@ body.dark-mode .form-group label {
 }
 
 .user-role i {
-    font-size: 14px;
+    font-size: 13px;
     color: #3498db;
 }
 
@@ -357,11 +326,6 @@ body.dark-mode .form-group label {
     font-size: 14px;
     font-weight: 600;
     color: #2c3e50;
-}
-
-.user-name {
-    margin-right: 15px;
-    color: #555;
 }
 
 /* === CONTENT WRAPPER === */
@@ -372,10 +336,11 @@ body.dark-mode .form-group label {
 /* === ALERTS / MESSAGES === */
 .alert {
     padding: 15px 20px;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .alert-success {
@@ -395,20 +360,23 @@ body.dark-mode .form-group label {
     display: inline-block;
     padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     text-decoration: none;
     font-size: 14px;
-    transition: all 0.3s;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
 
 .btn-primary {
     background-color: #3498db;
     color: #fff;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
 }
 
 .btn-primary:hover {
     background-color: #2980b9;
+    box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
 }
 
 .btn-secondary {
@@ -450,23 +418,25 @@ body.dark-mode .form-group label {
 
 .form-group label {
     display: block;
-    margin-bottom: 5px;
-    color: #555;
-    font-weight: 500;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 14px;
 }
 
 .form-control {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 12px 15px;
+    border: 2px solid #e8ecef;
+    border-radius: 8px;
     font-size: 14px;
+    transition: all 0.3s ease;
 }
 
 .form-control:focus {
     outline: none;
     border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
 }
 
 /* === TABLES === */
@@ -474,19 +444,19 @@ body.dark-mode .form-group label {
     width: 100%;
     background-color: #fff;
     border-collapse: collapse;
-    border-radius: 5px;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .data-table thead {
-    background-color: #34495e;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
     color: #fff;
 }
 
 .data-table th,
 .data-table td {
-    padding: 12px 15px;
+    padding: 14px 16px;
     text-align: left;
 }
 
@@ -495,59 +465,141 @@ body.dark-mode .form-group label {
 }
 
 .data-table tbody tr {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #ecf0f1;
 }
 
 /* === CARDS === */
 .card {
     background-color: #fff;
-    border-radius: 5px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     margin-bottom: 20px;
 }
 
 .card h3 {
-    margin-bottom: 15px;
+    margin-bottom: 16px;
     color: #2c3e50;
+    font-weight: 600;
 }
 
-/* === UTILITY CLASSES === */
-.text-center {
-    text-align: center;
+/* === DARK MODE SUPPORT === */
+body.dark-mode {
+    background-color: #0f172a;
+    color: #e0e0e0;
 }
 
-.text-right {
-    text-align: right;
+body.dark-mode .sidebar {
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
 }
 
-.mt-20 {
-    margin-top: 20px;
+body.dark-mode .sidebar-header {
+    background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(41, 128, 185, 0.15));
+    border-bottom-color: rgba(255, 255, 255, 0.05);
 }
 
-.mb-20 {
-    margin-bottom: 20px;
+body.dark-mode .nav-item {
+    color: #94a3b8;
 }
 
-.p-20 {
-    padding: 20px;
+body.dark-mode .nav-item:hover {
+    background: rgba(52, 152, 219, 0.15);
+    color: #e2e8f0;
+}
+
+body.dark-mode .nav-dropdown-toggle {
+    color: #94a3b8;
+}
+
+body.dark-mode .nav-dropdown-toggle:hover {
+    background: rgba(52, 152, 219, 0.15);
+    color: #e2e8f0;
+}
+
+body.dark-mode .nav-dropdown-menu {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .main-content {
+    background-color: #0f172a;
+}
+
+body.dark-mode .top-bar {
+    background-color: #1e293b;
+    border-bottom-color: #334155;
+}
+
+body.dark-mode .page-title,
+body.dark-mode .user-name-display {
+    color: #e2e8f0;
+}
+
+body.dark-mode .content-wrapper,
+body.dark-mode .card,
+body.dark-mode .data-table {
+    background-color: #1e293b;
+    color: #e2e8f0;
+}
+
+body.dark-mode .data-table thead {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+}
+
+body.dark-mode .data-table tbody tr:hover {
+    background-color: #334155;
+}
+
+body.dark-mode .data-table tbody tr {
+    border-bottom-color: #334155;
+}
+
+body.dark-mode .form-control {
+    background-color: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+body.dark-mode .form-group label {
+    color: #e2e8f0;
 }
 
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
     .sidebar {
-        width: 60px;
+        width: 70px;
     }
 
     .main-content {
-        margin-left: 60px;
+        margin-left: 70px;
     }
 
-    .nav-item span:not(.icon) {
+    .sidebar-header h2,
+    .sidebar-header .user-role {
         display: none;
     }
 
-    .nav-group-title {
+    .sidebar-logo {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 0;
+    }
+
+    .nav-item span:not(.icon),
+    .nav-dropdown-toggle span:not(.icon) {
         display: none;
+    }
+
+    .nav-dropdown-toggle .arrow {
+        display: none;
+    }
+
+    .nav-item,
+    .nav-dropdown-toggle {
+        justify-content: center;
+        padding: 12px;
+    }
+
+    .nav-item .icon {
+        margin-right: 0;
     }
 }

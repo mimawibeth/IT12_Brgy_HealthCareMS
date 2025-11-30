@@ -21,16 +21,12 @@
             </div>
         </div>
 
-        <!-- Info Box -->
-        <div class="info-box">
-            <p><strong>System Activity Monitoring:</strong> Track all user actions, system changes, and access logs. Records
-                are maintained for security and compliance purposes.</p>
-        </div>
+
 
         <!-- Summary Stats -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon">
+                <div class="stat-icon stat-icon-blue">
                     <i class="bi bi-activity"></i>
                 </div>
                 <div class="stat-details">
@@ -39,7 +35,7 @@
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">
+                <div class="stat-icon stat-icon-green">
                     <i class="bi bi-check-circle"></i>
                 </div>
                 <div class="stat-details">
@@ -48,7 +44,7 @@
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">
+                <div class="stat-icon stat-icon-red">
                     <i class="bi bi-x-circle"></i>
                 </div>
                 <div class="stat-details">
@@ -57,7 +53,7 @@
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">
+                <div class="stat-icon stat-icon-purple">
                     <i class="bi bi-people"></i>
                 </div>
                 <div class="stat-details">
