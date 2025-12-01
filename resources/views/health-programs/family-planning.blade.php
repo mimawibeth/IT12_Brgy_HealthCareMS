@@ -87,8 +87,11 @@
             </table>
         </div>
 
-        @if($records->hasPages())
-            <div class="pagination">
+        @php
+            $showPagination = !empty($records) && method_exists($records, 'hasPages') && $records->hasPages();
+        @endphp
+        @if($showPagination)
+            <div class="pagination" id="fpPagination">
                 @if($records->onFirstPage())
                     <button class="btn-page" disabled>« Previous</button>
                 @else
@@ -383,12 +386,15 @@
                 const modal = document.getElementById('fpViewModal');
                 const closeModal = document.getElementById('closeFpModal');
 
+                const pagination = document.getElementById('fpPagination');
+                
                 const toggleForm = (show) => {
                     formPanel.style.display = show ? 'block' : 'none';
                     tablePanel.style.display = show ? 'none' : 'block';
                     filters.style.display = show ? 'none' : 'block';
                     openBtn.style.display = show ? 'none' : 'inline-flex';
                     backBtn.style.display = show ? 'inline-flex' : 'none';
+                    if (pagination) pagination.style.display = show ? 'none' : 'block';
 
                     if (!show) {
                         alertBox.style.display = 'none';

@@ -11,7 +11,6 @@
 
 @section('content')
     <div class="page-content">
-
         <!-- Header with Add Button -->
         <div class="content-header">
             <div>
@@ -67,27 +66,27 @@
                 <tbody>
                     @forelse($users ?? [] as $user)
                         @php
-                            $fullName = trim(($user->first_name ?? '') . ' ' . ($user->middle_name ? $user->middle_name . ' ' : '') . ($user->last_name ?? '')) ?: $user->name;
+                            $fullName = trim(($user->first_name ?? '') . ' ' . ($user->middle_name ? $user->middle_name . ' ' : '') . ($user->last_name ?? '')) ?: ($user->name ?? 'N/A');
                             $roleBadges = [
                                 'super_admin' => ['label' => 'Super Admin', 'class' => 'badge-super-admin'],
                                 'admin' => ['label' => 'Admin', 'class' => 'badge-admin'],
                                 'bhw' => ['label' => 'BHW', 'class' => 'badge-bhw'],
                             ];
-                            $roleMeta = $roleBadges[$user->role] ?? ['label' => ucfirst($user->role), 'class' => 'badge-admin'];
+                            $roleMeta = $roleBadges[$user->role ?? 'bhw'] ?? ['label' => ucfirst($user->role ?? 'User'), 'class' => 'badge-admin'];
                         @endphp
                         <tr>
-                            <td>{{ $user->username }}</td>
+                            <td>{{ $user->username ?? 'N/A' }}</td>
                             <td>{{ $fullName }}</td>
-                            <td>{{ $user->email }}</td>
+                            <td>{{ $user->email ?? 'N/A' }}</td>
                             <td><span class="badge {{ $roleMeta['class'] }}">{{ $roleMeta['label'] }}</span></td>
                             <td>
-                                @if($user->status === 'active')
+                                @if(($user->status ?? 'inactive') === 'active')
                                     <span class="status-badge status-active">Active</span>
                                 @else
                                     <span class="status-badge status-inactive">Inactive</span>
                                 @endif
                             </td>
-                            <td>{{ optional($user->created_at)->format('M d, Y') }}</td>
+                            <td>{{ optional($user->created_at)->format('M d, Y') ?? 'N/A' }}</td>
                             <td>—</td>
                             <td class="actions">
                                 <a href="javascript:void(0)" class="btn-action btn-view view-user"
@@ -104,7 +103,10 @@
             </table>
         </div>
 
-        @if($users->hasPages())
+        @php
+            $showPagination = !empty($users) && method_exists($users, 'hasPages') && $users->hasPages();
+        @endphp
+        @if($showPagination)
             <div class="pagination">
                 @if($users->onFirstPage())
                     <button class="btn-page" disabled>« Previous</button>

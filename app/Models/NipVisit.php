@@ -18,6 +18,10 @@ class NipVisit extends Model
         'vaccine',
     ];
 
+    protected $casts = [
+        'visit_date' => 'date',
+    ];
+
     public function record()
     {
         return $this->belongsTo(NipRecord::class, 'nip_record_id');

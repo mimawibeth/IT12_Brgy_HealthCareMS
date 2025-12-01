@@ -48,7 +48,10 @@ class NipRecordController extends Controller
     protected function syncVisits(NipRecord $record, array $visits): void
     {
         foreach ($visits as $visit) {
-            if (empty(array_filter($visit))) {
+            // Check if visit has any meaningful data
+            if (empty(array_filter($visit, function($value) {
+                return $value !== null && $value !== '';
+            }))) {
                 continue;
             }
 
@@ -115,32 +118,88 @@ class NipRecordController extends Controller
 
     public function update(Request $request, NipRecord $record)
     {
-        $record->update([
-            'child_name' => $request->input('child_name', $record->child_name),
-            'dob' => $request->input('dob') ?: $record->dob,
-            'mother_name' => $request->input('mother_name', $record->mother_name),
+        $request->validate([
+            'nip_date' => ['required', 'date'],
+            'child_name' => ['required', 'string', 'max:255'],
+            'dob' => ['required', 'date'],
+            'address' => ['required', 'string', 'max:255'],
+            'mother_name' => ['required', 'string', 'max:255'],
+            'contact' => ['required', 'string', 'max:50'],
+            'place_delivery' => ['required', 'string', 'max:255'],
+            'attended_by' => ['required', 'string', 'max:255'],
+            'sex_baby' => ['required', 'in:M,F'],
+            'tt_status_mother' => ['required', 'string', 'max:255'],
+            'birth_weight' => ['required', 'string', 'max:50'],
+            'delivery_type' => ['required', 'string', 'max:50'],
+            'initiated_breastfeeding' => ['required', 'string', 'max:10'],
+            'newborn_screening_date' => ['required', 'date'],
+            'newborn_screening_result' => ['required', 'string', 'max:255'],
+            'hearing_test_screened' => ['required', 'string', 'max:50'],
+            'vit_k' => ['required', 'string', 'max:50'],
+            'bcg' => ['required', 'string', 'max:50'],
+            'hepa_b_24h' => ['required', 'string', 'max:50'],
+            'birth_order' => ['nullable', 'integer', 'min:1'],
         ]);
 
-        $visitData = [
-            'age' => $request->input('edit_visit_age'),
-            'vaccine' => $request->input('edit_visit_vaccine'),
-        ];
+        $record->update($this->mapRecordData($request));
 
-        if (!empty(array_filter($visitData))) {
-            $visit = $record->visits()->first();
-
-            if ($visit) {
-                $visit->update([
-                    'age_months' => $visitData['age'],
-                    'vaccine' => $visitData['vaccine'],
-                ]);
-            } else {
-                NipVisit::create([
-                    'nip_record_id' => $record->id,
-                    'age_months' => $visitData['age'],
-                    'vaccine' => $visitData['vaccine'],
-                ]);
+        // Handle visits update
+        $visits = $request->input('visits', []);
+        $existingVisitIds = [];
+        
+        foreach ($visits as $visit) {
+            // Check if visit has any meaningful data (excluding hidden id field)
+            $visitData = array_filter($visit, function($key) {
+                return $key !== 'id';
+            }, ARRAY_FILTER_USE_KEY);
+            
+            if (empty(array_filter($visitData, function($value) {
+                return $value !== null && $value !== '';
+            }))) {
+                continue;
             }
+
+            $visitId = $visit['id'] ?? null;
+            
+            if ($visitId) {
+                // Update existing visit
+                $existingVisit = NipVisit::find($visitId);
+                if ($existingVisit && $existingVisit->nip_record_id === $record->id) {
+                    $existingVisit->update([
+                        'visit_date' => $visit['date'] ?? null,
+                        'age_months' => $visit['age'] ?? null,
+                        'weight' => $visit['weight'] ?? null,
+                        'length' => $visit['length'] ?? null,
+                        'status' => $visit['status'] ?? null,
+                        'breastfeeding' => $visit['breast'] ?? null,
+                        'temperature' => $visit['temp'] ?? null,
+                        'vaccine' => $visit['vaccine'] ?? null,
+                    ]);
+                    $existingVisitIds[] = $visitId;
+                }
+            } else {
+                // Create new visit
+                $newVisit = NipVisit::create([
+                    'nip_record_id' => $record->id,
+                    'visit_date' => $visit['date'] ?? null,
+                    'age_months' => $visit['age'] ?? null,
+                    'weight' => $visit['weight'] ?? null,
+                    'length' => $visit['length'] ?? null,
+                    'status' => $visit['status'] ?? null,
+                    'breastfeeding' => $visit['breast'] ?? null,
+                    'temperature' => $visit['temp'] ?? null,
+                    'vaccine' => $visit['vaccine'] ?? null,
+                ]);
+                $existingVisitIds[] = $newVisit->id;
+            }
+        }
+
+        // Delete visits that were removed (only if there are existing visit IDs)
+        if (!empty($existingVisitIds)) {
+            $record->visits()->whereNotIn('id', $existingVisitIds)->delete();
+        } else {
+            // If no visits were submitted, delete all existing visits
+            $record->visits()->delete();
         }
 
         return redirect()

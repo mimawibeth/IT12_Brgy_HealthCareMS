@@ -18,6 +18,16 @@
                 <p class="form-subtitle">Fill in the details to create a new user account for the system</p>
             </div>
 
+            @if($errors->any())
+                <div class="alert alert-error">
+                    <ul style="margin: 0; padding-left: 20px;">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('users.store') }}" class="user-form">
                 @csrf
 

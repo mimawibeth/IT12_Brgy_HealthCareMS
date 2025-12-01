@@ -18,7 +18,17 @@
                 <p class="form-subtitle">Update user information below</p>
             </div>
 
-            <form method="POST" action="{{ route('users.update', 1) }}" class="user-form">
+            @if($errors->any())
+                <div class="alert alert-error">
+                    <ul style="margin: 0; padding-left: 20px;">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('users.update', $user) }}" class="user-form">
                 @csrf
                 @method('PUT')
 
@@ -28,8 +38,13 @@
 
                     <div class="form-row two-col">
                         <div class="form-group">
+<<<<<<< HEAD
                             <label for="username"><i class="bi bi-person-badge"></i> Username *</label>
                             <input type="text" id="username" name="username" class="form-control" required value="admin01"
+=======
+                            <label for="username">Username *</label>
+                            <input type="text" id="username" name="username" class="form-control" required value="{{ old('username', $user->username) }}"
+>>>>>>> 3723e67444b4297a57b2a8d141a24e107def6990
                                 readonly>
                             <small class="form-text text-muted">Cannot be changed</small>
                         </div>
@@ -37,7 +52,7 @@
                         <div class="form-group">
                             <label for="email"><i class="bi bi-envelope"></i> Email Address *</label>
                             <input type="email" id="email" name="email" class="form-control" required
-                                value="juan.delacruz@brgy.gov.ph">
+                                value="{{ old('email', $user->email) }}">
                         </div>
                     </div>
 
@@ -45,7 +60,12 @@
                         <div class="form-group">
                             <label for="password"><i class="bi bi-key"></i> New Password</label>
                             <input type="password" id="password" name="password" class="form-control"
+<<<<<<< HEAD
                                 placeholder="Leave blank to keep current">
+=======
+                                placeholder="Leave blank to keep current password">
+                            <small class="form-text">Only fill if you want to change password (min 12 chars, must include uppercase, lowercase, number, and special character)</small>
+>>>>>>> 3723e67444b4297a57b2a8d141a24e107def6990
                         </div>
 
                         <div class="form-group">
@@ -63,23 +83,24 @@
                     <div class="form-row three-col">
                         <div class="form-group">
                             <label for="first_name">First Name *</label>
-                            <input type="text" id="first_name" name="first_name" class="form-control" required value="Juan">
+                            <input type="text" id="first_name" name="first_name" class="form-control" required value="{{ old('first_name', $user->first_name) }}">
                         </div>
 
                         <div class="form-group">
                             <label for="middle_name">Middle Name</label>
-                            <input type="text" id="middle_name" name="middle_name" class="form-control" value="Santos">
+                            <input type="text" id="middle_name" name="middle_name" class="form-control" value="{{ old('middle_name', $user->middle_name) }}">
                         </div>
 
                         <div class="form-group">
                             <label for="last_name">Last Name *</label>
                             <input type="text" id="last_name" name="last_name" class="form-control" required
-                                value="Dela Cruz">
+                                value="{{ old('last_name', $user->last_name) }}">
                         </div>
                     </div>
 
                     <div class="form-row three-col">
                         <div class="form-group">
+<<<<<<< HEAD
                             <label for="contact_number"><i class="bi bi-telephone"></i> Contact Number</label>
                             <input type="text" id="contact_number" name="contact_number" class="form-control"
                                 value="0912-345-6789">
@@ -89,6 +110,11 @@
                             <label for="address"><i class="bi bi-geo-alt"></i> Address</label>
                             <input type="text" id="address" name="address" class="form-control"
                                 value="123 Barangay Street, City">
+=======
+                            <label for="contact_number">Contact Number *</label>
+                            <input type="text" id="contact_number" name="contact_number" class="form-control" required
+                                value="{{ old('contact_number', $user->contact_number) }}">
+>>>>>>> 3723e67444b4297a57b2a8d141a24e107def6990
                         </div>
                     </div>
                 </div>
@@ -102,20 +128,27 @@
                             <label for="role"><i class="bi bi-person-check"></i> User Role *</label>
                             <select id="role" name="role" class="form-control" required>
                                 <option value="">Select Role</option>
+<<<<<<< HEAD
                                 <option value="admin" selected>Admin</option>
                                 <option value="bhw">Barangay Health Worker</option>
                                 <option value="staff">Staff</option>
+=======
+                                <option value="super_admin" @selected(old('role', $user->role) === 'super_admin')>Super Admin</option>
+                                <option value="admin" @selected(old('role', $user->role) === 'admin')>Admin</option>
+                                <option value="bhw" @selected(old('role', $user->role) === 'bhw')>Barangay Health Worker (BHW)</option>
+>>>>>>> 3723e67444b4297a57b2a8d141a24e107def6990
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label for="status"><i class="bi bi-toggle-on"></i> Status *</label>
                             <select id="status" name="status" class="form-control" required>
-                                <option value="active" selected>Active</option>
-                                <option value="inactive">Inactive</option>
+                                <option value="active" @selected(old('status', $user->status) === 'active')>Active</option>
+                                <option value="inactive" @selected(old('status', $user->status) === 'inactive')>Inactive</option>
                             </select>
                         </div>
                     </div>
+<<<<<<< HEAD
 
                     <div class="form-row">
                         <div class="form-group full-width">
@@ -124,6 +157,8 @@
                                 rows="2">Primary system administrator responsible for user management and system configuration.</textarea>
                         </div>
                     </div>
+=======
+>>>>>>> 3723e67444b4297a57b2a8d141a24e107def6990
                 </div>
 
                 <!-- Form Actions -->

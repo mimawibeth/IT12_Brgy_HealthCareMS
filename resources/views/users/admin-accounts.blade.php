@@ -78,21 +78,21 @@
                 <tbody>
                     @forelse($admins ?? [] as $admin)
                         @php
-                            $fullName = trim(($admin->first_name ?? '') . ' ' . ($admin->middle_name ? $admin->middle_name . ' ' : '') . ($admin->last_name ?? '')) ?: $admin->name;
+                            $fullName = trim(($admin->first_name ?? '') . ' ' . ($admin->middle_name ? $admin->middle_name . ' ' : '') . ($admin->last_name ?? '')) ?: ($admin->name ?? 'N/A');
                         @endphp
                         <tr>
-                            <td>{{ $admin->username }}</td>
+                            <td>{{ $admin->username ?? 'N/A' }}</td>
                             <td>{{ $fullName }}</td>
-                            <td>{{ $admin->email }}</td>
+                            <td>{{ $admin->email ?? 'N/A' }}</td>
                             <td>System Administrator</td>
                             <td>
-                                @if($admin->status === 'active')
+                                @if(($admin->status ?? 'inactive') === 'active')
                                     <span class="status-badge status-active">Active</span>
                                 @else
                                     <span class="status-badge status-inactive">Inactive</span>
                                 @endif
                             </td>
-                            <td>{{ optional($admin->created_at)->format('M d, Y') }}</td>
+                            <td>{{ optional($admin->created_at)->format('M d, Y') ?? 'N/A' }}</td>
                             <td>—</td>
                             <td class="actions">
                                 <a href="javascript:void(0)" class="btn-action btn-view view-user"

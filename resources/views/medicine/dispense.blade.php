@@ -12,63 +12,86 @@
 @section('content')
     <div class="page-content">
         <div class="content-header">
-            <h2>Dispense Medicine</h2>
+            <div>
+                <h2>Dispense Medicine</h2>
+                <p class="content-subtitle">Record medicine dispensation to patients and track inventory usage.</p>
+            </div>
+
         </div>
 
         <div class="card">
             <form method="POST" action="{{ route('medicine.dispense.store') }}" class="patient-form">
                 @csrf
 
-                <div class="form-group">
-                    <label for="medicine_id">Medicine *</label>
-                    <select id="medicine_id" name="medicine_id" class="form-control" required>
-                        <option value="">-- Select Medicine --</option>
-                        @foreach($medicines as $medicine)
-                            <option value="{{ $medicine->id }}" @selected(old('medicine_id') == $medicine->id)>
-                                {{ $medicine->name }} ({{ $medicine->quantity_on_hand }} {{ $medicine->unit }} in stock)
-                            </option>
-                        @endforeach
-                    </select>
+                <div class="form-section section-patient-info">
+                    <h3 class="section-header">
+                        <span class="section-indicator"></span>Medicine Details
+                    </h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="medicine_id">Medicine <span class="required-asterisk">*</span></label>
+                            <select id="medicine_id" name="medicine_id" class="form-control" required>
+                                <option value="">-- Select Medicine --</option>
+                                @foreach($medicines as $medicine)
+                                    <option value="{{ $medicine->id }}" @selected(old('medicine_id') == $medicine->id)>
+                                        {{ $medicine->name }} ({{ $medicine->quantity_on_hand }} {{ $medicine->unit }} in stock)
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quantity">Quantity to Dispense <span class="required-asterisk">*</span></label>
+                            <input type="number" id="quantity" name="quantity" class="form-control" min="1" required
+                                value="{{ old('quantity', 1) }}">
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="quantity">Quantity to Dispense *</label>
-                    <input type="number" id="quantity" name="quantity" class="form-control" min="1" required
-                        value="{{ old('quantity', 1) }}">
-                </div>
+                <div class="form-section section-assessment">
+                    <h3 class="section-header">
+                        <span class="section-indicator"></span>Dispensation Information
+                    </h3>
 
-                <div class="form-group">
-                    <label for="dispensed_to">Dispensed To (Patient Name / ID)</label>
-                    <input type="text" id="dispensed_to" name="dispensed_to" class="form-control"
-                        value="{{ old('dispensed_to') }}">
-                </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dispensed_to">Dispensed To (Patient Name / ID)</label>
+                            <input type="text" id="dispensed_to" name="dispensed_to" class="form-control"
+                                value="{{ old('dispensed_to') }}" placeholder="Enter patient name or ID">
+                        </div>
 
-                <div class="form-group">
-                    <label for="reference_no">Reference No. (ITR / Program)</label>
-                    <input type="text" id="reference_no" name="reference_no" class="form-control"
-                        value="{{ old('reference_no') }}">
-                </div>
+                        <div class="form-group">
+                            <label for="reference_no">Reference No. (ITR / Program)</label>
+                            <input type="text" id="reference_no" name="reference_no" class="form-control"
+                                value="{{ old('reference_no') }}" placeholder="Enter reference number">
+                        </div>
 
-                <div class="form-group">
-                    <label for="dispensed_at">Dispensed Date</label>
-                    <input type="date" id="dispensed_at" name="dispensed_at" class="form-control"
-                        value="{{ old('dispensed_at') }}">
-                </div>
+                        <div class="form-group">
+                            <label for="dispensed_at">Dispensed Date</label>
+                            <input type="date" id="dispensed_at" name="dispensed_at" class="form-control"
+                                value="{{ old('dispensed_at') }}">
+                        </div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="remarks">Remarks</label>
-                    <textarea id="remarks" name="remarks" class="form-control" rows="3">{{ old('remarks') }}</textarea>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="remarks">Remarks</label>
+                            <textarea id="remarks" name="remarks" class="form-control" rows="3"
+                                placeholder="Additional notes or instructions">{{ old('remarks') }}</textarea>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-actions">
-                    <a href="{{ route('medicine.index') }}" class="btn btn-secondary">Back to Inventory</a>
-                    <button type="submit" class="btn btn-primary">Dispense</button>
+                    <a href="{{ route('medicine.index') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Dispense Medicine</button>
                 </div>
             </form>
         </div>
 
         <div class="table-container">
-            <h3 style="padding: 0 0 10px;">Recent Dispensed Medicines</h3>
+
             <table class="data-table">
                 <thead>
                     <tr>
@@ -87,20 +110,27 @@
                             </td>
                             <td>{{ $dispense->medicine->name ?? 'N/A' }}</td>
                             <td>{{ $dispense->quantity }} {{ $dispense->medicine->unit ?? '' }}</td>
-                            <td>{{ $dispense->dispensed_to }}</td>
-                            <td>{{ $dispense->reference_no }}</td>
-                            <td>{{ $dispense->remarks }}</td>
+                            <td>{{ $dispense->dispensed_to ?: '—' }}</td>
+                            <td>{{ $dispense->reference_no ?: '—' }}</td>
+                            <td>{{ $dispense->remarks ?: '—' }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" style="text-align:center;">No dispenses recorded yet.</td>
+                            <td colspan="6" style="text-align: center; padding: 40px; color: #7f8c8d;">
+                                <i class="bi bi-inbox"
+                                    style="font-size: 48px; display: block; margin-bottom: 10px; opacity: 0.5;"></i>
+                                No dispenses recorded yet.
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
-        @if($dispenses->hasPages())
+        @php
+            $showPagination = !empty($dispenses) && method_exists($dispenses, 'hasPages') && $dispenses->hasPages();
+        @endphp
+        @if($showPagination)
             <div class="pagination">
                 @if($dispenses->onFirstPage())
                     <button class="btn-page" disabled>« Previous</button>
@@ -112,6 +142,19 @@
                     $start = max(1, $dispenses->currentPage() - 2);
                     $end = min($dispenses->lastPage(), $dispenses->currentPage() + 2);
                 @endphp
+
+                @for ($page = $start; $page <= $end; $page++)
+                    @if ($page === $dispenses->currentPage())
+                        <span class="btn-page active">{{ $page }}</span>
+                    @else
+                        <a class="btn-page" href="{{ $dispenses->url($page) }}">{{ $page }}</a>
+                    @endif
+                @endfor
+
+                <span class="page-info">
+                    Page {{ $dispenses->currentPage() }} of {{ $dispenses->lastPage() }} ({{ $dispenses->total() }} total
+                    dispenses)
+                </span>
 
                 @for ($page = $start; $page <= $end; $page++)
                     @if ($page === $dispenses->currentPage())
