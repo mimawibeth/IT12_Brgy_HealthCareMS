@@ -12,12 +12,7 @@
     <div class="page-content">
 
         <div class="content-header">
-            <div>
-                <h2>Role Management</h2>
-                <p class="content-subtitle">
-                    Create, view, and manage user roles and their permissions in the system.
-                </p>
-            </div>
+
             <button class="btn btn-primary" onclick="openAddRoleModal()">
                 <i class="bi bi-plus-circle"></i> Add New Role
             </button>

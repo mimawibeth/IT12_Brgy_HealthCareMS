@@ -12,14 +12,13 @@
 /* === CONTENT HEADER === Title and action buttons */
 .content-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
-.content-header h2 {
-    font-size: 22px;
-    color: #2c3e50;
+.content-header .btn {
+    flex-shrink: 0;
 }
 
 /* === FILTERS AND SEARCH === */
@@ -47,16 +46,19 @@
 
 .btn-search {
     padding: 10px 20px;
-    background-color: #3498db;
-    color: #fff;
-    border: none;
+    background-color: transparent;
+    color: #2f6d7e;
+    border: 1.5px solid #2f6d7e;
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
+    font-weight: 500;
 }
 
 .btn-search:hover {
-    background-color: #2980b9;
+    background-color: transparent;
+    color: black;
+    border-color: black;
 }
 
 .filter-options {
@@ -88,7 +90,7 @@
 }
 
 .data-table thead {
-    background-color: #34495e;
+    background: linear-gradient(135deg, #2f6d7e 0%, #1f4d5c 100%);
     color: #fff;
 }
 
@@ -136,35 +138,47 @@ button.btn-action {
 
 .btn-view {
     color: #3498db;
-    background-color: #fff;
+    background-color: transparent;
     border-color: #3498db;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .btn-view:hover {
-    background-color: #3498db;
-    color: #fff;
+    background-color: transparent;
+    color: #2874a6;
+    border-color: #2874a6;
 }
 
 .btn-edit {
     color: #f39c12;
-    background-color: #fff;
+    background-color: transparent;
     border-color: #f39c12;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .btn-edit:hover {
-    background-color: #f39c12;
-    color: #fff;
+    background-color: transparent;
+    color: #d68910;
+    border-color: #d68910;
 }
 
 .btn-delete {
     color: #e74c3c;
-    background-color: #fff;
+    background-color: transparent;
     border-color: #e74c3c;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .btn-delete:hover {
-    background-color: #e74c3c;
-    color: #fff;
+    background-color: transparent;
+    color: #c0392b;
+    border-color: #c0392b;
 }
 
 /* === PAGINATION === */
@@ -181,15 +195,16 @@ button.btn-action {
 
 .btn-page {
     padding: 8px 15px;
-    background-color: #3498db;
+    background-color: #2f6d7e;
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: 500;
 }
 
 .btn-page:hover {
-    background-color: #2980b9;
+    background-color: #1f4d5c;
 }
 
 .page-info {
@@ -200,19 +215,19 @@ button.btn-action {
 /* === FORM CONTAINER === */
 .form-container {
     background-color: #fff;
-    border-radius: 4px;
-    padding: 15px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 100%;
-    border: 1px solid #e8e8e8;
+    margin-bottom: 20px;
 }
 
 /* === FORM SECTIONS === */
 .form-section {
-    margin-bottom: 15px;
-    padding: 16px;
-    border-bottom: 1px solid #e8e8e8;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-bottom: 1px solid #e2e8f0;
     border-radius: 4px;
 }
 
@@ -221,18 +236,19 @@ button.btn-action {
 }
 
 .form-section h3 {
-    color: #1a1a1a;
-    margin-bottom: 12px;
-    font-size: 17px;
-    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 16px;
+    font-size: 18px;
+    font-weight: 600;
 }
 
 /* === FORM ROWS === Multiple fields in a row */
 .form-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 12px;
-    margin-bottom: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+    max-width: 100%;
 }
 
 .form-row:last-child {
@@ -251,10 +267,9 @@ button.btn-action {
 
 .form-group label {
     margin-bottom: 8px;
-    color: #333;
+    color: #2d3748;
     font-weight: 600;
-    font-size: 13px;
-    text-transform: capitalize;
+    font-size: 14px;
 }
 
 /* Style required asterisk in red */
@@ -264,19 +279,21 @@ button.btn-action {
 }
 
 .form-control {
+    width: 100%;
     padding: 11px 14px;
-    border: 1px solid #d0d0d0;
-    border-radius: 3px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
     font-size: 14px;
     font-family: inherit;
     background-color: #fff;
-    transition: border-color 0.15s ease;
+    color: #2d3748;
+    transition: all 0.2s ease;
 }
 
 .form-control:focus {
     outline: none;
-    border-color: #2c5aa0;
-    box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.08);
+    border-color: #4a90a4;
+    box-shadow: 0 0 0 3px rgba(74, 144, 164, 0.1);
 }
 
 textarea.form-control {
@@ -286,13 +303,13 @@ textarea.form-control {
 
 /* === FORM TITLE === */
 .form-title {
-    color: #1a1a1a;
+    color: #2d3748;
     text-align: center;
-    margin-bottom: 35px;
-    font-size: 20px;
-    font-weight: 700;
-    border-bottom: 2px solid #2c5aa0;
-    padding-bottom: 18px;
+    margin-bottom: 30px;
+    font-size: 22px;
+    font-weight: 600;
+    border-bottom: 2px solid #4a90a4;
+    padding-bottom: 16px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -446,20 +463,28 @@ textarea.form-control {
 .page-breadcrumbs {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 18px;
-    font-size: 13px;
-    color: #7f8c8d;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #718096;
+    align-items: center;
 }
 
 .page-breadcrumbs a {
-    color: #2c5aa0;
+    color: #4a90a4;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.page-breadcrumbs a:hover {
+    color: #3a7485;
+    text-decoration: underline;
 }
 
 .page-breadcrumbs .separator {
-    color: #bdc3c7;
+    color: #cbd5e0;
+    font-weight: 400;
 }
 
 .table-heading {
@@ -760,13 +785,29 @@ textarea.form-control {
 /* === RESPONSIVE === */
 @media (max-width: 768px) {
     .content-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
+        justify-content: flex-end;
+        margin-bottom: 15px;
+    }
+
+    .content-header .btn {
+        width: 100%;
+        text-align: center;
     }
 
     .filters {
         padding: 15px;
+    }
+
+    .search-box {
+        flex-direction: column;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+
+    .btn-search {
+        width: 100%;
     }
 
     .filter-options {
@@ -787,6 +828,44 @@ textarea.form-control {
 
     .form-row {
         grid-template-columns: 1fr;
+    }
+
+    .form-container {
+        padding: 16px;
+        border-radius: 8px;
+    }
+
+    .form-section {
+        padding: 16px;
+    }
+
+    .form-title {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .section-header {
+        font-size: 15px;
+    }
+
+    .wizard-steps {
+        padding: 15px 10px;
+    }
+
+    .step {
+        min-width: 80px;
+    }
+
+    .step-label {
+        font-size: 11px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn {
+        width: 100%;
     }
 }
 
@@ -976,15 +1055,49 @@ textarea.form-control {
 @media (max-width: 520px) {
     .modal-content {
         padding: 14px;
-        margin: 20px;
+        margin: 10px;
+        width: 95%;
     }
 
     .form-row {
-        gap: 12px;
+        gap: 10px;
     }
 
     .modal-header h3 {
         font-size: 16px;
+    }
+
+    .form-container {
+        padding: 12px;
+    }
+
+    .form-section {
+        padding: 12px;
+        margin-bottom: 15px;
+    }
+
+    .form-title {
+        font-size: 16px;
+        padding-bottom: 12px;
+    }
+
+    .wizard-steps {
+        gap: 5px;
+        padding: 10px 5px;
+    }
+
+    .step {
+        min-width: 60px;
+    }
+
+    .step-circle {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+    }
+
+    .step-label {
+        font-size: 10px;
     }
 }
 
@@ -999,11 +1112,12 @@ textarea.form-control {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 30px 20px;
-    background: linear-gradient(135deg, #f8f9fa 0%, #f0f2f5 100%);
-    border-bottom: 2px solid #e0e0e0;
+    padding: 25px 20px;
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    border-bottom: 2px solid #e2e8f0;
+    border-radius: 8px 8px 0 0;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 15px;
 }
 
 .step {
@@ -1018,11 +1132,11 @@ textarea.form-control {
 .step::after {
     content: '';
     position: absolute;
-    top: 24px;
+    top: 22px;
     left: 50%;
     width: 100%;
     height: 2px;
-    background-color: #ddd;
+    background-color: #e2e8f0;
     z-index: 0;
 }
 
@@ -1031,34 +1145,36 @@ textarea.form-control {
 }
 
 .step-circle {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
-    background-color: #e0e0e0;
-    color: #666;
+    background-color: #e2e8f0;
+    color: #718096;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 600;
     border: 3px solid #fff;
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
     z-index: 1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .step.active .step-circle {
-    background: linear-gradient(135deg, #2c5aa0 0%, #1e3c72 100%);
+    background: linear-gradient(135deg, #4a90a4 0%, #3a7485 100%);
     color: #fff;
-    border-color: #1e3c72;
-    box-shadow: 0 4px 12px rgba(44, 90, 160, 0.3);
+    border-color: #4a90a4;
+    box-shadow: 0 4px 12px rgba(74, 144, 164, 0.4);
 }
 
 .step.completed .step-circle {
-    background-color: #27ae60;
+    background-color: #48bb78;
     color: #fff;
-    border-color: #1e8449;
+    border-color: #38a169;
+    box-shadow: 0 2px 6px rgba(72, 187, 120, 0.3);
 }
 
 .step-completed .step-circle::after {
@@ -1071,19 +1187,20 @@ textarea.form-control {
     margin-top: 10px;
     font-size: 12px;
     font-weight: 600;
-    color: #666;
+    color: #718096;
     text-align: center;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
 }
 
 .step.active .step-label {
-    color: #2c5aa0;
+    color: #4a90a4;
     font-weight: 700;
 }
 
 .step.completed .step-label {
-    color: #27ae60;
+    color: #48bb78;
+    font-weight: 600;
 }
 
 .wizard-content {

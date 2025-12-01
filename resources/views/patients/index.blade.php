@@ -11,25 +11,15 @@
 @section('content')
     <div class="page-content">
 
-        <!-- Header with Add Button -->
-        <div class="content-header">
-            <div>
-                <h2>All Patient Records</h2>
-                <p class="content-subtitle">
-                    Record patient consultations, treatments, and follow-ups in the health system.
-                </p>
-            </div>
-            <a href="{{ route('patients.create') }}" class="btn btn-primary">
-                <i class="bi bi-person-plus"></i> Add New Patient
-            </a>
-        </div>
-
         <!-- Search and Filter Section -->
         <form method="GET" action="{{ route('patients.index') }}" class="filters">
             <div class="search-box">
                 <input type="text" name="search" placeholder="Search patients..." class="search-input"
                     value="{{ request('search') }}">
                 <button type="submit" class="btn-search"><i class="bi bi-search"></i> Search</button>
+                <a href="{{ route('patients.create') }}" class="btn btn-primary" style="margin-left: 10px;">
+                    <i class="bi bi-person-plus"></i> Add New Patient
+                </a>
             </div>
 
             <div class="filter-options">
@@ -83,7 +73,12 @@
                             <td>{{ $patient->address }}</td>
                             <td>{{ $patient->contactNumber }}</td>
                             <td class="actions">
-                                <a href="#" class="btn-action btn-view" data-patient-id="{{ $patient->PatientID }}">View</a>
+                                <a href="#" class="btn-action btn-view" data-patient-id="{{ $patient->PatientID }}">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                <a href="{{ route('patients.edit', $patient->PatientID) }}" class="btn-action btn-edit">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
                             </td>
                         </tr>
                     @empty

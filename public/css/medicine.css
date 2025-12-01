@@ -48,13 +48,13 @@
 }
 
 .stat-icon-blue {
-    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-    color: #1976d2;
+    background: linear-gradient(135deg, #e0f2f7 0%, #b3dde8 100%);
+    color: #4a90a4;
 }
 
 .stat-icon-green {
-    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-    color: #388e3c;
+    background: linear-gradient(135deg, #e6f9f0 0%, #c3f0d9 100%);
+    color: #48bb78;
 }
 
 .stat-icon-orange {
@@ -63,8 +63,8 @@
 }
 
 .stat-icon-purple {
-    background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
-    color: #7b1fa2;
+    background: linear-gradient(135deg, #e8f5f9 0%, #b3e5ec 100%);
+    color: #14b8a6;
 }
 
 .stat-icon-red {

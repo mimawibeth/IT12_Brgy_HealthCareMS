@@ -13,12 +13,7 @@
     <div class="page-content">
         <!-- Header with Add Button -->
         <div class="content-header">
-            <div>
-                <h2>System Users</h2>
-                <p class="content-subtitle">
-                    View and manage all registered users in the system.
-                </p>
-            </div>
+
             <a href="{{ route('users.add-new') }}" class="btn btn-primary">
                 <i class="bi bi-person-plus"></i> Add New User
             </a>

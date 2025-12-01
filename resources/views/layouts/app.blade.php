@@ -24,8 +24,8 @@
             <!-- Logo/Header Section -->
             <div class="sidebar-header">
                 <img src="{{ asset('images/brgy.logo.png') }}" alt="Barangay Logo" class="sidebar-logo">
-                <h2>Barangay Sto. Niño Health Center System</h2>
-                <p class="user-role" style="display: none;">{{ auth()->user()->role ?? 'Guest' }}</p>
+                <h2>Barangay Sto. Niño</h2>
+                <p class="sidebar-subtitle">Health Center System</p>
             </div>
 
             <!-- Navigation Menu -->
@@ -80,11 +80,9 @@
                         </a>
                         <a href="{{ route('health-programs.nip-view') }}"
                             class="nav-item {{ request()->routeIs('health-programs.nip-*') ? 'active' : '' }}">
-
                             <i class="bi bi-shield-check icon"></i>
                             <span>Immunization</span>
                         </a>
-
                     </div>
                 </div>
 
@@ -164,12 +162,8 @@
                 @endif
             </nav>
 
-            <!-- Sidebar Footer: Settings & Logout (Fixed at bottom) -->
+            <!-- Sidebar Footer: Logout (Fixed at bottom) -->
             <div class="sidebar-footer">
-                <!-- Settings -->
-
-
-                <!-- Logout Button -->
                 <a href="{{ route('logout') }}" class="nav-item logout-btn">
                     <i class="bi bi-box-arrow-right icon"></i>
                     <span>Logout</span>
@@ -183,13 +177,9 @@
             <header class="top-bar">
                 <h1 class="page-title">@yield('page-title', 'Dashboard')</h1>
                 <div class="user-info">
-                    <div class="datetime-display">
-                        <div class="current-date" id="currentDate"></div>
-                        <div class="current-time" id="currentTime"></div>
-                    </div>
                     <div class="user-details">
                         <div class="user-role">
-                            <i class="bi bi-shield-lock"></i>
+                            <i class="bi bi-shield-check"></i>
                             <span id="userRole">Super Admin</span>
                         </div>
                         @php($authUser = auth()->user())
@@ -209,13 +199,15 @@
                 <!-- Success/Error Messages -->
                 @if(session('success'))
                     <div class="alert alert-success">
-                        ✓ {{ session('success') }}
+                        <i class="bi bi-check-circle"></i>
+                        <span>{{ session('success') }}</span>
                     </div>
                 @endif
 
                 @if(session('error'))
                     <div class="alert alert-error">
-                        ✗ {{ session('error') }}
+                        <i class="bi bi-exclamation-circle"></i>
+                        <span>{{ session('error') }}</span>
                     </div>
                 @endif
 
@@ -230,26 +222,6 @@
 
     <!-- Sidebar Dropdown Script -->
     <script>
-        // Update date and time display
-        function updateDateTime() {
-            const now = new Date();
-            const options = {
-                weekday: 'short',
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            };
-            const dateString = now.toLocaleDateString('en-US', options);
-            const timeString = now.toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-
-            document.getElementById('currentDate').textContent = dateString;
-            document.getElementById('currentTime').textContent = timeString;
-        }
-
         // Update user role based on actual role
         function updateUserRole() {
             const userRole = '{{ auth()->user()->role ?? "user" }}';
@@ -267,10 +239,7 @@
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function () {
-            updateDateTime();
             updateUserRole();
-            // Update time every second
-            setInterval(updateDateTime, 1000);
         });
 
         // Toggle dropdown menus in sidebar

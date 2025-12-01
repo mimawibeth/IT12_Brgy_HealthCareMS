@@ -12,7 +12,6 @@
 @section('content')
     <div class="page-content">
         <div class="content-header">
-            <h2>System Audit Logs</h2>
             <div class="header-actions">
                 <button class="btn btn-secondary" onclick="exportLogs()">
                     <i class="bi bi-download"></i> Export Logs

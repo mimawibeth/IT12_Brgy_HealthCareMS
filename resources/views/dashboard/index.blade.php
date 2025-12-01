@@ -11,14 +11,7 @@
 
 @section('content')
     <div class="page-content">
-        <!-- Header -->
-        <div class="content-header">
-            <div>
-                <h2>Dashboard Overview</h2>
-                <p class="content-subtitle">Monitor health center activities, patient statistics, and program performance at
-                    a glance.</p>
-            </div>
-        </div>
+
 
         @php
             $role = auth()->user()->role ?? 'bhw';

@@ -12,10 +12,7 @@
 @section('content')
     <div class="page-content">
         <div class="content-header">
-            <div>
-                <h2>Dispense Medicine</h2>
-                <p class="content-subtitle">Record medicine dispensation to patients and track inventory usage.</p>
-            </div>
+
 
         </div>
 

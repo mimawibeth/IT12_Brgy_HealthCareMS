@@ -13,11 +13,7 @@
     <div class="page-content">
         <!-- Header -->
         <div class="content-header">
-            <div>
-                <h2>Monthly Health Reports</h2>
-                <p class="content-subtitle">Generate comprehensive reports and analyze health center performance metrics.
-                </p>
-            </div>
+
             <div class="header-actions">
                 <button class="btn btn-secondary" onclick="printReport()">
                     <i class="bi bi-printer"></i> Print Report
@@ -383,9 +379,9 @@
                 labels: ['Prenatal Care', 'Family Planning', 'Immunization'],
                 datasets: [{
                     data: [
-                                {{ $programDistribution['prenatal'] ?? 0 }},
-                                {{ $programDistribution['fp'] ?? 0 }},
-                                {{ $programDistribution['nip'] ?? 0 }},
+                                        {{ $programDistribution['prenatal'] ?? 0 }},
+                                        {{ $programDistribution['fp'] ?? 0 }},
+                                        {{ $programDistribution['nip'] ?? 0 }},
                     ],
                     backgroundColor: [
                         '#e74c3c',
@@ -436,7 +432,7 @@
                     }
                 }
             }
-            });
+                    });
 
         // Initialize Service Completion Rate Chart
         const completionCtx = document.getElementById('completionChart').getContext('2d');
@@ -489,8 +485,8 @@
                 labels: ['Female', 'Male'],
                 datasets: [{
                     data: [
-                                {{ $genderCounts['F'] ?? 0 }},
-                                {{ $genderCounts['M'] ?? 0 }},
+                                        {{ $genderCounts['F'] ?? 0 }},
+                                        {{ $genderCounts['M'] ?? 0 }},
                     ],
                     backgroundColor: ['#e74c3c', '#3498db'],
                     borderColor: '#fff',
@@ -567,8 +563,8 @@
                     labels: ['Female', 'Male'],
                     datasets: [{
                         data: [
-                                {{ $genderCounts['F'] ?? 0 }},
-                                {{ $genderCounts['M'] ?? 0 }},
+                                        {{ $genderCounts['F'] ?? 0 }},
+                                        {{ $genderCounts['M'] ?? 0 }},
                         ],
                         backgroundColor: ['#e74c3c', '#3498db'],
                         borderColor: '#fff',
