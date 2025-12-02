@@ -24,7 +24,8 @@
             <!-- Logo/Header Section -->
             <div class="sidebar-header">
                 <img src="{{ asset('images/brgy.logo.png') }}" alt="Barangay Logo" class="sidebar-logo">
-                <h2>Barangay Sto. Niño Health Center System</h2>
+                <h2>Barangay Sto. Niño</h2>
+                <p class="sidebar-subtitle">Health Center System</p>
                 <p class="user-role" style="display: none;">{{ auth()->user()->role ?? 'Guest' }}</p>
             </div>
 
@@ -145,6 +146,37 @@
                     </div>
                 @endif
 
+                @if(in_array(auth()->user()->role ?? '', ['super_admin', 'admin']))
+                    <div class="nav-dropdown">
+                        <button class="nav-dropdown-toggle">
+                            <i class="bi bi-ui-checks-grid icon"></i>
+                            <span>Assistance & Requests</span>
+                            <i class="bi bi-chevron-down arrow"></i>
+                        </button>
+
+                        <div class="nav-dropdown-menu">
+                            <a href="{{ route('financial-assistance.index') }}"
+                                class="nav-item {{ request()->routeIs('financial-assistance.*') ? 'active' : '' }}">
+                                <i class="bi bi-wallet2 icon"></i>
+                                <span>Financial Assistance</span>
+                            </a>
+
+                            <a href="{{ route('medical-supplies.request') }}"
+                                class="nav-item {{ request()->routeIs('medical-supplies.*') ? 'active' : '' }}">
+                                <i class="bi bi-bag-plus icon"></i>
+                                <span>Medical Supply Request</span>
+                            </a>
+
+                            <a href="{{ route('approvals.index') }}"
+                                class="nav-item {{ request()->routeIs('approvals.*') ? 'active' : '' }}">
+                                <i class="bi bi-check2-square icon"></i>
+                                <span>Pending Approvals</span>
+                            </a>
+                        </div>
+                    </div>
+                @endif
+
+
                 <!-- Reports -->
                 @if((auth()->user()->role ?? '') !== 'bhw')
                     <a href="{{ route('reports.monthly') }}"
@@ -186,10 +218,14 @@
             <header class="top-bar">
                 <h1 class="page-title">@yield('page-title', 'Dashboard')</h1>
                 <div class="user-info">
-                    <div class="datetime-display">
-                        <div class="current-date" id="currentDate"></div>
-                        <div class="current-time" id="currentTime"></div>
-                    </div>
+                    @if(in_array(auth()->user()->role ?? '', ['super_admin', 'admin']))
+                        <div class="notification-bell">
+                            <button class="bell-button" id="notificationBell">
+                                <i class="bi bi-bell"></i>
+                                <span class="notification-badge">3</span>
+                            </button>
+                        </div>
+                    @endif
                     <div class="user-details">
                         <div class="user-role">
                             <i class="bi bi-shield-lock"></i>
@@ -233,26 +269,6 @@
 
     <!-- Sidebar Dropdown Script -->
     <script>
-        // Update date and time display
-        function updateDateTime() {
-            const now = new Date();
-            const options = {
-                weekday: 'short',
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            };
-            const dateString = now.toLocaleDateString('en-US', options);
-            const timeString = now.toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-
-            document.getElementById('currentDate').textContent = dateString;
-            document.getElementById('currentTime').textContent = timeString;
-        }
-
         // Update user role based on actual role
         function updateUserRole() {
             const userRole = '{{ auth()->user()->role ?? "user" }}';
@@ -270,10 +286,7 @@
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function () {
-            updateDateTime();
             updateUserRole();
-            // Update time every second
-            setInterval(updateDateTime, 1000);
         });
 
         // Toggle dropdown menus in sidebar

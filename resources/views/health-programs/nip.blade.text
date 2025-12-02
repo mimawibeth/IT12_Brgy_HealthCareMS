@@ -9,23 +9,17 @@
 
 @section('content')
 <div class="page-content">
-    <div class="content-header">
-        <div>
-            <h2>National Immunization Program Records</h2>
-            <p class="content-subtitle">
-                Track newborn visits, vaccines, and monitoring follow-ups.
-            </p>
-        </div>
-        <div class="header-actions">
-            <button class="btn btn-primary" id="openNipForm">+ Add New Record</button>
-            <button class="btn btn-secondary" id="backToNipList" style="display:none;">← Back to List</button>
-        </div>
-    </div>
 
     <div class="filters" id="nipFilters">
         <div class="search-box">
             <input type="text" class="search-input" id="nipSearch" placeholder="Search child name or record ID">
-            <button class="btn btn-search" type="button">Search</button>
+            <button class="btn btn-search" type="button"><i class="bi bi-search"></i> Search</button>
+            <button class="btn btn-primary" id="openNipForm" style="margin-left: 10px;">
+                <i class="bi bi-plus-circle"></i> Add New Record
+            </button>
+            <button class="btn btn-secondary" id="backToNipList" style="display:none; margin-left: 10px;">
+                <i class="bi bi-arrow-left"></i> Back to Records
+            </button>
         </div>
         <div class="filter-options">
             <select class="filter-select">
@@ -67,11 +61,15 @@
                         @php($lastVisit = optional($record->visits)->sortByDesc('age_months')->first())
                         {{ $lastVisit ? $lastVisit->age_months . ' months' : '—' }}
                     </td>
-                    <td><span class="status-chip status-green">Recorded</span></td>
+                    <td style="color: #48bb78;"><i class="bi bi-check-circle"></i> Recorded</td>
                     <td>
                         <a href="javascript:void(0)" class="btn-action btn-view view-nip" data-id="{{ $record->id }}"
-                            data-record="{{ $record->record_no ?? 'NIP-' . str_pad($record->id, 3, '0', STR_PAD_LEFT) }}">View</a>
-                        <a href="{{ route('health-programs.nip-edit', $record) }}" class="btn-action btn-edit">Edit</a>
+                            data-record="{{ $record->record_no ?? 'NIP-' . str_pad($record->id, 3, '0', STR_PAD_LEFT) }}">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                        <a href="{{ route('health-programs.nip-edit', $record) }}" class="btn-action btn-edit">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
                     </td>
                 </tr>
                 @empty
@@ -489,10 +487,10 @@
             const toggleForm = (show) => {
                 formPanel.style.display = show ? 'block' : 'none';
                 tablePanel.style.display = show ? 'none' : 'block';
-                filters.style.display = show ? 'none' : 'block';
+                filters.style.display = show ? 'none' : 'flex';
                 openBtn.style.display = show ? 'none' : 'inline-flex';
                 backBtn.style.display = show ? 'inline-flex' : 'none';
-                if (pagination) pagination.style.display = show ? 'none' : 'block';
+                if (pagination) pagination.style.display = show ? 'none' : 'flex';
 
                 if (!show) {
                     alertBox.style.display = 'none';

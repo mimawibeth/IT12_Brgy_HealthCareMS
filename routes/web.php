@@ -43,10 +43,12 @@ Route::post('/login', function () {
     // Attempt to authenticate user
     $remember = request()->boolean('remember');
 
-    if (auth()->attempt([
-        'email' => $credentials['email'],
-        'password' => $credentials['password'],
-    ], $remember)) {
+    if (
+        auth()->attempt([
+            'email' => $credentials['email'],
+            'password' => $credentials['password'],
+        ], $remember)
+    ) {
         request()->session()->regenerate();
 
         \App\Models\AuditLog::create([
@@ -317,6 +319,29 @@ Route::middleware('auth')->group(function () {
 
     // ====================
     // SETTINGS ROUTES
+    // ====================
+    // APPROVALS & REQUESTS
+    // ====================
+    Route::prefix('approvals')->name('approvals.')->group(function () {
+        Route::get('/', function () {
+            return view('approvals.index');
+        })->name('index');
+    });
+
+    Route::prefix('financial-assistance')->name('financial-assistance.')->group(function () {
+        Route::get('/', function () {
+            return view('approvals.financial-assistance');
+        })->name('index');
+    });
+
+    Route::prefix('medical-supplies')->name('medical-supplies.')->group(function () {
+        Route::get('/request', function () {
+            return view('approvals.medical-supplies');
+        })->name('request');
+    });
+
+    // ====================
+    // SETTINGS
     // ====================
     Route::prefix('settings')->name('settings.')->group(function () {
         // System settings page

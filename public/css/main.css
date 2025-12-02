@@ -271,6 +271,47 @@ body {
     gap: 25px;
 }
 
+/* === NOTIFICATION BELL === */
+.notification-bell {
+    position: relative;
+}
+
+.bell-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    padding: 10px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bell-button:hover {
+    background-color: #f7fafc;
+}
+
+.bell-button i {
+    font-size: 24px;
+    color: #4a90a4;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background-color: #e53e3e;
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 5px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+}
+
 .datetime-display {
     display: flex;
     flex-direction: column;
@@ -577,6 +618,14 @@ body.dark-mode .main-content {
 body.dark-mode .top-bar {
     background-color: #2d3748;
     border-bottom-color: #4a5568;
+}
+
+body.dark-mode .bell-button:hover {
+    background-color: #4a5568;
+}
+
+body.dark-mode .bell-button i {
+    color: #63b3ed;
 }
 
 body.dark-mode .page-title,
