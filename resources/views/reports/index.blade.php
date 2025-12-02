@@ -111,7 +111,7 @@
 
         <div class="charts-grid">
             <!-- Monthly Services Trend -->
-            <div class="chart-card">
+            <div class="chart-card" data-chart-id="servicesChart" data-chart-title="Monthly Services Trend" data-chart-icon="bi-graph-up" data-chart-period="Last 6 Months" data-chart-description="Overall service delivery trends across all programs">
                 <div class="chart-header">
                     <h3><i class="bi bi-graph-up"></i> Monthly Services Trend</h3>
                     <span class="chart-period">Last 6 Months</span>
@@ -123,7 +123,7 @@
             </div>
 
             <!-- Program Distribution -->
-            <div class="chart-card">
+            <div class="chart-card" data-chart-id="programDistributionChart" data-chart-title="Health Program Distribution" data-chart-icon="bi-pie-chart" data-chart-period="{{ $selectedMonthLabel ?? 'Current Month' }}" data-chart-description="Service breakdown by health programs">
                 <div class="chart-header">
                     <h3><i class="bi bi-pie-chart"></i> Health Program Distribution</h3>
                     <span class="chart-period">{{ $selectedMonthLabel ?? 'Current Month' }}</span>
@@ -135,7 +135,7 @@
             </div>
 
             <!-- Patient Demographics -->
-            <div class="chart-card">
+            <div class="chart-card" data-chart-id="demographicsChart" data-chart-title="Patient Demographics" data-chart-icon="bi-people" data-chart-period="Age Group Distribution" data-chart-description="Patient breakdown by age groups">
                 <div class="chart-header">
                     <h3><i class="bi bi-people"></i> Patient Demographics</h3>
                     <span class="chart-period">Age Group Distribution</span>
@@ -147,7 +147,7 @@
             </div>
 
             <!-- Service Completion Rate -->
-            <div class="chart-card">
+            <div class="chart-card" data-chart-id="completionChart" data-chart-title="Service Completion Rate" data-chart-icon="bi-check-circle" data-chart-period="{{ $selectedMonthLabel ?? 'Current Month' }}" data-chart-description="Completed vs Pending services">
                 <div class="chart-header">
                     <h3><i class="bi bi-check-circle"></i> Service Completion Rate</h3>
                     <span class="chart-period">{{ $selectedMonthLabel ?? 'Current Month' }}</span>
@@ -159,7 +159,7 @@
             </div>
 
             <!-- Top Health Programs -->
-            <div class="chart-card">
+            <div class="chart-card" data-chart-id="topProgramsChart" data-chart-title="Top Health Programs" data-chart-icon="bi-bar-chart" data-chart-period="Cases Handled" data-chart-description="Most active health programs this month">
                 <div class="chart-header">
                     <h3><i class="bi bi-bar-chart"></i> Top Health Programs</h3>
                     <span class="chart-period">Cases Handled</span>
@@ -171,7 +171,7 @@
             </div>
 
             <!-- Gender Distribution -->
-            <div class="chart-card">
+            <div class="chart-card" data-chart-id="genderChart" data-chart-title="Gender Distribution" data-chart-icon="bi-gender-ambiguous" data-chart-period="Patient Statistics" data-chart-description="Male vs Female patient breakdown">
                 <div class="chart-header">
                     <h3><i class="bi bi-gender-ambiguous"></i> Gender Distribution</h3>
                     <span class="chart-period">Patient Statistics</span>
@@ -179,6 +179,24 @@
                 <div class="chart-placeholder">
                     <canvas id="genderChart"></canvas>
                     <p>Male vs Female patient breakdown</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Zoom Modal -->
+        <div id="chartModal" class="chart-modal">
+            <div class="chart-modal-overlay"></div>
+            <div class="chart-modal-content">
+                <div class="chart-modal-header">
+                    <h3 id="modalChartTitle"></h3>
+                    <span id="modalChartPeriod" class="chart-period"></span>
+                    <button class="chart-modal-close" id="closeModal">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                <div class="chart-modal-body">
+                    <canvas id="modalChartCanvas"></canvas>
+                    <p id="modalChartDescription"></p>
                 </div>
             </div>
         </div>
@@ -372,30 +390,32 @@
         }
 
         // Initialize Program Distribution Chart
-        const programCtx = document.getElementById('programDistributionChart').getContext('2d');
-        new Chart(programCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Prenatal Care', 'Family Planning', 'Immunization'],
-                datasets: [{
-                    data: [
-                                        {{ $programDistribution['prenatal'] ?? 0 }},
-                                        {{ $programDistribution['fp'] ?? 0 }},
-                                        {{ $programDistribution['nip'] ?? 0 }},
-                    ],
-                    backgroundColor: [
-                        '#e74c3c',
-                        '#3498db',
-                        '#2ecc71',
-                        '#f39c12',
-                        '#9b59b6'
-                    ],
-                    borderColor: '#fff',
-                    borderWidth: 2
-                }]
-            },
-            options: chartOptions
-        });
+        const programCtx = document.getElementById('programDistributionChart');
+        if (programCtx) {
+            new Chart(programCtx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Prenatal Care', 'Family Planning', 'Immunization'],
+                    datasets: [{
+                        data: [
+                            {{ $programDistribution['prenatal'] ?? 0 }},
+                            {{ $programDistribution['fp'] ?? 0 }},
+                            {{ $programDistribution['nip'] ?? 0 }},
+                        ],
+                        backgroundColor: [
+                            '#e74c3c',
+                            '#3498db',
+                            '#2ecc71',
+                            '#f39c12',
+                            '#9b59b6'
+                        ],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: chartOptions
+            });
+        }
 
         // Initialize Patient Demographics Chart
         const ageLabels = @json($ageLabels ?? []);
@@ -431,80 +451,9 @@
                         y: { beginAtZero: true }
                     }
                 }
-            }
-                    });
-
-        // Initialize Service Completion Rate Chart
-        const completionCtx = document.getElementById('completionChart').getContext('2d');
-        new Chart(completionCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Completed', 'Pending', 'Follow-ups'],
-                datasets: [{
-                    data: @json($completionData ?? [0, 0, 0]),
-                    backgroundColor: [
-                        '#2ecc71',
-                        '#e74c3c',
-                        '#f39c12'
-                    ],
-                    borderColor: '#fff',
-                    borderWidth: 2
-                }]
-            },
-            options: chartOptions
-        });
-
-        // Initialize Top Health Programs Chart
-        const topProgramsCtx = document.getElementById('topProgramsChart').getContext('2d');
-        new Chart(topProgramsCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Deworming', 'Immunization', 'Prenatal Care', 'Family Planning', 'Nutrition'],
-                datasets: [{
-                    label: 'Cases Handled',
-                    data: @json($topProgramsData),
-                    backgroundColor: ['#3498db', '#2ecc71', '#e74c3c', '#9b59b6', '#f39c12'],
-                    borderColor: ['#2980b9', '#27ae60', '#c0392b', '#8e44ad', '#d68910'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                ...chartOptions,
-                indexAxis: 'y',
-                scales: {
-                    x: { beginAtZero: true }
-                }
-            }
-        });
-
-        // Initialize Gender Distribution Chart
-        const genderCtx = document.getElementById('genderChart').getContext('2d');
-        new Chart(genderCtx, {
-            type: 'pie',
-            data: {
-                labels: ['Female', 'Male'],
-                datasets: [{
-                    data: [
-                                        {{ $genderCounts['F'] ?? 0 }},
-                                        {{ $genderCounts['M'] ?? 0 }},
-                    ],
-                    backgroundColor: ['#e74c3c', '#3498db'],
-                    borderColor: '#fff',
-                    borderWidth: 2
-                }]
-            },
-            options: chartOptions
-        });
-
-        // Report Functions
-        function generateReport() {
-            const month = document.getElementById('report-month').value;
-            const type = document.getElementById('report-type').value;
-
-            // TODO: Implement report generation logic
-            console.log('Generating report:', { month, type });
-            alert('Report generation will be implemented with backend');
+            });
         }
+
 
         // Initialize Service Completion Rate Chart
         const completionCtx = document.getElementById('completionChart');
@@ -573,6 +522,202 @@
                 },
                 options: chartOptions
             });
+        }
+
+        // Store chart instances
+        const chartInstances = {};
+
+        // Function to get chart instance by canvas ID
+        function getChartInstance(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return null;
+            
+            // Get Chart.js instance from canvas
+            const chart = Chart.getChart(canvas);
+            return chart;
+        }
+
+        // Function to clone chart to modal
+        function cloneChartToModal(originalChart, modalCanvas) {
+            if (!originalChart) return null;
+
+            // Get the original chart configuration
+            const config = originalChart.config;
+            
+            // Create new config for modal
+            const modalConfig = {
+                type: config.type,
+                data: JSON.parse(JSON.stringify(config.data)), // Deep clone data
+                options: {
+                    ...config.options,
+                    maintainAspectRatio: true,
+                    responsive: true,
+                    plugins: {
+                        ...config.options.plugins,
+                        legend: {
+                            ...config.options.plugins?.legend,
+                            display: true
+                        }
+                    }
+                }
+            };
+
+            // Destroy existing chart if any
+            const existingChart = Chart.getChart(modalCanvas);
+            if (existingChart) {
+                existingChart.destroy();
+            }
+
+            // Create new chart in modal
+            return new Chart(modalCanvas.getContext('2d'), modalConfig);
+        }
+
+        // Modal functionality
+        const modal = document.getElementById('chartModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const modalTitle = document.getElementById('modalChartTitle');
+        const modalPeriod = document.getElementById('modalChartPeriod');
+        const modalDescription = document.getElementById('modalChartDescription');
+        const modalCanvas = document.getElementById('modalChartCanvas');
+
+        // Open modal function
+        function openChartModal(chartCard) {
+            try {
+                const chartId = chartCard.getAttribute('data-chart-id');
+                const chartTitle = chartCard.getAttribute('data-chart-title');
+                const chartIcon = chartCard.getAttribute('data-chart-icon');
+                const chartPeriod = chartCard.getAttribute('data-chart-period');
+                const chartDescription = chartCard.getAttribute('data-chart-description');
+
+                console.log('Opening modal for chart:', chartId);
+
+                // Get original chart instance
+                const originalChart = getChartInstance(chartId);
+                
+                if (!originalChart) {
+                    console.error('Chart not found:', chartId);
+                    alert('Chart not yet loaded. Please wait a moment and try again.');
+                    return;
+                }
+
+                // Check if modal elements exist
+                if (!modal || !modalTitle || !modalPeriod || !modalDescription || !modalCanvas) {
+                    console.error('Modal elements not found');
+                    return;
+                }
+
+                // Set modal content
+                modalTitle.innerHTML = `<i class="bi ${chartIcon}"></i> ${chartTitle}`;
+                modalPeriod.textContent = chartPeriod;
+                modalDescription.textContent = chartDescription;
+
+                // Show modal
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+
+                // Clone chart to modal after a short delay to ensure modal is visible
+                setTimeout(() => {
+                    try {
+                        cloneChartToModal(originalChart, modalCanvas);
+                    } catch (error) {
+                        console.error('Error cloning chart:', error);
+                    }
+                }, 200);
+            } catch (error) {
+                console.error('Error opening modal:', error);
+            }
+        }
+
+        // Close modal function
+        function closeChartModal() {
+            modal.classList.add('closing');
+            document.body.style.overflow = '';
+            
+            setTimeout(() => {
+                modal.classList.remove('active', 'closing');
+                
+                // Destroy modal chart
+                const modalChart = Chart.getChart(modalCanvas);
+                if (modalChart) {
+                    modalChart.destroy();
+                }
+            }, 300);
+        }
+
+        // Initialize modal functionality after DOM is ready and charts are loaded
+        function initializeModalFunctionality() {
+            console.log('Initializing modal functionality...');
+            
+            // Check if modal elements exist
+            if (!modal) {
+                console.error('Modal element not found!');
+                return;
+            }
+
+            // Wait a bit to ensure all charts are initialized
+            setTimeout(() => {
+                // Add click event listeners to chart cards
+                const chartCards = document.querySelectorAll('.chart-card');
+                console.log('Found chart cards:', chartCards.length);
+                
+                if (chartCards.length === 0) {
+                    console.error('No chart cards found!');
+                    return;
+                }
+                
+                chartCards.forEach((card, index) => {
+                    card.style.cursor = 'pointer';
+                    const chartId = card.getAttribute('data-chart-id');
+                    console.log(`Setting up click handler for card ${index + 1}: ${chartId}`);
+                    
+                    card.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('Chart card clicked:', chartId);
+                        openChartModal(this);
+                    });
+                });
+
+                // Close modal events
+                if (closeModalBtn) {
+                    closeModalBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        closeChartModal();
+                    });
+                } else {
+                    console.error('Close modal button not found!');
+                }
+                
+                const overlay = modal.querySelector('.chart-modal-overlay');
+                if (overlay) {
+                    overlay.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        closeChartModal();
+                    });
+                } else {
+                    console.error('Modal overlay not found!');
+                }
+
+                // Close modal on Escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && modal.classList.contains('active')) {
+                        closeChartModal();
+                    }
+                });
+
+                console.log('Modal functionality initialized successfully!');
+            }, 1000); // Increased delay to ensure charts are fully initialized
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(initializeModalFunctionality, 100);
+            });
+        } else {
+            setTimeout(initializeModalFunctionality, 100);
         }
 
         // Report Functions
