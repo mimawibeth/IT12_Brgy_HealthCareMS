@@ -210,4 +210,65 @@ class PatientController extends Controller
             'assessments' => $patient->assessments,
         ]);
     }
+
+    public function edit($id)
+    {
+        $patient = Patient::with('assessments')->findOrFail($id);
+        return view('patients.edit', compact('patient'));
+    }
+
+    public function storeAssessments(Request $request, $id)
+    {
+        $patient = Patient::findOrFail($id);
+        
+        $assessments = $request->input('assessments', []);
+
+        foreach ($assessments as $assessmentData) {
+            if (!is_array($assessmentData)) {
+                continue;
+            }
+
+            $nonEmpty = array_filter($assessmentData, function ($value) {
+                return $value !== null && $value !== '';
+            });
+
+            if (empty($nonEmpty)) {
+                continue;
+            }
+
+            $assessmentDate = $assessmentData['date'] ?? null;
+            $calculatedAge = null;
+
+            // Calculate age based on today's date, not assessment date
+            if ($patient->birthday) {
+                try {
+                    $calculatedAge = Carbon::parse($patient->birthday)->age;
+                } catch (\Exception $e) {
+                    $calculatedAge = null;
+                }
+            }
+
+            Assessment::create([
+                'PatientID' => $patient->PatientID,
+                'date' => $assessmentDate,
+                'age' => $calculatedAge ?? $assessmentData['age'] ?? null,
+                'cvdRisk' => $assessmentData['cvd_risk'] ?? null,
+                'bpSystolic' => $assessmentData['bp_systolic'] ?? null,
+                'bpDiastolic' => $assessmentData['bp_diastolic'] ?? null,
+                'wt' => $assessmentData['wt'] ?? null,
+                'ht' => $assessmentData['ht'] ?? null,
+                'fbsRbs' => $assessmentData['fbs_rbs'] ?? null,
+                'lipidProfile' => $assessmentData['lipid_profile'] ?? null,
+                'urineKetones' => $assessmentData['urine_ketones'] ?? null,
+                'urineProtein' => $assessmentData['urine_protein'] ?? null,
+                'footCheck' => $assessmentData['foot_check'] ?? null,
+                'chiefComplaint' => $assessmentData['chief_complaint'] ?? null,
+                'historyPhysical' => $assessmentData['history_physical'] ?? null,
+                'management' => $assessmentData['management'] ?? null,
+            ]);
+        }
+
+        return redirect()->route('patients.edit', $patient->PatientID)
+            ->with('success', 'Assessment(s) added successfully.');
+    }
 }

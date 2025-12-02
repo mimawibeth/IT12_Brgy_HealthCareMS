@@ -43,12 +43,10 @@ Route::post('/login', function () {
     // Attempt to authenticate user
     $remember = request()->boolean('remember');
 
-    if (
-        auth()->attempt([
-            'email' => $credentials['email'],
-            'password' => $credentials['password'],
-        ], $remember)
-    ) {
+    if (auth()->attempt([
+        'email' => $credentials['email'],
+        'password' => $credentials['password'],
+    ], $remember)) {
         request()->session()->regenerate();
 
         \App\Models\AuditLog::create([
@@ -128,10 +126,11 @@ Route::middleware('auth')->group(function () {
         // JSON details for view modal
         Route::get('/{patient}', [PatientController::class, 'show'])->name('show');
 
-        // Edit, update, and delete can be wired later as needed
-        Route::get('/{id}/edit', function ($id) {
-            return view('patients.edit', compact('id'));
-        })->name('edit');
+        // Edit patient
+        Route::get('/{id}/edit', [PatientController::class, 'edit'])->name('edit');
+
+        // Store new assessments for patient
+        Route::post('/{id}/assessments', [PatientController::class, 'storeAssessments'])->name('assessments.store');
 
         Route::put('/{id}', function ($id) {
             // TODO: Update patient logic
@@ -155,9 +154,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/prenatal', [PrenatalRecordController::class, 'store'])
             ->name('prenatal-store');
 
-        Route::get('/prenatal/{record}', [PrenatalRecordController::class, 'show'])
-            ->name('prenatal-show');
-
         Route::get('/prenatal/{record}/edit', [PrenatalRecordController::class, 'edit'])
             ->name('prenatal-edit');
 
@@ -170,9 +166,6 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/family-planning', [FamilyPlanningRecordController::class, 'store'])
             ->name('family-planning-store');
-
-        Route::get('/family-planning/{record}', [FamilyPlanningRecordController::class, 'show'])
-            ->name('family-planning-show');
 
         Route::get('/family-planning/{record}/edit', [FamilyPlanningRecordController::class, 'edit'])
             ->name('family-planning-edit');
@@ -192,6 +185,11 @@ Route::middleware('auth')->group(function () {
 
         Route::put('/immunization/{record}', [NipRecordController::class, 'update'])
             ->name('nip-update');
+
+        // New Immunization
+        Route::get('/new-immunization', function () {
+            return view('health-programs.newnip');
+        })->name('new-nip-view');
     });
 
     Route::get('/health-programs/other-services', function () {
@@ -205,20 +203,17 @@ Route::middleware('auth')->group(function () {
         // Medicine list
         Route::get('/', [MedicineController::class, 'index'])->name('index');
 
-        // Add medicine (must come before /{medicine})
+        // Add medicine
         Route::get('/create', [MedicineController::class, 'create'])->name('create');
 
         // Store medicine
         Route::post('/store', [MedicineController::class, 'store'])->name('store');
 
-        // Dispense medicine page (must come before /{medicine})
+        // Dispense medicine page
         Route::get('/dispense', [MedicineController::class, 'dispense'])->name('dispense');
 
         // Process dispense
         Route::post('/dispense/store', [MedicineController::class, 'storeDispense'])->name('dispense.store');
-
-        // View medicine
-        Route::get('/{medicine}', [MedicineController::class, 'show'])->name('show');
 
         // Edit medicine
         Route::get('/{medicine}/edit', [MedicineController::class, 'edit'])->name('edit');

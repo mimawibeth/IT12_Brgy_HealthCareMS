@@ -46,6 +46,7 @@
                                 <th>Risk Code</th>
                                 <th>Assessment</th>
                                 <th>Plan</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -55,12 +56,19 @@
                                     <td>{{ optional($visit->date)->format('Y-m-d') }}</td>
                                     <td>{{ $visit->trimester }}</td>
                                     <td>{{ $visit->risk }}</td>
-                                    <td>{{ $visit->assessment }}</td>
-                                    <td>{{ $visit->plan }}</td>
+                                    <td>{{ Str::limit($visit->assessment ?? '—', 30) }}</td>
+                                    <td>{{ Str::limit($visit->plan ?? '—', 30) }}</td>
+                                    <td>
+                                        <a href="javascript:void(0)" class="btn-action btn-view view-prenatal-visit" 
+                                           data-visit-id="{{ $visit->id }}"
+                                           data-visit-index="{{ $index }}">
+                                            <i class="bi bi-eye"></i> View
+                                        </a>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" style="text-align:center;">No visits recorded yet.</td>
+                                    <td colspan="7" style="text-align:center;">No visits recorded yet.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -85,6 +93,24 @@
                         <a href="{{ route('health-programs.prenatal-view') }}" class="btn btn-secondary">Back to Records</a>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prenatal Visit View Modal -->
+    <div id="prenatalVisitViewModal" class="modal" style="display:none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Prenatal Visit Details</h3>
+                <span class="close-modal" id="closePrenatalVisitModal">&times;</span>
+            </div>
+            <div class="modal-body" id="prenatalVisitModalBody">
+                <div class="loading-spinner" style="text-align:center; padding: 2rem;">
+                    <p>Loading...</p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" id="closePrenatalVisitModalBtn">Close</button>
             </div>
         </div>
     </div>
@@ -182,6 +208,157 @@
             });
 
             addBtn.addEventListener('click', addVisitCard);
+
+            // View Prenatal Visit Modal
+            const visitModal = document.getElementById('prenatalVisitViewModal');
+            const visitModalBody = document.getElementById('prenatalVisitModalBody');
+            const closeVisitModal = document.getElementById('closePrenatalVisitModal');
+            const closeVisitModalBtn = document.getElementById('closePrenatalVisitModalBtn');
+
+            // Store visits data from server
+            const visitsData = @json($record->visits);
+
+            document.querySelectorAll('.view-prenatal-visit').forEach(button => {
+                button.addEventListener('click', function() {
+                    const visitId = parseInt(this.getAttribute('data-visit-id'));
+                    const visitIndex = parseInt(this.getAttribute('data-visit-index'));
+                    
+                    visitModal.style.display = 'flex';
+                    visitModalBody.innerHTML = '<div style="text-align:center; padding: 2rem;"><p>Loading...</p></div>';
+
+                    // Find the visit data
+                    const visit = visitsData[visitIndex];
+
+                    if (visit) {
+                        const formatDate = (value) => {
+                            if (!value) return 'N/A';
+                            const d = new Date(value);
+                            if (isNaN(d.getTime())) return value;
+                            return d.toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: '2-digit'
+                            });
+                        };
+
+                        visitModalBody.innerHTML = `
+                            <div class="form-section section-patient-info">
+                                <h3 class="section-header"><span class="section-indicator"></span>Visit Information</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label><strong>Visit Date:</strong></label>
+                                        <p>${formatDate(visit.date)}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><strong>Trimester:</strong></label>
+                                        <p>${visit.trimester || 'N/A'}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><strong>Risk Code:</strong></label>
+                                        <p>${visit.risk || 'N/A'}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section section-history">
+                                <h3 class="section-header"><span class="section-indicator"></span>S – Subjective</h3>
+                                <div class="form-row">
+                                    <div class="form-group full-width">
+                                        <label><strong>Subjective:</strong></label>
+                                        <p style="white-space: pre-wrap;">${visit.subjective || 'N/A'}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section section-assessment">
+                                <h3 class="section-header"><span class="section-indicator"></span>O – Objective</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label><strong>AOG:</strong></label>
+                                        <p>${visit.aog || 'N/A'}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><strong>Weight (WT):</strong></label>
+                                        <p>${visit.weight || 'N/A'}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><strong>Height (HT):</strong></label>
+                                        <p>${visit.height || 'N/A'}</p>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label><strong>Blood Pressure (B/P):</strong></label>
+                                        <p>${visit.bp || 'N/A'}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><strong>Pulse Rate (PR):</strong></label>
+                                        <p>${visit.pr || 'N/A'}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><strong>Fundal Height (FH):</strong></label>
+                                        <p>${visit.fh || 'N/A'}</p>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label><strong>Fetal Heart Tone (FHT):</strong></label>
+                                        <p>${visit.fht || 'N/A'}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><strong>Presentation:</strong></label>
+                                        <p>${visit.presentation || 'N/A'}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><strong>BMI:</strong></label>
+                                        <p>${visit.bmi || 'N/A'}</p>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label><strong>Respiratory Rate (RR):</strong></label>
+                                        <p>${visit.rr || 'N/A'}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><strong>Heart Rate (HR):</strong></label>
+                                        <p>${visit.hr || 'N/A'}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section section-screening">
+                                <h3 class="section-header"><span class="section-indicator"></span>A – Assessment</h3>
+                                <div class="form-row">
+                                    <div class="form-group full-width">
+                                        <label><strong>Assessment:</strong></label>
+                                        <p style="white-space: pre-wrap;">${visit.assessment || 'N/A'}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section section-history">
+                                <h3 class="section-header"><span class="section-indicator"></span>P – Plan</h3>
+                                <div class="form-row">
+                                    <div class="form-group full-width">
+                                        <label><strong>Plan:</strong></label>
+                                        <p style="white-space: pre-wrap;">${visit.plan || 'N/A'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        visitModalBody.innerHTML = '<div style="text-align:center; padding: 2rem; color: red;"><p>Visit not found.</p></div>';
+                    }
+                });
+            });
+
+            closeVisitModal.addEventListener('click', () => visitModal.style.display = 'none');
+            closeVisitModalBtn.addEventListener('click', () => visitModal.style.display = 'none');
+            window.addEventListener('click', (event) => {
+                if (event.target === visitModal) {
+                    visitModal.style.display = 'none';
+                }
+            });
         });
     </script>
 @endpush
