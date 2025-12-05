@@ -111,7 +111,9 @@
 
         <div class="charts-grid">
             <!-- Monthly Services Trend -->
-            <div class="chart-card" data-chart-id="servicesChart" data-chart-title="Monthly Services Trend" data-chart-icon="bi-graph-up" data-chart-period="Last 6 Months" data-chart-description="Overall service delivery trends across all programs">
+            <div class="chart-card" data-chart-id="servicesChart" data-chart-title="Monthly Services Trend"
+                data-chart-icon="bi-graph-up" data-chart-period="Last 6 Months"
+                data-chart-description="Overall service delivery trends across all programs">
                 <div class="chart-header">
                     <h3><i class="bi bi-graph-up"></i> Monthly Services Trend</h3>
                     <span class="chart-period">Last 6 Months</span>
@@ -123,7 +125,9 @@
             </div>
 
             <!-- Program Distribution -->
-            <div class="chart-card" data-chart-id="programDistributionChart" data-chart-title="Health Program Distribution" data-chart-icon="bi-pie-chart" data-chart-period="{{ $selectedMonthLabel ?? 'Current Month' }}" data-chart-description="Service breakdown by health programs">
+            <div class="chart-card" data-chart-id="programDistributionChart" data-chart-title="Health Program Distribution"
+                data-chart-icon="bi-pie-chart" data-chart-period="{{ $selectedMonthLabel ?? 'Current Month' }}"
+                data-chart-description="Service breakdown by health programs">
                 <div class="chart-header">
                     <h3><i class="bi bi-pie-chart"></i> Health Program Distribution</h3>
                     <span class="chart-period">{{ $selectedMonthLabel ?? 'Current Month' }}</span>
@@ -135,7 +139,9 @@
             </div>
 
             <!-- Patient Demographics -->
-            <div class="chart-card" data-chart-id="demographicsChart" data-chart-title="Patient Demographics" data-chart-icon="bi-people" data-chart-period="Age Group Distribution" data-chart-description="Patient breakdown by age groups">
+            <div class="chart-card" data-chart-id="demographicsChart" data-chart-title="Patient Demographics"
+                data-chart-icon="bi-people" data-chart-period="Age Group Distribution"
+                data-chart-description="Patient breakdown by age groups">
                 <div class="chart-header">
                     <h3><i class="bi bi-people"></i> Patient Demographics</h3>
                     <span class="chart-period">Age Group Distribution</span>
@@ -147,7 +153,9 @@
             </div>
 
             <!-- Service Completion Rate -->
-            <div class="chart-card" data-chart-id="completionChart" data-chart-title="Service Completion Rate" data-chart-icon="bi-check-circle" data-chart-period="{{ $selectedMonthLabel ?? 'Current Month' }}" data-chart-description="Completed vs Pending services">
+            <div class="chart-card" data-chart-id="completionChart" data-chart-title="Service Completion Rate"
+                data-chart-icon="bi-check-circle" data-chart-period="{{ $selectedMonthLabel ?? 'Current Month' }}"
+                data-chart-description="Completed vs Pending services">
                 <div class="chart-header">
                     <h3><i class="bi bi-check-circle"></i> Service Completion Rate</h3>
                     <span class="chart-period">{{ $selectedMonthLabel ?? 'Current Month' }}</span>
@@ -159,7 +167,9 @@
             </div>
 
             <!-- Top Health Programs -->
-            <div class="chart-card" data-chart-id="topProgramsChart" data-chart-title="Top Health Programs" data-chart-icon="bi-bar-chart" data-chart-period="Cases Handled" data-chart-description="Most active health programs this month">
+            <div class="chart-card" data-chart-id="topProgramsChart" data-chart-title="Top Health Programs"
+                data-chart-icon="bi-bar-chart" data-chart-period="Cases Handled"
+                data-chart-description="Most active health programs this month">
                 <div class="chart-header">
                     <h3><i class="bi bi-bar-chart"></i> Top Health Programs</h3>
                     <span class="chart-period">Cases Handled</span>
@@ -171,7 +181,9 @@
             </div>
 
             <!-- Gender Distribution -->
-            <div class="chart-card" data-chart-id="genderChart" data-chart-title="Gender Distribution" data-chart-icon="bi-gender-ambiguous" data-chart-period="Patient Statistics" data-chart-description="Male vs Female patient breakdown">
+            <div class="chart-card" data-chart-id="genderChart" data-chart-title="Gender Distribution"
+                data-chart-icon="bi-gender-ambiguous" data-chart-period="Patient Statistics"
+                data-chart-description="Male vs Female patient breakdown">
                 <div class="chart-header">
                     <h3><i class="bi bi-gender-ambiguous"></i> Gender Distribution</h3>
                     <span class="chart-period">Patient Statistics</span>
@@ -388,9 +400,9 @@
                     labels: ['Prenatal Care', 'Family Planning', 'Immunization'],
                     datasets: [{
                         data: [
-                            {{ $programDistribution['prenatal'] ?? 0 }},
-                            {{ $programDistribution['fp'] ?? 0 }},
-                            {{ $programDistribution['nip'] ?? 0 }},
+                                    {{ $programDistribution['prenatal'] ?? 0 }},
+                                    {{ $programDistribution['fp'] ?? 0 }},
+                                    {{ $programDistribution['nip'] ?? 0 }},
                         ],
                         backgroundColor: [
                             '#e74c3c',
@@ -502,8 +514,8 @@
                     labels: ['Female', 'Male'],
                     datasets: [{
                         data: [
-                                        {{ $genderCounts['F'] ?? 0 }},
-                                        {{ $genderCounts['M'] ?? 0 }},
+                                                {{ $genderCounts['F'] ?? 0 }},
+                                                {{ $genderCounts['M'] ?? 0 }},
                         ],
                         backgroundColor: ['#e74c3c', '#3498db'],
                         borderColor: '#fff',
@@ -521,7 +533,7 @@
         function getChartInstance(canvasId) {
             const canvas = document.getElementById(canvasId);
             if (!canvas) return null;
-            
+
             // Get Chart.js instance from canvas
             const chart = Chart.getChart(canvas);
             return chart;
@@ -533,7 +545,7 @@
 
             // Get the original chart configuration
             const config = originalChart.config;
-            
+
             // Create new config for modal
             const modalConfig = {
                 type: config.type,
@@ -583,7 +595,7 @@
 
                 // Get original chart instance
                 const originalChart = getChartInstance(chartId);
-                
+
                 if (!originalChart) {
                     console.error('Chart not found:', chartId);
                     alert('Chart not yet loaded. Please wait a moment and try again.');
@@ -622,10 +634,10 @@
         function closeChartModal() {
             modal.classList.add('closing');
             document.body.style.overflow = '';
-            
+
             setTimeout(() => {
                 modal.classList.remove('active', 'closing');
-                
+
                 // Destroy modal chart
                 const modalChart = Chart.getChart(modalCanvas);
                 if (modalChart) {
@@ -637,7 +649,7 @@
         // Initialize modal functionality after DOM is ready and charts are loaded
         function initializeModalFunctionality() {
             console.log('Initializing modal functionality...');
-            
+
             // Check if modal elements exist
             if (!modal) {
                 console.error('Modal element not found!');
@@ -649,18 +661,18 @@
                 // Add click event listeners to chart cards
                 const chartCards = document.querySelectorAll('.chart-card');
                 console.log('Found chart cards:', chartCards.length);
-                
+
                 if (chartCards.length === 0) {
                     console.error('No chart cards found!');
                     return;
                 }
-                
+
                 chartCards.forEach((card, index) => {
                     card.style.cursor = 'pointer';
                     const chartId = card.getAttribute('data-chart-id');
                     console.log(`Setting up click handler for card ${index + 1}: ${chartId}`);
-                    
-                    card.addEventListener('click', function(e) {
+
+                    card.addEventListener('click', function (e) {
                         e.preventDefault();
                         e.stopPropagation();
                         console.log('Chart card clicked:', chartId);
@@ -670,7 +682,7 @@
 
                 // Close modal events
                 if (closeModalBtn) {
-                    closeModalBtn.addEventListener('click', function(e) {
+                    closeModalBtn.addEventListener('click', function (e) {
                         e.preventDefault();
                         e.stopPropagation();
                         closeChartModal();
@@ -678,10 +690,10 @@
                 } else {
                     console.error('Close modal button not found!');
                 }
-                
+
                 const overlay = modal.querySelector('.chart-modal-overlay');
                 if (overlay) {
-                    overlay.addEventListener('click', function(e) {
+                    overlay.addEventListener('click', function (e) {
                         e.preventDefault();
                         e.stopPropagation();
                         closeChartModal();
@@ -691,7 +703,7 @@
                 }
 
                 // Close modal on Escape key
-                document.addEventListener('keydown', function(e) {
+                document.addEventListener('keydown', function (e) {
                     if (e.key === 'Escape' && modal.classList.contains('active')) {
                         closeChartModal();
                     }
@@ -703,7 +715,7 @@
 
         // Initialize when DOM is ready
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 setTimeout(initializeModalFunctionality, 100);
             });
         } else {

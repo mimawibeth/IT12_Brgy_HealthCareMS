@@ -50,7 +50,6 @@ class DashboardController extends Controller
         $registeredPatients = Patient::count();
         $healthPrograms = PrenatalRecord::count() + FamilyPlanningRecord::count() + NipRecord::count();
         $monthlyServices = $servicesSeries[$currentIndex] ?? 0;
-        $medicineStock = Medicine::sum('quantity_on_hand');
 
         $prenatalTotal = PrenatalRecord::count();
         $familyPlanningTotal = FamilyPlanningRecord::count();
@@ -124,7 +123,6 @@ class DashboardController extends Controller
             'registeredPatients' => $registeredPatients,
             'healthPrograms' => $healthPrograms,
             'monthlyServices' => $monthlyServices,
-            'medicineStock' => $medicineStock,
             'prenatalTotal' => $prenatalTotal,
             'familyPlanningTotal' => $familyPlanningTotal,
             'nipTotal' => $nipTotal,

@@ -106,10 +106,15 @@
                             <i class="bi bi-list-ul icon"></i>
                             <span>Medicine Records</span>
                         </a>
+                        <a href="{{ route('medicine.batches.index') }}"
+                            class="nav-item {{ request()->routeIs('medicine.batches.*') ? 'active' : '' }}">
+                            <i class="bi bi-box-seam icon"></i>
+                            <span>Medicine Batches</span>
+                        </a>
                         <a href="{{ route('medicine.dispense') }}"
                             class="nav-item {{ request()->routeIs('medicine.dispense') ? 'active' : '' }}">
                             <i class="bi bi-prescription2 icon"></i>
-                            <span>Dispense Medicine</span>
+                            <span>Dispense History</span>
                         </a>
                     </div>
                 </div>
@@ -154,21 +159,21 @@
                     <div class="nav-dropdown">
                         <button class="nav-dropdown-toggle">
                             <i class="bi bi-ui-checks-grid icon"></i>
-                            <span>Assistance & Requests</span>
+                            <span>Approvals</span>
                             <i class="bi bi-chevron-down arrow"></i>
                         </button>
 
                         <div class="nav-dropdown-menu">
-                            <a href="{{ route('financial-assistance.index') }}"
-                                class="nav-item {{ request()->routeIs('financial-assistance.*') ? 'active' : '' }}">
+                            <a href="{{ route('approvals.financial.create') }}"
+                                class="nav-item {{ request()->routeIs('approvals.financial.*') ? 'active' : '' }}">
                                 <i class="bi bi-wallet2 icon"></i>
-                                <span>Financial Assistance</span>
+                                <span>Request Financial Assistance</span>
                             </a>
 
-                            <a href="{{ route('medical-supplies.request') }}"
-                                class="nav-item {{ request()->routeIs('medical-supplies.*') ? 'active' : '' }}">
+                            <a href="{{ route('approvals.medical.create') }}"
+                                class="nav-item {{ request()->routeIs('approvals.medical.*') ? 'active' : '' }}">
                                 <i class="bi bi-bag-plus icon"></i>
-                                <span>Medical Supply Request</span>
+                                <span>Request Medical Supplies</span>
                             </a>
 
                             <a href="{{ route('approvals.index') }}"
@@ -317,7 +322,7 @@
             });
         });
 
-        // Restore open dropdown on page load
+        // Restore open dropdown and sidebar scroll on page load
         document.addEventListener('DOMContentLoaded', function () {
             const openDropdownId = localStorage.getItem('openDropdown');
             if (openDropdownId) {
@@ -325,6 +330,18 @@
                     if (button.querySelector('span').textContent.trim() === openDropdownId) {
                         button.parentElement.classList.add('open');
                     }
+                });
+            }
+
+            const sidebarNav = document.querySelector('.sidebar-nav');
+            if (sidebarNav) {
+                const storedScroll = localStorage.getItem('sidebarScrollTop');
+                if (storedScroll !== null) {
+                    sidebarNav.scrollTop = parseInt(storedScroll, 10) || 0;
+                }
+
+                sidebarNav.addEventListener('scroll', function () {
+                    localStorage.setItem('sidebarScrollTop', String(sidebarNav.scrollTop));
                 });
             }
         });

@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
             MedicineSeeder::class,
             AssessmentSeeder::class,
             MedicineDispenseSeeder::class,
+            FinancialAssistanceRequestSeeder::class,
+            MedicalSuppliesRequestSeeder::class,
         ]);
     }
 

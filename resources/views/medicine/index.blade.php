@@ -27,7 +27,7 @@
                 <div class="stat-icon stat-icon-blue"><i class="bi bi-box-seam"></i></div>
                 <div class="stat-details">
                     <h3>Total Stock</h3>
-                    <p class="stat-number">{{ number_format($totalStock) }}</p>
+                    <p class="stat-number">{{ $totalStock }}</p>
                     <span class="stat-label">Units Available</span>
                 </div>
             </div>
@@ -36,7 +36,7 @@
                 <div class="stat-icon stat-icon-red"><i class="bi bi-exclamation-triangle"></i></div>
                 <div class="stat-details">
                     <h3>Low Stock Items</h3>
-                    <p class="stat-number">{{ $lowStock }}</p>
+                    <p class="stat-number">{{ $lowStockCount }}</p>
                     <span class="stat-label">Need Reorder</span>
                 </div>
             </div>
@@ -45,20 +45,21 @@
                 <div class="stat-icon stat-icon-orange"><i class="bi bi-clock-history"></i></div>
                 <div class="stat-details">
                     <h3>Expiring Soon</h3>
-                    <p class="stat-number">{{ $expiringSoon }}</p>
-                    <span class="stat-label">Within 30 Days</span>
+                    <p class="stat-number">{{ $expiringSoonCount }}</p>
+                    <span class="stat-label">Batches within 30 days</span>
                 </div>
             </div>
         </div>
 
-        <div class="search-box">
-            <input type="text" id="medicineSearch" class="search-input" placeholder="Search medicines...">
-            <a href="{{ route('medicine.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Add Medicine
-            </a>
-            <a href="{{ route('medicine.dispense') }}" class="btn btn-teal">
-                <i class="bi bi-prescription2"></i> Dispense Medicine
-            </a>
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="search-container" style="flex: 1; max-width: 400px; margin: 0;">
+                <input type="text" id="medicineSearch" class="search-input" placeholder="Search medicines...">
+            </div>
+            <div class="header-actions">
+                <button type="button" class="btn btn-primary" id="openAddMedicineModal">
+                    <i class="bi bi-plus-circle"></i> Add Medicine
+                </button>
+            </div>
         </div>
 
         <div class="table-container">
@@ -157,11 +158,122 @@
         </div>
     </div>
 
+    <div class="modal" id="addMedicineModal" style="display:none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Add New Medicine</h3>
+                <span class="close-modal" data-close-modal="addMedicineModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ route('medicine.store') }}" class="patient-form" novalidate>
+                    @csrf
+
+                    <div class="form-section section-patient-info">
+                        <h3 class="section-header">
+                            <span class="section-indicator"></span>Medicine Information
+                        </h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="modal_name">Brand Name <span class="required-asterisk">*</span></label>
+                                <input type="text" id="modal_name" name="name" class="form-control" required value="{{ old('name') }}">
+                                <span class="error-message" data-for="name"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="modal_generic_name">Generic Name</label>
+                                <input type="text" id="modal_generic_name" name="generic_name" class="form-control" value="{{ old('generic_name') }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="modal_dosage_form">Dosage Form</label>
+                                <input type="text" id="modal_dosage_form" name="dosage_form" class="form-control" placeholder="Tablet, Syrup, Capsule, etc." value="{{ old('dosage_form') }}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="modal_strength">Strength</label>
+                                <input type="text" id="modal_strength" name="strength" class="form-control" placeholder="e.g., 500 mg" value="{{ old('strength') }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="modal_unit">Unit</label>
+                                <input type="text" id="modal_unit" name="unit" class="form-control" placeholder="tablet, mL, vial" value="{{ old('unit', 'tablet') }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="modal_expiry_date">Expiry Date</label>
+                                <input type="date" id="modal_expiry_date" name="expiry_date" class="form-control" value="{{ old('expiry_date') }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section section-assessment">
+                        <h3 class="section-header">
+                            <span class="section-indicator"></span>Inventory Details
+                        </h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="modal_quantity_on_hand">Quantity on Hand <span class="required-asterisk">*</span></label>
+                                <input type="number" id="modal_quantity_on_hand" name="quantity_on_hand" class="form-control" min="0" required value="{{ old('quantity_on_hand', 0) }}">
+                                <span class="error-message" data-for="quantity_on_hand"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="modal_reorder_level">Reorder Level</label>
+                                <input type="number" id="modal_reorder_level" name="reorder_level" class="form-control" min="0" value="{{ old('reorder_level', 0) }}">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="modal_remarks">Remarks</label>
+                                <textarea id="modal_remarks" name="remarks" class="form-control" rows="3">{{ old('remarks') }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" data-close-modal="addMedicineModal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Medicine</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const modal = document.getElementById('medicineViewModal');
                 const closeModal = document.getElementById('closeMedicineModal');
+
+                const addMedicineModal = document.getElementById('addMedicineModal');
+                const openAddMedicineBtn = document.getElementById('openAddMedicineModal');
+
+                function openModalById(id) {
+                    const m = document.getElementById(id);
+                    if (m) {
+                        m.style.display = 'flex';
+                    }
+                }
+
+                function closeModalById(id) {
+                    const m = document.getElementById(id);
+                    if (m) {
+                        m.style.display = 'none';
+                    }
+                }
+
+                if (openAddMedicineBtn && addMedicineModal) {
+                    openAddMedicineBtn.addEventListener('click', function () {
+                        addMedicineModal.style.display = 'flex';
+                    });
+                }
+
 
                 document.querySelectorAll('.view-medicine').forEach(button => {
                     button.addEventListener('click', async function () {
@@ -269,6 +381,24 @@
                     if (event.target === modal) {
                         modal.style.display = 'none';
                     }
+
+                    if (event.target === addMedicineModal) {
+                        addMedicineModal.style.display = 'none';
+                    }
+                });
+
+                document.querySelectorAll('.close-modal[data-close-modal]').forEach(span => {
+                    span.addEventListener('click', function () {
+                        const targetId = this.getAttribute('data-close-modal');
+                        closeModalById(targetId);
+                    });
+                });
+
+                document.querySelectorAll('button[data-close-modal]').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const targetId = this.getAttribute('data-close-modal');
+                        closeModalById(targetId);
+                    });
                 });
 
                 // Search functionality

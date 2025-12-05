@@ -5,12 +5,15 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\FamilyPlanningRecordController;
 use App\Http\Controllers\PrenatalRecordController;
 use App\Http\Controllers\NipRecordController;
+use App\Http\Controllers\NewNipRecordController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MedicineController;
+use App\Http\Controllers\MedicineBatchController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AuditLogController;
+use App\Http\Controllers\ApprovalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -175,23 +178,21 @@ Route::middleware('auth')->group(function () {
         Route::put('/family-planning/{record}', [FamilyPlanningRecordController::class, 'update'])
             ->name('family-planning-update');
 
-        // Immunization (NIP)
-        Route::get('/immunization', [NipRecordController::class, 'index'])
-            ->name('nip-view');
+        // New Immunization (NIP) - dedicated controller and view
+        Route::get('/new-immunization', [NewNipRecordController::class, 'index'])
+            ->name('new-nip-view');
 
-        Route::post('/immunization', [NipRecordController::class, 'store'])
-            ->name('nip-store');
+        Route::get('/new-immunization/create', [NewNipRecordController::class, 'create'])
+            ->name('new-nip-create');
 
-        Route::get('/immunization/{record}/edit', [NipRecordController::class, 'edit'])
-            ->name('nip-edit');
+        Route::post('/new-immunization', [NewNipRecordController::class, 'store'])
+            ->name('new-nip-store');
 
-        Route::put('/immunization/{record}', [NipRecordController::class, 'update'])
-            ->name('nip-update');
+        Route::get('/new-immunization/{record}/edit', [NewNipRecordController::class, 'edit'])
+            ->name('new-nip-edit');
 
-        // New Immunization
-        Route::get('/new-immunization', function () {
-            return view('health-programs.newnip');
-        })->name('new-nip-view');
+        Route::put('/new-immunization/{record}', [NewNipRecordController::class, 'update'])
+            ->name('new-nip-update');
     });
 
     Route::get('/health-programs/other-services', function () {
@@ -225,6 +226,12 @@ Route::middleware('auth')->group(function () {
 
         // Delete medicine
         Route::delete('/{medicine}', [MedicineController::class, 'destroy'])->name('destroy');
+
+        // Medicine batches (per-batch inventory tracking)
+        Route::get('/batches', [MedicineBatchController::class, 'index'])->name('batches.index');
+        Route::post('/batches', [MedicineBatchController::class, 'store'])->name('batches.store');
+        Route::put('/batches/{batch}', [MedicineBatchController::class, 'update'])->name('batches.update');
+        Route::delete('/batches/{batch}', [MedicineBatchController::class, 'destroy'])->name('batches.destroy');
     });
 
     // ====================
@@ -320,27 +327,6 @@ Route::middleware('auth')->group(function () {
     // ====================
     // SETTINGS ROUTES
     // ====================
-    // APPROVALS & REQUESTS
-    // ====================
-    Route::prefix('approvals')->name('approvals.')->group(function () {
-        Route::get('/', function () {
-            return view('approvals.index');
-        })->name('index');
-    });
-
-    Route::prefix('financial-assistance')->name('financial-assistance.')->group(function () {
-        Route::get('/', function () {
-            return view('approvals.financial-assistance');
-        })->name('index');
-    });
-
-    Route::prefix('medical-supplies')->name('medical-supplies.')->group(function () {
-        Route::get('/request', function () {
-            return view('approvals.medical-supplies');
-        })->name('request');
-    });
-
-    // ====================
     // SETTINGS
     // ====================
     Route::prefix('settings')->name('settings.')->group(function () {
@@ -381,6 +367,7 @@ Route::middleware('auth')->group(function () {
             return view('settings.profile');
         })->name('profile');
 
+
         // Update profile
         Route::put('/profile/update', function () {
             // TODO: Update profile logic
@@ -392,6 +379,33 @@ Route::middleware('auth')->group(function () {
             // TODO: Change password logic
             return back()->with('success', 'Password changed successfully');
         })->name('change-password');
+
     });
 
+    // ====================
+    // APPROVAL ROUTES
+    // ====================
+    // Dashboard - accessible to all authenticated users
+    Route::get('/approvals', [ApprovalController::class, 'index'])->name('approvals.index');
+
+    // Financial Assistance Requests
+    Route::get('/approvals/financial/create', [ApprovalController::class, 'createFinancial'])->name('approvals.financial.create');
+    Route::post('/approvals/financial', [ApprovalController::class, 'storeFinancial'])->name('approvals.financial.store');
+
+    // Medical Supplies Requests
+    Route::get('/approvals/medical/create', [ApprovalController::class, 'createMedical'])->name('approvals.medical.create');
+    Route::post('/approvals/medical', [ApprovalController::class, 'storeMedical'])->name('approvals.medical.store');
+
+    // Admin approval actions
+    Route::post('/approvals/{type}/{id}/admin-approve', [ApprovalController::class, 'adminApprove'])->name('approvals.admin-approve');
+    Route::post('/approvals/{type}/{id}/admin-reject', [ApprovalController::class, 'adminReject'])->name('approvals.admin-reject');
+
+    // Superadmin approval actions
+    Route::post('/approvals/{type}/{id}/superadmin-approve', [ApprovalController::class, 'superadminApprove'])->name('approvals.superadmin-approve');
+    Route::post('/approvals/{type}/{id}/superadmin-reject', [ApprovalController::class, 'superadminReject'])->name('approvals.superadmin-reject');
+
+    // View request details (JSON endpoint for modal)
+    Route::get('/approvals/{type}/{id}', [ApprovalController::class, 'show'])->name('approvals.show');
+
 }); // End of auth middleware group
+

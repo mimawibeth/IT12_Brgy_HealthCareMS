@@ -16,7 +16,15 @@ class AuditLogController extends Controller
             abort(403);
         }
 
+        $today = Carbon::today();
+
         $query = AuditLog::with('user')->orderByDesc('created_at');
+
+        $hasDateFilter = $request->filled('date_from') || $request->filled('date_to');
+
+        if (!$hasDateFilter) {
+            $query->whereDate('created_at', $today);
+        }
 
         if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->date('date_from'));
@@ -53,8 +61,6 @@ class AuditLogController extends Controller
         }
 
         $logs = $query->paginate(10)->withQueryString();
-
-        $today = Carbon::today();
         $stats = [
             'totalToday' => AuditLog::whereDate('created_at', $today)->count(),
             'successToday' => AuditLog::whereDate('created_at', $today)->where('status', 'success')->count(),

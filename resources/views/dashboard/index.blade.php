@@ -112,7 +112,6 @@
                     <div class="program-content">
                         <h3>Immunization Program</h3>
                         <p class="program-count">{{ $nipTotal ?? 0 }} Children Enrolled</p>
-                        <a href="{{ route('health-programs.nip-view') }}" class="btn-link">
                             View Records <i class="bi bi-arrow-right"></i>
                         </a>
                     </div>

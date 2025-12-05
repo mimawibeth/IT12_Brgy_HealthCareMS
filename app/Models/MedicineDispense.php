@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\MedicineBatch;
 
 class MedicineDispense extends Model
 {
@@ -25,5 +26,12 @@ class MedicineDispense extends Model
     public function medicine()
     {
         return $this->belongsTo(Medicine::class);
+    }
+
+    public function batches()
+    {
+        return $this->belongsToMany(MedicineBatch::class, 'medicine_dispense_batches')
+            ->withPivot('quantity')
+            ->withTimestamps();
     }
 }
