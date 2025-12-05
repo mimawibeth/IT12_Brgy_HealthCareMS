@@ -150,18 +150,14 @@ Route::middleware('auth')->group(function () {
         // Edit patient
         Route::get('/{id}/edit', [PatientController::class, 'edit'])->name('edit');
 
+        // Update patient
+        Route::put('/{id}', [PatientController::class, 'update'])->name('update');
+
+        // Delete patient
+        Route::delete('/{id}', [PatientController::class, 'destroy'])->name('destroy');
+
         // Store new assessments for patient
         Route::post('/{id}/assessments', [PatientController::class, 'storeAssessments'])->name('assessments.store');
-
-        Route::put('/{id}', function ($id) {
-            // TODO: Update patient logic
-            return redirect()->route('patients.index')->with('success', 'Patient updated successfully');
-        })->name('update');
-
-        Route::delete('/{id}', function ($id) {
-            // TODO: Delete patient logic
-            return redirect()->route('patients.index')->with('success', 'Patient deleted successfully');
-        })->name('destroy');
     });
 
     // ====================

@@ -38,19 +38,14 @@
 
                     <div class="form-row two-col">
                         <div class="form-group">
-<<<<<<< HEAD
-                            <label for="username"><i class="bi bi-person-badge"></i> Username *</label>
-                            <input type="text" id="username" name="username" class="form-control" required value="admin01"
-=======
                             <label for="username">Username *</label>
                             <input type="text" id="username" name="username" class="form-control" required value="{{ old('username', $user->username) }}"
->>>>>>> 3723e67444b4297a57b2a8d141a24e107def6990
                                 readonly>
                             <small class="form-text text-muted">Cannot be changed</small>
                         </div>
 
                         <div class="form-group">
-                            <label for="email"><i class="bi bi-envelope"></i> Email Address *</label>
+                            <label for="email">Email Address *</label>
                             <input type="email" id="email" name="email" class="form-control" required
                                 value="{{ old('email', $user->email) }}">
                         </div>
@@ -58,14 +53,10 @@
 
                     <div class="form-row two-col">
                         <div class="form-group">
-                            <label for="password"><i class="bi bi-key"></i> New Password</label>
+                            <label for="password">New Password</label>
                             <input type="password" id="password" name="password" class="form-control"
-<<<<<<< HEAD
-                                placeholder="Leave blank to keep current">
-=======
                                 placeholder="Leave blank to keep current password">
                             <small class="form-text">Only fill if you want to change password (min 12 chars, must include uppercase, lowercase, number, and special character)</small>
->>>>>>> 3723e67444b4297a57b2a8d141a24e107def6990
                         </div>
 
                         <div class="form-group">

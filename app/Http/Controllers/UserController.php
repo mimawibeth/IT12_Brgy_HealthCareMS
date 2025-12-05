@@ -153,6 +153,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $validated = $request->validate([
+            'username' => ['required', 'string', 'max:50', 'alpha_dash', 'unique:users,username,' . $user->id],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'password' => [
                 'nullable',
@@ -173,6 +174,7 @@ class UserController extends Controller
 
         $updateData = [
             'name' => $fullName,
+            'username' => $validated['username'],
             'first_name' => $validated['first_name'],
             'middle_name' => $validated['middle_name'] ?? null,
             'last_name' => $validated['last_name'],

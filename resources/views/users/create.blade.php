@@ -27,6 +27,14 @@
 
                     <div class="form-row">
                         <div class="form-group">
+                            <label for="username">Username <span class="required-asterisk">*</span></label>
+                            <input type="text" id="username" name="username" class="form-control" required
+                                placeholder="Enter username">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
                             <label for="email">Email Address <span class="required-asterisk">*</span></label>
                             <input type="email" id="email" name="email" class="form-control" required
                                 placeholder="user@example.com">

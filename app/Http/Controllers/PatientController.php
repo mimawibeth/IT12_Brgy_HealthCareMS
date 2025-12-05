@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Patient;
 use App\Models\Assessment;
+use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -270,5 +271,65 @@ class PatientController extends Controller
 
         return redirect()->route('patients.edit', $patient->PatientID)
             ->with('success', 'Assessment(s) added successfully.');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $patient = Patient::findOrFail($id);
+
+        $validated = $request->validate([
+            'lastname' => ['required', 'string', 'max:255'],
+            'firstname' => ['required', 'string', 'max:255'],
+            'middlename' => ['nullable', 'string', 'max:255'],
+            'birthday' => ['nullable', 'date'],
+            'age' => ['nullable', 'integer', 'min:0'],
+            'sex' => ['nullable', 'in:Male,Female'],
+            'civil_status' => ['nullable', 'string', 'max:50'],
+            'purok' => ['nullable', 'string', 'max:100'],
+            'barangay' => ['nullable', 'string', 'max:100'],
+            'municipality' => ['nullable', 'string', 'max:100'],
+            'province' => ['nullable', 'string', 'max:100'],
+            'contact_no' => ['nullable', 'string', 'max:20'],
+            'religion' => ['nullable', 'string', 'max:100'],
+            'occupation' => ['nullable', 'string', 'max:100'],
+            'phil_member' => ['nullable', 'in:Yes,No'],
+            'phil_no' => ['nullable', 'string', 'max:50'],
+            '4Ps' => ['nullable', 'in:Yes,No'],
+            'nhts' => ['nullable', 'in:Yes,No'],
+        ]);
+
+        $patient->update($validated);
+
+        AuditLog::create([
+            'user_id' => $request->user()->id ?? null,
+            'user_role' => $request->user()->role ?? null,
+            'action' => 'update',
+            'module' => 'Patient Management',
+            'description' => 'Updated patient record: ' . $patient->firstname . ' ' . $patient->lastname,
+            'ip_address' => $request->ip(),
+            'status' => 'success',
+        ]);
+
+        return redirect()->route('patients.index')->with('success', 'Patient updated successfully');
+    }
+
+    public function destroy($id)
+    {
+        $patient = Patient::findOrFail($id);
+        $patientName = $patient->firstname . ' ' . $patient->lastname;
+
+        $patient->delete();
+
+        AuditLog::create([
+            'user_id' => request()->user()->id ?? null,
+            'user_role' => request()->user()->role ?? null,
+            'action' => 'delete',
+            'module' => 'Patient Management',
+            'description' => 'Deleted patient record: ' . $patientName,
+            'ip_address' => request()->ip(),
+            'status' => 'success',
+        ]);
+
+        return redirect()->route('patients.index')->with('success', 'Patient deleted successfully');
     }
 }
