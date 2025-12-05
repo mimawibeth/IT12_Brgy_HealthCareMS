@@ -181,6 +181,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/prenatal/{record}/visits', [PrenatalRecordController::class, 'storeVisits'])
             ->name('prenatal-visits-store');
 
+        Route::get('/prenatal/{record}', [PrenatalRecordController::class, 'show'])
+            ->name('prenatal-show');
+
         // Family Planning
         Route::get('/family-planning', [FamilyPlanningRecordController::class, 'index'])
             ->name('family-planning-view');
@@ -193,6 +196,9 @@ Route::middleware('auth')->group(function () {
 
         Route::put('/family-planning/{record}', [FamilyPlanningRecordController::class, 'update'])
             ->name('family-planning-update');
+
+        Route::get('/family-planning/{record}', [FamilyPlanningRecordController::class, 'show'])
+            ->name('family-planning-show');
 
         // New Immunization (NIP) - dedicated controller and view
         Route::get('/new-immunization', [NewNipRecordController::class, 'index'])
@@ -209,6 +215,9 @@ Route::middleware('auth')->group(function () {
 
         Route::put('/new-immunization/{record}', [NewNipRecordController::class, 'update'])
             ->name('new-nip-update');
+
+        Route::get('/new-immunization/{record}', [NewNipRecordController::class, 'show'])
+            ->name('new-nip-show');
     });
 
     Route::get('/health-programs/other-services', function () {
