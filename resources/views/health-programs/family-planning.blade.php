@@ -556,128 +556,128 @@
                             const vawRisk = Array.isArray(data.vaw_risk) ? data.vaw_risk : JSON.parse(data.vaw_risk || '[]');
 
                             modalBody.innerHTML = `
-                                                                <div class="form-section section-patient-info">
-                                                                    <h3 class="section-header"><span class="section-indicator"></span>Client Information</h3>
-                                                                    <div class="form-row">
-                                                                        <div class="form-group">
-                                                                            <label><strong>Record #:</strong></label>
-                                                                            <p>${data.record_no || 'N/A'}</p>
+                                                                        <div class="form-section section-patient-info">
+                                                                            <h3 class="section-header"><span class="section-indicator"></span>Client Information</h3>
+                                                                            <div class="form-row">
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Record #:</strong></label>
+                                                                                    <p>${data.record_no || 'N/A'}</p>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Client Name:</strong></label>
+                                                                                    <p>${data.client_name || 'N/A'}</p>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Age:</strong></label>
+                                                                                    <p>${data.age || 'N/A'}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-row">
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Address:</strong></label>
+                                                                                    <p>${data.address || 'N/A'}</p>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Contact:</strong></label>
+                                                                                    <p>${data.contact || 'N/A'}</p>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Occupation:</strong></label>
+                                                                                    <p>${data.occupation || 'N/A'}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-row">
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Client Type:</strong></label>
+                                                                                    <p>${data.client_type ? data.client_type.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A'}</p>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Reason for FP:</strong></label>
+                                                                                    <p>${reasonArray.length ? reasonArray.join(', ') : 'N/A'}</p>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="form-group">
-                                                                            <label><strong>Client Name:</strong></label>
-                                                                            <p>${data.client_name || 'N/A'}</p>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label><strong>Age:</strong></label>
-                                                                            <p>${data.age || 'N/A'}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-row">
-                                                                        <div class="form-group">
-                                                                            <label><strong>Address:</strong></label>
-                                                                            <p>${data.address || 'N/A'}</p>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label><strong>Contact:</strong></label>
-                                                                            <p>${data.contact || 'N/A'}</p>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label><strong>Occupation:</strong></label>
-                                                                            <p>${data.occupation || 'N/A'}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-row">
-                                                                        <div class="form-group">
-                                                                            <label><strong>Client Type:</strong></label>
-                                                                            <p>${data.client_type ? data.client_type.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A'}</p>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label><strong>Reason for FP:</strong></label>
-                                                                            <p>${reasonArray.length ? reasonArray.join(', ') : 'N/A'}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
 
-                                                                <div class="form-section section-history">
-                                                                    <h3 class="section-header"><span class="section-indicator"></span>Spouse & Family</h3>
-                                                                    <div class="form-row">
-                                                                        <div class="form-group">
-                                                                            <label><strong>Spouse Name:</strong></label>
-                                                                            <p>${data.spouse_name || 'N/A'}</p>
+                                                                        <div class="form-section section-history">
+                                                                            <h3 class="section-header"><span class="section-indicator"></span>Spouse & Family</h3>
+                                                                            <div class="form-row">
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Spouse Name:</strong></label>
+                                                                                    <p>${data.spouse_name || 'N/A'}</p>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Spouse Age:</strong></label>
+                                                                                    <p>${data.spouse_age || 'N/A'}</p>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Number of Children:</strong></label>
+                                                                                    <p>${data.children_count || 'N/A'}</p>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="form-group">
-                                                                            <label><strong>Spouse Age:</strong></label>
-                                                                            <p>${data.spouse_age || 'N/A'}</p>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label><strong>Number of Children:</strong></label>
-                                                                            <p>${data.children_count || 'N/A'}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
 
-                                                                <div class="form-section section-screening">
-                                                                    <h3 class="section-header"><span class="section-indicator"></span>Medical History & Examination</h3>
-                                                                    <div class="form-row">
-                                                                        <div class="form-group">
-                                                                            <label><strong>G (Gravida):</strong></label>
-                                                                            <p>${data.gravida ?? 'N/A'}</p>
+                                                                        <div class="form-section section-screening">
+                                                                            <h3 class="section-header"><span class="section-indicator"></span>Medical History & Examination</h3>
+                                                                            <div class="form-row">
+                                                                                <div class="form-group">
+                                                                                    <label><strong>G (Gravida):</strong></label>
+                                                                                    <p>${data.gravida ?? 'N/A'}</p>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label><strong>P (Para):</strong></label>
+                                                                                    <p>${data.para ?? 'N/A'}</p>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Last Period:</strong></label>
+                                                                                    <p>${data.last_period || 'N/A'}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-row">
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Blood Pressure:</strong></label>
+                                                                                    <p>${data.bp || 'N/A'}</p>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Weight:</strong></label>
+                                                                                    <p>${data.weight || 'N/A'} kg</p>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Height:</strong></label>
+                                                                                    <p>${data.height || 'N/A'} cm</p>
+                                                                                </div>
+                                                                            </div>
+                                                                            ${medHistory.length ? `
+                                                                            <div class="form-row">
+                                                                                <div class="form-group full-width">
+                                                                                    <label><strong>Medical History:</strong></label>
+                                                                                    <p>${medHistory.join(', ')}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                            ` : ''}
+                                                                            ${data.exam_findings ? `
+                                                                            <div class="form-row">
+                                                                                <div class="form-group full-width">
+                                                                                    <label><strong>Examination Findings:</strong></label>
+                                                                                    <p>${data.exam_findings}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                            ` : ''}
                                                                         </div>
-                                                                        <div class="form-group">
-                                                                            <label><strong>P (Para):</strong></label>
-                                                                            <p>${data.para ?? 'N/A'}</p>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label><strong>Last Period:</strong></label>
-                                                                            <p>${data.last_period || 'N/A'}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-row">
-                                                                        <div class="form-group">
-                                                                            <label><strong>Blood Pressure:</strong></label>
-                                                                            <p>${data.bp || 'N/A'}</p>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label><strong>Weight:</strong></label>
-                                                                            <p>${data.weight || 'N/A'} kg</p>
-                                                                        </div>
-                                                                        <div class="form-group">
-                                                                            <label><strong>Height:</strong></label>
-                                                                            <p>${data.height || 'N/A'} cm</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    ${medHistory.length ? `
-                                                                    <div class="form-row">
-                                                                        <div class="form-group full-width">
-                                                                            <label><strong>Medical History:</strong></label>
-                                                                            <p>${medHistory.join(', ')}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    ` : ''}
-                                                                    ${data.exam_findings ? `
-                                                                    <div class="form-row">
-                                                                        <div class="form-group full-width">
-                                                                            <label><strong>Examination Findings:</strong></label>
-                                                                            <p>${data.exam_findings}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    ` : ''}
-                                                                </div>
 
-                                                                <div class="form-section section-patient-info">
-                                                                    <h3 class="section-header"><span class="section-indicator"></span>Consent & Counseling</h3>
-                                                                    <div class="form-row">
-                                                                        <div class="form-group">
-                                                                            <label><strong>Counseled By:</strong></label>
-                                                                            <p>${data.counseled_by || 'N/A'}</p>
+                                                                        <div class="form-section section-patient-info">
+                                                                            <h3 class="section-header"><span class="section-indicator"></span>Consent & Counseling</h3>
+                                                                            <div class="form-row">
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Counseled By:</strong></label>
+                                                                                    <p>${data.counseled_by || 'N/A'}</p>
+                                                                                </div>
+                                                                                <div class="form-group">
+                                                                                    <label><strong>Consent Date:</strong></label>
+                                                                                    <p>${data.consent_date || 'N/A'}</p>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="form-group">
-                                                                            <label><strong>Consent Date:</strong></label>
-                                                                            <p>${data.consent_date || 'N/A'}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            `;
+                                                                    `;
                         } catch (error) {
                             modalBody.innerHTML = '<div style="text-align:center; padding: 2rem; color: red;"><p>Error loading record details.</p></div>';
                         }

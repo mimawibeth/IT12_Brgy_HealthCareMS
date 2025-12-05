@@ -17,6 +17,8 @@ class MedicalSuppliesRequest extends Model
         'reason',
         'description',
         'status',
+        'approved_by_admin',
+        'approved_by_superadmin',
         'admin_id',
         'superadmin_id',
         'admin_notes',
@@ -37,6 +39,14 @@ class MedicalSuppliesRequest extends Model
      * Get the BHW user who submitted the request
      */
     public function requestor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Alias for requestor relationship
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
@@ -102,7 +112,7 @@ class MedicalSuppliesRequest extends Model
      */
     public function getStatusBadge(): array
     {
-        return match($this->status) {
+        return match ($this->status) {
             'pending' => ['label' => 'Pending', 'class' => 'badge-warning'],
             'approved_by_admin' => ['label' => 'Forwarded to Superadmin', 'class' => 'badge-info'],
             'rejected_by_admin' => ['label' => 'Rejected by Admin', 'class' => 'badge-danger'],

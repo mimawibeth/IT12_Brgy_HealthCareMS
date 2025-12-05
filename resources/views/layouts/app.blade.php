@@ -155,7 +155,8 @@
                     </div>
                 @endif
 
-                @if(in_array(auth()->user()->role ?? '', ['super_admin', 'admin']))
+                {{-- BHW and Admin: Request Forms --}}
+                @if(in_array(auth()->user()->role ?? '', ['bhw', 'admin']))
                     <div class="nav-dropdown">
                         <button class="nav-dropdown-toggle">
                             <i class="bi bi-ui-checks-grid icon"></i>
@@ -164,22 +165,41 @@
                         </button>
 
                         <div class="nav-dropdown-menu">
-                            <a href="{{ route('approvals.financial.create') }}"
+                            <a href="{{ route('approvals.financial.index') }}"
                                 class="nav-item {{ request()->routeIs('approvals.financial.*') ? 'active' : '' }}">
                                 <i class="bi bi-wallet2 icon"></i>
-                                <span>Request Financial Assistance</span>
+                                <span>Financial Assistance</span>
                             </a>
 
-                            <a href="{{ route('approvals.medical.create') }}"
+                            <a href="{{ route('approvals.medical.index') }}"
                                 class="nav-item {{ request()->routeIs('approvals.medical.*') ? 'active' : '' }}">
                                 <i class="bi bi-bag-plus icon"></i>
-                                <span>Request Medical Supplies</span>
+                                <span>Medical Supplies</span>
                             </a>
+                        </div>
+                    </div>
+                @endif
 
-                            <a href="{{ route('approvals.index') }}"
-                                class="nav-item {{ request()->routeIs('approvals.*') ? 'active' : '' }}">
+                {{-- Super Admin: Pending Approvals Only --}}
+                @if(auth()->user()->role ?? '' === 'super_admin')
+                    <div class="nav-dropdown">
+                        <!-- <button class="nav-dropdown-toggle">
                                 <i class="bi bi-check2-square icon"></i>
                                 <span>Pending Approvals</span>
+                                <i class="bi bi-chevron-down arrow"></i>
+                            </button> -->
+
+                        <div class="nav-dropdown-menu">
+                            <a href="{{ route('approvals.financial.index') }}"
+                                class="nav-item {{ request()->routeIs('approvals.financial.*') ? 'active' : '' }}">
+                                <i class="bi bi-wallet2 icon"></i>
+                                <span>Financial Assistance</span>
+                            </a>
+
+                            <a href="{{ route('approvals.medical.index') }}"
+                                class="nav-item {{ request()->routeIs('approvals.medical.*') ? 'active' : '' }}">
+                                <i class="bi bi-bag-plus icon"></i>
+                                <span>Medical Supplies</span>
                             </a>
                         </div>
                     </div>

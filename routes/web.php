@@ -389,10 +389,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/approvals', [ApprovalController::class, 'index'])->name('approvals.index');
 
     // Financial Assistance Requests
+    Route::get('/approvals/financial', [ApprovalController::class, 'financialIndex'])->name('approvals.financial.index');
     Route::get('/approvals/financial/create', [ApprovalController::class, 'createFinancial'])->name('approvals.financial.create');
     Route::post('/approvals/financial', [ApprovalController::class, 'storeFinancial'])->name('approvals.financial.store');
 
     // Medical Supplies Requests
+    Route::get('/approvals/medical', [ApprovalController::class, 'medicalIndex'])->name('approvals.medical.index');
     Route::get('/approvals/medical/create', [ApprovalController::class, 'createMedical'])->name('approvals.medical.create');
     Route::post('/approvals/medical', [ApprovalController::class, 'storeMedical'])->name('approvals.medical.store');
 
