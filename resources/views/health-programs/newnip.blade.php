@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'New Immunization')
+@section('title', 'Immunization')
 @section('page-title', 'New Immunization')
 
 @push('styles')
@@ -64,7 +64,8 @@
                             <td>{{ optional(optional($lastVisit)->visit_date)->format('M d, Y') ?? '—' }}</td>
                             <td>{{ $status }}</td>
                             <td>
-                                <a href="{{ route('health-programs.new-nip-edit', $item) }}" class="btn btn-primary btn-sm">Edit</a>
+                                <a href="{{ route('health-programs.new-nip-edit', $item) }}"
+                                    class="btn btn-primary btn-sm">Edit</a>
                             </td>
                         </tr>
                     @empty

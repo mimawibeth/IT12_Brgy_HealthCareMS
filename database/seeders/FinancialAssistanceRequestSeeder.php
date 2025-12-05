@@ -61,14 +61,12 @@ class FinancialAssistanceRequestSeeder extends Seeder
                 $type = fake()->randomElement($this->types);
 
                 $data = [
-                    'request_no' => 'FA-' . str_pad((string) $requestNum, 4, '0', STR_PAD_LEFT),
-                    'patient_id' => $patientId,
+                    'user_id' => $bhwUser->id,
                     'type' => $type,
                     'amount' => $amount,
                     'reason' => fake()->randomElement($this->reasons),
                     'description' => fake()->paragraph(3),
                     'status' => $status,
-                    'submitted_by' => $bhwUser->id,
                     'submitted_at' => $requestDate->format('Y-m-d H:i:s'),
                     'created_at' => $requestDate->format('Y-m-d H:i:s'),
                     'updated_at' => $requestDate->format('Y-m-d H:i:s'),
@@ -76,9 +74,10 @@ class FinancialAssistanceRequestSeeder extends Seeder
 
                 // Add admin and superadmin approval details based on status
                 if ($status === 'approved_by_admin' || $status === 'approved_by_superadmin' || $status === 'rejected_by_admin') {
-                    $data['forwarded_by'] = $adminUser?->id;
-                    $data['forwarded_at'] = $requestDate->copy()->addDays(fake()->numberBetween(1, 5))->format('Y-m-d H:i:s');
-                    $data['admin_remarks'] = fake()->optional(0.7)->randomElement([
+                    $data['admin_id'] = $adminUser?->id;
+                    $adminReviewDate = Carbon::parse($requestDate)->addDays(fake()->numberBetween(1, 5));
+                    $data['admin_reviewed_at'] = $adminReviewDate->format('Y-m-d H:i:s');
+                    $data['admin_notes'] = fake()->optional(0.7)->randomElement([
                         'Document verified. Amount is reasonable for stated need.',
                         'Approved. Patient has genuine medical emergency.',
                         'Incomplete documentation. Requesting more details.',
@@ -87,25 +86,15 @@ class FinancialAssistanceRequestSeeder extends Seeder
                     ]);
                 }
 
-                if ($status === 'approved_by_superadmin' || $status === 'rejected_by_admin') {
-                    if ($status === 'approved_by_superadmin') {
-                        $data['approved_by'] = $superadminUser?->id;
-                        $data['approved_at'] = $data['forwarded_at'] ? Carbon::parse($data['forwarded_at'])->addDays(fake()->numberBetween(1, 3))->format('Y-m-d H:i:s') : null;
-                        $data['superadmin_remarks'] = fake()->optional(0.8)->randomElement([
-                            'Approved for financial assistance.',
-                            'Approved. Recommend emergency fund allocation.',
-                            'Approved with condition for monthly follow-up.',
-                        ]);
-                    } else {
-                        $data['rejected_by'] = $adminUser?->id;
-                        $data['rejected_at'] = $data['forwarded_at'] ?? $requestDate->copy()->addDays(fake()->numberBetween(1, 5))->format('Y-m-d H:i:s');
-                        $data['rejection_reason'] = fake()->randomElement([
-                            'Unable to verify patient identity',
-                            'Insufficient documentation',
-                            'Fund allocation exhausted for this period',
-                            'Request does not meet assistance criteria',
-                        ]);
-                    }
+                if ($status === 'approved_by_superadmin') {
+                    $data['superadmin_id'] = $superadminUser?->id;
+                    $superadminReviewDate = isset($adminReviewDate) ? Carbon::parse($adminReviewDate)->addDays(fake()->numberBetween(1, 3)) : Carbon::parse($requestDate)->addDays(fake()->numberBetween(6, 10));
+                    $data['superadmin_reviewed_at'] = $superadminReviewDate->format('Y-m-d H:i:s');
+                    $data['superadmin_notes'] = fake()->optional(0.8)->randomElement([
+                        'Approved for financial assistance.',
+                        'Approved. Recommend emergency fund allocation.',
+                        'Approved with condition for monthly follow-up.',
+                    ]);
                 }
 
                 FinancialAssistanceRequest::create($data);

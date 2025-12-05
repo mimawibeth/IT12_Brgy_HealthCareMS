@@ -13,7 +13,8 @@
         <div class="content-header"></div>
 
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-            <form method="GET" action="{{ route('medicine.batches.index') }}" style="display: flex; gap: 0.75rem; align-items: center; flex: 1; max-width: 480px;">
+            <form method="GET" action="{{ route('medicine.batches.index') }}"
+                style="display: flex; gap: 0.75rem; align-items: center; flex: 1; max-width: 480px;">
                 <div class="form-group" style="flex: 1;">
                     <select name="medicine_id" class="form-control" onchange="this.form.submit()">
                         <option value="">All Medicines</option>
@@ -43,97 +44,96 @@
                     <a href="{{ route('medicine.batches.index', array_filter(['medicine_id' => request('medicine_id')])) }}"
                         class="btn {{ request('filter') ? 'btn-secondary' : 'btn-primary' }}">All</a>
                     <a href="{{ route('medicine.batches.index', array_filter(['medicine_id' => request('medicine_id'), 'filter' => 'expiring'])) }}"
-                        class="btn {{ request('filter') === 'expiring' ? 'btn-primary' : 'btn-secondary' }}">Expiring Soon</a>
+                        class="btn {{ request('filter') === 'expiring' ? 'btn-primary' : 'btn-secondary' }}">Expiring
+                        Soon</a>
                     <a href="{{ route('medicine.batches.index', array_filter(['medicine_id' => request('medicine_id'), 'filter' => 'expired'])) }}"
                         class="btn {{ request('filter') === 'expired' ? 'btn-primary' : 'btn-secondary' }}">Expired</a>
                 </div>
             </div>
         </div>
 
-        <div class="table-container">
-            <div class="card">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Medicine</th>
-                            <th>Batch Code</th>
-                            <th>Quantity on Hand</th>
-                            <th>Expiry Date</th>
-                            <th>Date Received</th>
-                            <th>Supplier</th>
-                            <th>Unit Price</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($batches as $batch)
+        @forelse($batches as $medicineId => $medicineBatches)
+            @php
+                $medicine = $medicineBatches->first()->medicine;
+                $totalQuantity = $medicineBatches->sum('quantity_on_hand');
+            @endphp
+
+            <div class="table-container" style="margin-bottom: 2rem;">
+                <div class="card">
+                    <div
+                        style="padding: 1rem 1.5rem; background: linear-gradient(135deg, #2f6d7e 0%, #1f4d5c 100%); color: white; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 600;">
+                                {{ $medicine->name ?? 'Unknown Medicine' }}</h3>
+                            <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem; opacity: 0.9;">Total Available:
+                                {{ $totalQuantity }} units across {{ $medicineBatches->count() }} batch(es)</p>
+                        </div>
+                        <button type="button" class="btn btn-teal btn-sm dispense-batch-btn"
+                            data-medicine-id="{{ $medicineId }}" data-medicine-name="{{ $medicine->name ?? '' }}"
+                            style="background: white; color: #2f6d7e;">
+                            <i class="bi bi-prescription2"></i> Dispense
+                        </button>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
                             <tr>
-                                <td>{{ $batch->medicine->name ?? 'N/A' }}</td>
-                                <td>{{ $batch->batch_code ?? 'N/A' }}</td>
-                                <td>{{ $batch->quantity_on_hand }}</td>
-                                <td>{{ optional($batch->expiry_date)->format('M d, Y') }}</td>
-                                <td>{{ optional($batch->date_received)->format('M d, Y') }}</td>
-                                <td>{{ $batch->supplier ?? 'N/A' }}</td>
-                                <td>
-                                    @if(!is_null($batch->unit_price))
-                                        {{ number_format($batch->unit_price, 2) }}
-                                    @else
-                                        N/A
-                                    @endif
-                                </td>
-                                <td class="actions">
-                                    <button type="button" class="btn btn-teal btn-sm dispense-batch-btn"
-                                        data-medicine-id="{{ $batch->medicine_id }}"
-                                        data-medicine-name="{{ $batch->medicine->name ?? '' }}">
-                                        <i class="bi bi-prescription2"></i> Dispense
-                                    </button>
-                                </td>
+                                <th>Batch Code</th>
+                                <th>Quantity on Hand</th>
+                                <th>Expiry Date</th>
+                                <th>Date Received</th>
+                                <th>Supplier</th>
+                                <th>Unit Price</th>
                             </tr>
-                        @empty
+                        </thead>
+                        <tbody>
+                            @foreach($medicineBatches as $batch)
+                                <tr>
+                                    <td>{{ $batch->batch_code ?? 'N/A' }}</td>
+                                    <td>{{ $batch->quantity_on_hand }}</td>
+                                    <td>{{ optional($batch->expiry_date)->format('M d, Y') }}</td>
+                                    <td>{{ optional($batch->date_received)->format('M d, Y') }}</td>
+                                    <td>{{ $batch->supplier ?? 'N/A' }}</td>
+                                    <td>
+                                        @if(!is_null($batch->unit_price))
+                                            ₱{{ number_format($batch->unit_price, 2) }}
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @empty
+            <div class="table-container">
+                <div class="card">
+                    <table class="data-table">
+                        <thead>
                             <tr>
-                                <td colspan="7" style="text-align:center; padding: 40px; color: #7f8c8d;">
-                                    <i class="bi bi-inbox" style="font-size: 48px; display: block; margin-bottom: 10px; opacity: 0.5;"></i>
+                                <th>Batch Code</th>
+                                <th>Quantity on Hand</th>
+                                <th>Expiry Date</th>
+                                <th>Date Received</th>
+                                <th>Supplier</th>
+                                <th>Unit Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" style="text-align:center; padding: 40px; color: #7f8c8d;">
+                                    <i class="bi bi-inbox"
+                                        style="font-size: 48px; display: block; margin-bottom: 10px; opacity: 0.5;"></i>
                                     No medicine batches found.
                                 </td>
                             </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-
-        @if($batches->hasPages())
-            <div class="pagination">
-                @if($batches->onFirstPage())
-                    <button class="btn-page" disabled>« Previous</button>
-                @else
-                    <a class="btn-page" href="{{ $batches->previousPageUrl() }}">« Previous</a>
-                @endif
-
-                @php
-                    $start = max(1, $batches->currentPage() - 2);
-                    $end = min($batches->lastPage(), $batches->currentPage() + 2);
-                @endphp
-
-                @for ($page = $start; $page <= $end; $page++)
-                    @if ($page === $batches->currentPage())
-                        <span class="btn-page active">{{ $page }}</span>
-                    @else
-                        <a class="btn-page" href="{{ $batches->url($page) }}">{{ $page }}</a>
-                    @endif
-                @endfor
-
-                <span class="page-info">
-                    Page {{ $batches->currentPage() }} of {{ $batches->lastPage() }} ({{ $batches->total() }} total batches)
-                </span>
-
-                @if($batches->hasMorePages())
-                    <a class="btn-page" href="{{ $batches->nextPageUrl() }}">Next »</a>
-                @else
-                    <button class="btn-page" disabled>Next »</button>
-                @endif
-            </div>
-        @endif
+        @endforelse
 
         <div class="modal" id="addBatchModal" style="display:none;">
             <div class="modal-content modal-large">
@@ -153,15 +153,18 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="add_batch_medicine_search">Search Medicine</label>
-                                    <input type="text" id="add_batch_medicine_search" class="form-control" placeholder="Type to search medicine">
+                                    <input type="text" id="add_batch_medicine_search" class="form-control"
+                                        placeholder="Type to search medicine">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="add_batch_medicine_id">Medicine <span class="required-asterisk">*</span></label>
+                                    <label for="add_batch_medicine_id">Medicine <span
+                                            class="required-asterisk">*</span></label>
                                     <select id="add_batch_medicine_id" name="medicine_id" class="form-control" required>
                                         <option value="">-- Select Medicine --</option>
                                         @foreach($medicines as $medicine)
-                                            <option value="{{ $medicine->id }}" @selected(request('medicine_id') == $medicine->id)>
+                                            <option value="{{ $medicine->id }}"
+                                                @selected(request('medicine_id') == $medicine->id)>
                                                 {{ $medicine->name }}
                                             </option>
                                         @endforeach
@@ -172,36 +175,44 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="batch_code">Batch Code</label>
-                                    <input type="text" id="batch_code" name="batch_code" class="form-control" value="{{ old('batch_code') }}">
+                                    <input type="text" id="batch_code" name="batch_code" class="form-control"
+                                        value="{{ old('batch_code') }}">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="quantity_on_hand">Quantity on Hand <span class="required-asterisk">*</span></label>
-                                    <input type="number" id="quantity_on_hand" name="quantity_on_hand" class="form-control" min="0" required value="{{ old('quantity_on_hand', 0) }}">
+                                    <label for="quantity_on_hand">Quantity on Hand <span
+                                            class="required-asterisk">*</span></label>
+                                    <input type="number" id="quantity_on_hand" name="quantity_on_hand" class="form-control"
+                                        min="0" required value="{{ old('quantity_on_hand', 0) }}">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="expiry_date">Expiry Date <span class="required-asterisk">*</span></label>
-                                    <input type="date" id="expiry_date" name="expiry_date" class="form-control" value="{{ old('expiry_date') }}" required>
+                                    <input type="date" id="expiry_date" name="expiry_date" class="form-control"
+                                        value="{{ old('expiry_date') }}" required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="date_received">Date Received <span class="required-asterisk">*</span></label>
-                                    <input type="date" id="date_received" name="date_received" class="form-control" value="{{ old('date_received') }}" required>
+                                    <label for="date_received">Date Received <span
+                                            class="required-asterisk">*</span></label>
+                                    <input type="date" id="date_received" name="date_received" class="form-control"
+                                        value="{{ old('date_received') }}" required>
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="supplier">Supplier</label>
-                                    <input type="text" id="supplier" name="supplier" class="form-control" value="{{ old('supplier') }}">
+                                    <input type="text" id="supplier" name="supplier" class="form-control"
+                                        value="{{ old('supplier') }}">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="unit_price">Unit Price</label>
-                                    <input type="number" id="unit_price" name="unit_price" class="form-control" min="0" step="0.01" value="{{ old('unit_price') }}">
+                                    <input type="number" id="unit_price" name="unit_price" class="form-control" min="0"
+                                        step="0.01" value="{{ old('unit_price') }}">
                                 </div>
                             </div>
                         </div>
@@ -233,11 +244,13 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="dispense_medicine_search">Search Medicine</label>
-                                    <input type="text" id="dispense_medicine_search" class="form-control" placeholder="Type to search medicine">
+                                    <input type="text" id="dispense_medicine_search" class="form-control"
+                                        placeholder="Type to search medicine">
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="dispense_medicine_id">Medicine <span class="required-asterisk">*</span></label>
+                                    <label for="dispense_medicine_id">Medicine <span
+                                            class="required-asterisk">*</span></label>
                                     <select id="dispense_medicine_id" name="medicine_id" class="form-control" required>
                                         <option value="">-- Select Medicine --</option>
                                         @foreach($medicines as $medicine)
@@ -249,8 +262,10 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="dispense_quantity">Quantity to Dispense <span class="required-asterisk">*</span></label>
-                                    <input type="number" id="dispense_quantity" name="quantity" class="form-control" min="1" required value="{{ old('quantity', 1) }}">
+                                    <label for="dispense_quantity">Quantity to Dispense <span
+                                            class="required-asterisk">*</span></label>
+                                    <input type="number" id="dispense_quantity" name="quantity" class="form-control" min="1"
+                                        required value="{{ old('quantity', 1) }}">
                                 </div>
                             </div>
                         </div>
@@ -263,30 +278,35 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="dispense_dispensed_to">Dispensed To (Patient Name / ID)</label>
-                                    <input type="text" id="dispense_dispensed_to" name="dispensed_to" class="form-control" value="{{ old('dispensed_to') }}" placeholder="Enter patient name or ID">
+                                    <input type="text" id="dispense_dispensed_to" name="dispensed_to" class="form-control"
+                                        value="{{ old('dispensed_to') }}" placeholder="Enter patient name or ID">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="dispense_reference_no">Reference No. (ITR / Program)</label>
-                                    <input type="text" id="dispense_reference_no" name="reference_no" class="form-control" value="{{ old('reference_no') }}" placeholder="Enter reference number">
+                                    <input type="text" id="dispense_reference_no" name="reference_no" class="form-control"
+                                        value="{{ old('reference_no') }}" placeholder="Enter reference number">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="dispense_dispensed_at">Dispensed Date</label>
-                                    <input type="date" id="dispense_dispensed_at" name="dispensed_at" class="form-control" value="{{ old('dispensed_at') }}">
+                                    <input type="date" id="dispense_dispensed_at" name="dispensed_at" class="form-control"
+                                        value="{{ old('dispensed_at') }}">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="dispense_remarks">Remarks</label>
-                                    <textarea id="dispense_remarks" name="remarks" class="form-control" rows="3" placeholder="Additional notes or instructions">{{ old('remarks') }}</textarea>
+                                    <textarea id="dispense_remarks" name="remarks" class="form-control" rows="3"
+                                        placeholder="Additional notes or instructions">{{ old('remarks') }}</textarea>
                                 </div>
                             </div>
                         </div>
 
                         <div class="form-actions">
-                            <button type="button" class="btn btn-secondary" data-close-modal="dispenseFromBatchesModal">Cancel</button>
+                            <button type="button" class="btn btn-secondary"
+                                data-close-modal="dispenseFromBatchesModal">Cancel</button>
                             <button type="submit" class="btn btn-primary">Dispense Medicine</button>
                         </div>
                     </form>

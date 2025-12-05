@@ -10,7 +10,10 @@ class MedicineBatchController extends Controller
 {
     public function index(Request $request)
     {
-        $query = MedicineBatch::with('medicine')->orderByDesc('date_received')->orderByDesc('created_at');
+        $query = MedicineBatch::with('medicine')
+            ->orderBy('medicine_id')
+            ->orderBy('expiry_date')
+            ->orderByDesc('date_received');
 
         if ($request->filled('medicine_id')) {
             $query->where('medicine_id', $request->input('medicine_id'));
@@ -23,7 +26,7 @@ class MedicineBatchController extends Controller
             $query->whereDate('expiry_date', '<', now());
         }
 
-        $batches = $query->paginate(10);
+        $batches = $query->get()->groupBy('medicine_id');
 
         if ($request->wantsJson()) {
             return response()->json($batches);

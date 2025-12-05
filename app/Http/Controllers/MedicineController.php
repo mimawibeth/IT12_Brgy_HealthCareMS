@@ -131,7 +131,11 @@ class MedicineController extends Controller
 
     public function dispense(Request $request)
     {
-        $medicines = Medicine::orderBy('name')->get();
+        // Only show medicines that have available batches
+        $medicines = Medicine::whereHas('batches', function ($query) {
+            $query->where('quantity_on_hand', '>', 0);
+        })->orderBy('name')->get();
+
         $query = MedicineDispense::with('medicine');
 
         $hasAnyFilter = $request->filled('medicine_id')
@@ -139,7 +143,7 @@ class MedicineController extends Controller
             || $request->filled('to_date')
             || $request->filled('dispensed_to');
 
-        if (! $hasAnyFilter) {
+        if (!$hasAnyFilter) {
             $request->merge([
                 'from_date' => now()->subDays(6)->toDateString(),
                 'to_date' => now()->toDateString(),
@@ -183,7 +187,7 @@ class MedicineController extends Controller
         ]);
 
         $medicine = Medicine::findOrFail($validated['medicine_id']);
-        
+
         $insufficientStock = false;
         $availableQuantity = 0;
         $dispense = null;

@@ -20,8 +20,8 @@ class ReportController extends Controller
         }
 
         $now = Carbon::now();
-        $month = (int)($request->input('month', $now->month));
-        $year = (int)($request->input('year', $now->year));
+        $month = (int) ($request->input('month', $now->month));
+        $year = (int) ($request->input('year', $now->year));
 
         $selectedDate = Carbon::create($year, $month, 1);
 
@@ -48,7 +48,7 @@ class ReportController extends Controller
             $months->push($selectedDate->copy()->subMonths($i));
         }
 
-        $monthLabels = $months->map(fn (Carbon $d) => $d->format('M'));
+        $monthLabels = $months->map(fn(Carbon $d) => $d->format('M'));
 
         $prenatalSeries = [];
         $fpSeries = [];
@@ -107,11 +107,10 @@ class ReportController extends Controller
         }
 
         $ageLabels = array_keys($ageBuckets);
-        $ageMale = array_map(fn ($b) => $b['male'], $ageBuckets);
-        $ageFemale = array_map(fn ($b) => $b['female'], $ageBuckets);
+        $ageMale = array_map(fn($b) => $b['male'], $ageBuckets);
+        $ageFemale = array_map(fn($b) => $b['female'], $ageBuckets);
 
         // Medicine inventory snapshot
-        $medicineTotalItems = Medicine::sum('quantity_on_hand');
 
         $completedServices = $prenatalCount + $fpCount + $nipCount;
         $pendingServices = max($totalPatients - $completedServices, 0);
@@ -139,7 +138,6 @@ class ReportController extends Controller
             'prenatalCount' => $prenatalCount,
             'nipCount' => $nipCount,
             'fpCount' => $fpCount,
-            'medicineTotalItems' => $medicineTotalItems,
             'monthLabels' => $monthLabels,
             'servicesSeries' => $servicesSeries,
             'prenatalSeries' => $prenatalSeries,
