@@ -15,9 +15,7 @@ return new class extends Migration
             $table->string('dosage_form')->nullable();
             $table->string('strength')->nullable();
             $table->string('unit')->default('tablet');
-            $table->integer('quantity_on_hand')->default(0);
             $table->integer('reorder_level')->default(0);
-            $table->date('expiry_date')->nullable();
             $table->text('remarks')->nullable();
             $table->timestamps();
         });

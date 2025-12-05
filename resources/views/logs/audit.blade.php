@@ -69,6 +69,15 @@
                         <i class="bi bi-search"></i> Search
                     </button>
                 </div>
+                <div class="filter-options">
+                    <input type="date" name="date_from" class="filter-select"
+                        value="{{ request('date_from') }}">
+                    <input type="date" name="date_to" class="filter-select"
+                        value="{{ request('date_to') }}">
+                    <button class="btn btn-secondary" type="button" onclick="clearFilters()">
+                        Clear Filters
+                    </button>
+                </div>
             </form>
         </div>
 

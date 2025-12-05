@@ -1,8 +1,8 @@
-{{-- Dispense Medicine --}}
+{{-- Dispense History --}}
 @extends('layouts.app')
 
-@section('title', 'Dispense Medicine')
-@section('page-title', 'Dispense Medicine')
+@section('title', 'Dispense History')
+@section('page-title', 'Dispense History')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/patients.css') }}">
@@ -11,78 +11,51 @@
 
 @section('content')
     <div class="page-content">
-        <div class="content-header">
+        <div class="content-header"></div>
 
-
-        </div>
-
-        <div class="card">
-            <form method="POST" action="{{ route('medicine.dispense.store') }}" class="patient-form">
-                @csrf
-
+        <div style="margin: 1.5rem 0;">
+            <form method="GET" action="{{ route('medicine.dispense') }}" class="patient-form" style="padding: 1rem;">
                 <div class="form-section section-patient-info">
                     <h3 class="section-header">
-                        <span class="section-indicator"></span>Medicine Details
+                        <span class="section-indicator"></span>Filter Dispense History
                     </h3>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="medicine_id">Medicine <span class="required-asterisk">*</span></label>
-                            <select id="medicine_id" name="medicine_id" class="form-control" required>
-                                <option value="">-- Select Medicine --</option>
+                            <label for="filter_medicine_id">Medicine</label>
+                            <select id="filter_medicine_id" name="medicine_id" class="form-control">
+                                <option value="">All Medicines</option>
                                 @foreach($medicines as $medicine)
-                                    <option value="{{ $medicine->id }}" @selected(old('medicine_id') == $medicine->id)>
-                                        {{ $medicine->name }} ({{ $medicine->quantity_on_hand }} {{ $medicine->unit }} in stock)
+                                    <option value="{{ $medicine->id }}" @selected(request('medicine_id') == $medicine->id)>
+                                        {{ $medicine->name }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="quantity">Quantity to Dispense <span class="required-asterisk">*</span></label>
-                            <input type="number" id="quantity" name="quantity" class="form-control" min="1" required
-                                value="{{ old('quantity', 1) }}">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-section section-assessment">
-                    <h3 class="section-header">
-                        <span class="section-indicator"></span>Dispensation Information
-                    </h3>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="dispensed_to">Dispensed To (Patient Name / ID)</label>
-                            <input type="text" id="dispensed_to" name="dispensed_to" class="form-control"
-                                value="{{ old('dispensed_to') }}" placeholder="Enter patient name or ID">
+                            <label for="from_date">From Date</label>
+                            <input type="date" id="from_date" name="from_date" class="form-control"
+                                value="{{ request('from_date') }}">
                         </div>
 
                         <div class="form-group">
-                            <label for="reference_no">Reference No. (ITR / Program)</label>
-                            <input type="text" id="reference_no" name="reference_no" class="form-control"
-                                value="{{ old('reference_no') }}" placeholder="Enter reference number">
+                            <label for="to_date">To Date</label>
+                            <input type="date" id="to_date" name="to_date" class="form-control"
+                                value="{{ request('to_date') }}">
                         </div>
 
                         <div class="form-group">
-                            <label for="dispensed_at">Dispensed Date</label>
-                            <input type="date" id="dispensed_at" name="dispensed_at" class="form-control"
-                                value="{{ old('dispensed_at') }}">
+                            <label for="filter_dispensed_to">Dispensed To</label>
+                            <input type="text" id="filter_dispensed_to" name="dispensed_to" class="form-control"
+                                value="{{ request('dispensed_to') }}" placeholder="Patient name or ID">
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="remarks">Remarks</label>
-                            <textarea id="remarks" name="remarks" class="form-control" rows="3"
-                                placeholder="Additional notes or instructions">{{ old('remarks') }}</textarea>
-                        </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                        <a href="{{ route('medicine.dispense') }}" class="btn btn-secondary">Clear</a>
                     </div>
-                </div>
-
-                <div class="form-actions">
-                    <a href="{{ route('medicine.index') }}" class="btn btn-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Dispense Medicine</button>
                 </div>
             </form>
         </div>

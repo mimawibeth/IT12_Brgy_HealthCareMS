@@ -16,9 +16,7 @@ class MedicineSeeder extends Seeder
                 'dosage_form' => fake()->randomElement(['Tablet', 'Capsule', 'Syrup', 'Suspension', 'Injection']),
                 'strength' => fake()->randomElement(['125 mg', '250 mg', '500 mg', '5 mg/5 mL', '10 mg/mL']),
                 'unit' => fake()->randomElement(['tablet', 'capsule', 'mL', 'ampoule']),
-                'quantity_on_hand' => fake()->numberBetween(0, 500),
                 'reorder_level' => fake()->numberBetween(20, 100),
-                'expiry_date' => fake()->dateTimeBetween('now', '+3 years')->format('Y-m-d'),
                 'remarks' => fake()->optional()->sentence(),
             ]);
         }
