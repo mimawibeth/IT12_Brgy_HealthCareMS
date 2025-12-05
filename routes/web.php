@@ -243,20 +243,23 @@ Route::middleware('auth')->group(function () {
         // Process dispense
         Route::post('/dispense/store', [MedicineController::class, 'storeDispense'])->name('dispense.store');
 
+        // Medicine batches (per-batch inventory tracking)
+        Route::get('/batches', [MedicineBatchController::class, 'index'])->name('batches.index');
+        Route::post('/batches', [MedicineBatchController::class, 'store'])->name('batches.store');
+        Route::put('/batches/{batch}', [MedicineBatchController::class, 'update'])->name('batches.update');
+        Route::delete('/batches/{batch}', [MedicineBatchController::class, 'destroy'])->name('batches.destroy');
+
         // Edit medicine
         Route::get('/{medicine}/edit', [MedicineController::class, 'edit'])->name('edit');
+
+        // Show medicine details
+        Route::get('/{medicine}', [MedicineController::class, 'show'])->name('show');
 
         // Update medicine
         Route::put('/{medicine}', [MedicineController::class, 'update'])->name('update');
 
         // Delete medicine
         Route::delete('/{medicine}', [MedicineController::class, 'destroy'])->name('destroy');
-
-        // Medicine batches (per-batch inventory tracking)
-        Route::get('/batches', [MedicineBatchController::class, 'index'])->name('batches.index');
-        Route::post('/batches', [MedicineBatchController::class, 'store'])->name('batches.store');
-        Route::put('/batches/{batch}', [MedicineBatchController::class, 'update'])->name('batches.update');
-        Route::delete('/batches/{batch}', [MedicineBatchController::class, 'destroy'])->name('batches.destroy');
     });
 
     // ====================
@@ -278,11 +281,11 @@ Route::middleware('auth')->group(function () {
         // Role Management - View and manage user roles and permissions
         Route::get('/role-management', [UserController::class, 'roleManagement'])->name('role-management');
 
-        // View user details
-        Route::get('/{id}', [UserController::class, 'show'])->name('show');
-
         // Edit user
         Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit');
+
+        // View user details (must be after /edit to avoid conflicts)
+        Route::get('/{id}', [UserController::class, 'show'])->name('show');
 
         // Update user
         Route::put('/{id}', [UserController::class, 'update'])->name('update');

@@ -136,9 +136,9 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::with('role')->findOrFail($id);
 
-        return view('users.show', compact('user'));
+        return response()->json($user);
     }
 
     public function edit($id)
