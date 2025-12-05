@@ -5,7 +5,7 @@
 @section('page-title', 'Add New User')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/users.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/users.css?v=' . time()) }}">
 @endpush
 
 @section('content')
@@ -60,7 +60,8 @@
                         <div class="form-group">
                             <label for="contact_number">Contact Number *</label>
                             <input type="text" id="contact_number" name="contact_number" class="form-control" required
-                                placeholder="09XX-XXX-XXXX">
+                                placeholder="09XXXXXXXXX" maxlength="11" pattern="[0-9]{11}">
+                            <small class="form-text">Enter 11-digit mobile number (e.g., 09123456789)</small>
                         </div>
                     </div>
                 </div>
@@ -132,7 +133,7 @@
                         Cancel
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save"></i> Create User Account
+                        Create User Account
                     </button>
                 </div>
 

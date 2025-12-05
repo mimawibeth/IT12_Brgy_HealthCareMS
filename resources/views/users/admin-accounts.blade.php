@@ -5,17 +5,12 @@
 @section('page-title', 'Admin Accounts')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/patients.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/users.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/patients.css?v=' . time()) }}">
+    <link rel="stylesheet" href="{{ asset('css/users.css?v=' . time()) }}">
 @endpush
 
 @section('content')
     <div class="page-content">
-
-        <!-- Header -->
-        <div class="content-header">
-            <h2>Admin Accounts</h2>
-        </div>
 
         <!-- Admin Creation Options -->
         <div class="admin-options-container">
@@ -46,7 +41,10 @@
         <div class="filters">
             <div class="search-box">
                 <input type="text" placeholder="Search admin accounts..." class="search-input">
-                <button class="btn-search"><i class="bi bi-search"></i> Search</button>
+                <button class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
+                <a href="{{ route('users.add-new') }}" class="btn btn-primary">
+                    <i class="bi bi-person-plus"></i> Add New User
+                </a>
             </div>
 
             <div class="filter-options">
@@ -62,51 +60,53 @@
 
         <!-- Admin Accounts Table -->
         <div class="table-container">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        <th>Position</th>
-                        <th>Status</th>
-                        <th>Created Date</th>
-                        <th>Last Login</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($admins ?? [] as $admin)
-                        @php
-                            $fullName = trim(($admin->first_name ?? '') . ' ' . ($admin->middle_name ? $admin->middle_name . ' ' : '') . ($admin->last_name ?? '')) ?: ($admin->name ?? 'N/A');
-                        @endphp
+            <div style="overflow-x: auto;">
+                <table class="data-table" style="min-width: 800px;">
+                    <thead>
                         <tr>
-                            <td>{{ $admin->username ?? 'N/A' }}</td>
-                            <td>{{ $fullName }}</td>
-                            <td>{{ $admin->email ?? 'N/A' }}</td>
-                            <td>System Administrator</td>
-                            <td>
-                                @if(($admin->status ?? 'inactive') === 'active')
-                                    <span class="status-badge status-active">Active</span>
-                                @else
-                                    <span class="status-badge status-inactive">Inactive</span>
-                                @endif
-                            </td>
-                            <td>{{ optional($admin->created_at)->format('M d, Y') ?? 'N/A' }}</td>
-                            <td>—</td>
-                            <td class="actions">
-                                <a href="javascript:void(0)" class="btn-action btn-view view-user"
-                                    data-id="{{ $admin->id }}">View</a>
-                                <a href="{{ route('users.edit', $admin->id) }}" class="btn-action btn-edit">Edit</a>
-                            </td>
+                            <th>Username</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Position</th>
+                            <th>Status</th>
+                            <th>Created Date</th>
+                            <th>Last Login</th>
+                            <th>Actions</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" style="text-align:center;">No admin accounts found.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @forelse($admins ?? [] as $admin)
+                            @php
+                                $fullName = trim(($admin->first_name ?? '') . ' ' . ($admin->middle_name ? $admin->middle_name . ' ' : '') . ($admin->last_name ?? '')) ?: ($admin->name ?? 'N/A');
+                            @endphp
+                            <tr>
+                                <td>{{ $admin->username ?? 'N/A' }}</td>
+                                <td>{{ $fullName }}</td>
+                                <td>{{ $admin->email ?? 'N/A' }}</td>
+                                <td>System Administrator</td>
+                                <td>
+                                    @if(($admin->status ?? 'inactive') === 'active')
+                                        <span class="status-badge status-active">Active</span>
+                                    @else
+                                        <span class="status-badge status-inactive">Inactive</span>
+                                    @endif
+                                </td>
+                                <td>{{ optional($admin->created_at)->format('M d, Y') ?? 'N/A' }}</td>
+                                <td>—</td>
+                                <td class="actions">
+                                    <a href="javascript:void(0)" class="btn-action btn-view view-user"
+                                        data-id="{{ $admin->id }}">View</a>
+                                    <a href="{{ route('users.edit', $admin->id) }}" class="btn-action btn-edit">Edit</a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" style="text-align:center;">No admin accounts found.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>

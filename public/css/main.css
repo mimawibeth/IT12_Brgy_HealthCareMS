@@ -720,6 +720,7 @@ body.dark-mode .form-group label {
 
     .user-info {
         gap: 15px;
+        flex-wrap: wrap;
     }
 
     .datetime-display {
@@ -730,8 +731,19 @@ body.dark-mode .form-group label {
         font-size: 13px;
     }
 
+    .notification-bell {
+        order: -1;
+    }
+
     .content-wrapper {
         padding: 20px;
+    }
+
+    /* Responsive buttons at tablet size */
+    .btn {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
     }
 }
 
@@ -745,5 +757,38 @@ body.dark-mode .form-group label {
     .user-info {
         width: 100%;
         justify-content: space-between;
+        gap: 10px;
+    }
+
+    .bell-button {
+        padding: 8px;
+    }
+
+    .bell-button i {
+        font-size: 20px;
+    }
+
+    .notification-badge {
+        font-size: 9px;
+        min-width: 16px;
+    }
+
+    .user-details {
+        gap: 2px;
+    }
+
+    .user-role {
+        font-size: 10px;
+    }
+
+    .user-name-display {
+        font-size: 12px;
+    }
+
+    /* Force buttons to block display on mobile */
+    .btn {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
     }
 }

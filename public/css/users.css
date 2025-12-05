@@ -32,9 +32,11 @@
 }
 
 .search-box {
-    display: flex;
+    display: flex !important;
+    flex-direction: row;
     gap: 10px;
     margin-bottom: 15px;
+    flex-wrap: wrap;
 }
 
 .search-input {
@@ -43,25 +45,34 @@
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
+    min-width: 200px;
 }
 
 .btn-search {
     padding: 10px 20px;
-    background-color: #3498db;
+    background-color: #4a90a4;
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
 }
 
 .btn-search:hover {
-    background-color: #2980b9;
+    background-color: #3a7485;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(74, 144, 164, 0.3);
 }
 
 .filter-options {
     display: flex;
     gap: 15px;
+    flex-wrap: wrap;
 }
 
 .filter-select {
@@ -70,6 +81,8 @@
     border-radius: 5px;
     font-size: 14px;
     min-width: 150px;
+    flex: 1;
+    max-width: 250px;
 }
 
 /* === TABLE CONTAINER === */
@@ -120,18 +133,18 @@
 }
 
 .badge-super-admin {
-    background-color: #ede7f6;
-    color: #5c2d91;
+    background-color: #fff3e0;
+    color: #f57c00;
 }
 
 .badge-admin {
-    background-color: #ffe5e0;
-    color: #c0392b;
+    background-color: #e3f2fd;
+    color: #1976d2;
 }
 
 .badge-bhw {
-    background-color: #e3f2fd;
-    color: #2874a6;
+    background-color: #eaf8ef;
+    color: #1f7a4f;
 }
 
 .badge-staff {
@@ -290,7 +303,6 @@
     padding: 25px;
     background-color: #f8f9fa;
     border-radius: 8px;
-    border-left: 4px solid #3498db;
 }
 
 .compact-form .form-section {
@@ -319,13 +331,13 @@
 }
 
 .section-header i {
-    color: #3498db;
+    color: #4a90a4;
 }
 
 .section-indicator {
     width: 8px;
     height: 8px;
-    background-color: #3498db;
+    background-color: #4a90a4;
     border-radius: 50%;
     margin-right: 10px;
 }
@@ -393,6 +405,12 @@
     gap: 6px;
 }
 
+/* Make asterisks red */
+.required-asterisk {
+    color: #dc3545;
+    margin-left: 2px;
+}
+
 .compact-form .form-group label {
     font-size: 13px;
     margin-bottom: 6px;
@@ -419,8 +437,8 @@
 
 .form-control:focus {
     outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    border-color: #4a90a4;
+    box-shadow: 0 0 0 3px rgba(74, 144, 164, 0.1);
 }
 
 .form-control[readonly] {
@@ -460,25 +478,29 @@ textarea.form-control {
 }
 
 .btn {
-    padding: 12px 25px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
-    font-weight: 600;
-    transition: all 0.3s ease;
+    font-weight: 500;
+    transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    text-decoration: none;
 }
 
 .btn-primary {
-    background-color: #3498db;
+    background-color: #4a90a4;
     color: #fff;
 }
 
 .btn-primary:hover {
-    background-color: #2980b9;
+    background-color: #3a7485;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(74, 144, 164, 0.3);
 }
 
 .btn-secondary {
@@ -620,10 +642,36 @@ textarea.form-control {
 @media (max-width: 480px) {
     .table-container {
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     .data-table {
         min-width: 800px;
+    }
+
+    .search-box {
+        flex-direction: column !important;
+    }
+
+    .search-input {
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+
+    .btn,
+    .btn-search,
+    .btn-primary {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    .filter-options {
+        flex-direction: column !important;
+    }
+
+    .filter-select {
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
     .actions {
@@ -1023,14 +1071,14 @@ textarea.form-control {
 .option-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    border-color: #3498db;
+    border-color: #4a90a4;
 }
 
 .option-icon {
     width: 80px;
     height: 80px;
     margin: 0 auto 20px;
-    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    background: linear-gradient(135deg, #4a90a4 0%, #3a7485 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;

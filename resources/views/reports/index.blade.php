@@ -203,11 +203,6 @@
 
         <!-- Detailed Statistics Table -->
         <div class="report-section">
-            <div class="section-header">
-                <h3>Detailed Monthly Statistics</h3>
-                <p>{{ $selectedMonthLabel ?? '' }} Summary Report</p>
-            </div>
-
             <div class="table-container">
                 <table class="report-table">
                     <thead>
@@ -263,11 +258,6 @@
 
         <!-- Age Distribution Report -->
         <div class="report-section">
-            <div class="section-header">
-                <h3>Patient Age Distribution</h3>
-                <p>Breakdown by age groups</p>
-            </div>
-
             <div class="table-container">
                 @php
                     $grandMale = array_sum($ageMale ?? []);

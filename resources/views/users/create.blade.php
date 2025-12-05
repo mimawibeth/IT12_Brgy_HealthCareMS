@@ -5,7 +5,7 @@
 @section('page-title', 'Add New User')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/users.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/users.css?v=' . time()) }}">
 @endpush
 
 @section('content')
@@ -14,7 +14,7 @@
         <!-- Form Container -->
         <div class="form-container compact-form">
             <div class="form-header">
-                <h2 class="form-title"><i class="bi bi-person-plus"></i> Create New User Account</h2>
+                <h2 class="form-title">Create New User Account</h2>
                 <p class="form-subtitle">Fill in the required information below</p>
             </div>
 
@@ -23,17 +23,17 @@
 
                 <!-- Account Credentials -->
                 <div class="form-section compact-section">
-                    <h3 class="section-header"><i class="bi bi-shield-lock"></i> Account Credentials</h3>
+                    <h3 class="section-header">Account Credentials</h3>
 
                     <div class="form-row two-col">
                         <div class="form-group">
-                            <label for="username"><i class="bi bi-person-badge"></i> Username *</label>
+                            <label for="username">Username <span class="required-asterisk">*</span></label>
                             <input type="text" id="username" name="username" class="form-control" required
                                 placeholder="Username">
                         </div>
 
                         <div class="form-group">
-                            <label for="email"><i class="bi bi-envelope"></i> Email Address *</label>
+                            <label for="email">Email Address <span class="required-asterisk">*</span></label>
                             <input type="email" id="email" name="email" class="form-control" required
                                 placeholder="user@example.com">
                         </div>
@@ -41,13 +41,14 @@
 
                     <div class="form-row two-col">
                         <div class="form-group">
-                            <label for="password"><i class="bi bi-key"></i> Password *</label>
+                            <label for="password">Password <span class="required-asterisk">*</span></label>
                             <input type="password" id="password" name="password" class="form-control" required
                                 placeholder="Min. 8 characters">
                         </div>
 
                         <div class="form-group">
-                            <label for="password_confirmation"><i class="bi bi-key-fill"></i> Confirm Password *</label>
+                            <label for="password_confirmation">Confirm Password <span
+                                    class="required-asterisk">*</span></label>
                             <input type="password" id="password_confirmation" name="password_confirmation"
                                 class="form-control" required placeholder="Re-enter password">
                         </div>
@@ -56,11 +57,11 @@
 
                 <!-- Personal Details -->
                 <div class="form-section compact-section">
-                    <h3 class="section-header"><i class="bi bi-person-vcard"></i> Personal Details</h3>
+                    <h3 class="section-header">Personal Details</h3>
 
                     <div class="form-row three-col">
                         <div class="form-group">
-                            <label for="first_name">First Name *</label>
+                            <label for="first_name">First Name <span class="required-asterisk">*</span></label>
                             <input type="text" id="first_name" name="first_name" class="form-control" required
                                 placeholder="First name">
                         </div>
@@ -72,7 +73,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="last_name">Last Name *</label>
+                            <label for="last_name">Last Name <span class="required-asterisk">*</span></label>
                             <input type="text" id="last_name" name="last_name" class="form-control" required
                                 placeholder="Last name">
                         </div>
@@ -80,13 +81,14 @@
 
                     <div class="form-row three-col">
                         <div class="form-group">
-                            <label for="contact_number"><i class="bi bi-telephone"></i> Contact Number</label>
-                            <input type="text" id="contact_number" name="contact_number" class="form-control"
-                                placeholder="09XX-XXX-XXXX">
+                            <label for="contact_number">Contact Number</label>
+                            <input type="tel" id="contact_number" name="contact_number" class="form-control"
+                                placeholder="09XXXXXXXXX" maxlength="11" pattern="[0-9]{11}"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         </div>
 
                         <div class="form-group col-span-2">
-                            <label for="address"><i class="bi bi-geo-alt"></i> Address</label>
+                            <label for="address">Address</label>
                             <input type="text" id="address" name="address" class="form-control"
                                 placeholder="Complete address">
                         </div>
@@ -95,11 +97,11 @@
 
                 <!-- Role & Access -->
                 <div class="form-section compact-section">
-                    <h3 class="section-header"><i class="bi bi-gear"></i> Role & Access</h3>
+                    <h3 class="section-header">Role & Access</h3>
 
                     <div class="form-row two-col">
                         <div class="form-group">
-                            <label for="role"><i class="bi bi-person-check"></i> User Role *</label>
+                            <label for="role">User Role <span class="required-asterisk">*</span></label>
                             <select id="role" name="role" class="form-control" required>
                                 <option value="">Select Role</option>
                                 <option value="bhw">Barangay Health Worker</option>
@@ -107,7 +109,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="status"><i class="bi bi-toggle-on"></i> Status *</label>
+                            <label for="status">Status <span class="required-asterisk">*</span></label>
                             <select id="status" name="status" class="form-control" required>
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
@@ -124,7 +126,7 @@
                         Cancel
                     </button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save"></i> Create User
+                        <i class="bi bi-person-plus-fill"></i> Create User
                     </button>
                 </div>
 

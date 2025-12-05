@@ -63,6 +63,7 @@
             <div id="newNip-alert" class="alert" style="display:none"></div>
 
             <form id="newNipForm" class="patient-form">
+                @csrf
                 <!-- Child Information Section -->
                 <div class="form-section section-patient-info">
                     <h3 class="section-header">

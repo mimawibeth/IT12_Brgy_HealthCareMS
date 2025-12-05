@@ -31,13 +31,16 @@
 }
 
 .search-box {
-    display: flex;
+    display: flex !important;
+    flex-direction: row;
     gap: 10px;
     margin-bottom: 15px;
+    flex-wrap: wrap;
 }
 
 .search-input {
     flex: 1;
+    min-width: 200px;
     padding: 10px 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -64,6 +67,7 @@
 .filter-options {
     display: flex;
     gap: 15px;
+    flex-wrap: wrap;
 }
 
 .filter-select {
@@ -72,6 +76,8 @@
     border-radius: 5px;
     font-size: 14px;
     min-width: 150px;
+    flex: 1;
+    max-width: 250px;
 }
 
 /* === TABLE CONTAINER === */
@@ -191,6 +197,7 @@ button.btn-action {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    flex-wrap: wrap;
 }
 
 .btn-page {
@@ -799,23 +806,31 @@ textarea.form-control {
     }
 
     .search-box {
-        flex-direction: column;
+        flex-direction: column !important;
     }
 
     .search-input {
-        width: 100%;
+        width: 100% !important;
+        min-width: 100% !important;
     }
 
     .btn-search {
-        width: 100%;
+        width: 100% !important;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-teal {
+        width: 100% !important;
     }
 
     .filter-options {
-        flex-direction: column;
+        flex-direction: column !important;
     }
 
     .filter-select {
-        width: 100%;
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
     .table-container {
@@ -1061,6 +1076,22 @@ textarea.form-control {
 
     .form-row {
         gap: 10px;
+    }
+
+    .pagination {
+        gap: 8px;
+        padding: 15px 10px;
+    }
+
+    .btn-page {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    .page-info {
+        font-size: 12px;
+        width: 100%;
+        text-align: center;
     }
 
     .modal-header h3 {

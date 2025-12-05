@@ -104,6 +104,16 @@
     flex-wrap: wrap;
 }
 
+/* Search Box - Combined search and buttons */
+.search-box {
+    display: flex !important;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
 /* Search Container */
 .search-container {
     flex: 1;
@@ -111,7 +121,8 @@
 }
 
 .search-input {
-    width: 100%;
+    flex: 1;
+    min-width: 200px;
     padding: 10px 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -355,6 +366,38 @@
         max-height: 90vh;
     }
 
+    .search-box {
+        flex-direction: column !important;
+        align-items: stretch !important;
+    }
+
+    .search-input {
+        min-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    .header-actions {
+        width: 100% !important;
+    }
+
+    .header-actions .btn {
+        flex: 1;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .data-table {
+        min-width: 800px;
+    }
+
     #addMedicineModal .modal-actions {
         flex-direction: column;
     }
@@ -362,5 +405,26 @@
     #addMedicineModal .modal-actions .btn {
         width: 100%;
         justify-content: center;
+    }
+}
+
+@media (max-width: 520px) {
+    .search-box {
+        gap: 8px !important;
+    }
+
+    .btn {
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+    }
+
+    .stat-card {
+        padding: 15px !important;
+    }
+
+    .stat-icon {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 24px !important;
     }
 }

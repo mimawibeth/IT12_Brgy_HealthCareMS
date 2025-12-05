@@ -5,14 +5,13 @@
 @section('page-title', 'Role Management')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/users.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/users.css?v=' . time()) }}">
 @endpush
 
 @section('content')
     <div class="page-content">
 
-        <div class="content-header">
-
+        <div class="content-header" style="justify-content: flex-end;">
             <button class="btn btn-primary" onclick="openAddRoleModal()">
                 <i class="bi bi-plus-circle"></i> Add New Role
             </button>

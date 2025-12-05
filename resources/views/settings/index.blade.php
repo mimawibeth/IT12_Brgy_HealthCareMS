@@ -6,9 +6,7 @@
 
 @section('content')
     <div class="page-content">
-        <div class="content-header">
-            <h2>System Settings</h2>
-        </div>
+       
 
         <form method="POST" action="{{ route('settings.update') }}" class="patient-form">
             @csrf

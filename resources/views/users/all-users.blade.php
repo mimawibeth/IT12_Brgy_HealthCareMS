@@ -5,26 +5,20 @@
 @section('page-title', 'All Users')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/patients.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/users.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/patients.css?v=' . time()) }}">
+    <link rel="stylesheet" href="{{ asset('css/users.css?v=' . time()) }}">
 @endpush
 
 @section('content')
     <div class="page-content">
-        <!-- Header with Add Button -->
-        <div class="content-header">
-
-            <a href="{{ route('users.add-new') }}" class="btn btn-primary">
-                <i class="bi bi-person-plus"></i> Add New User
-            </a>
-        </div>
-
-
         <!-- Search and Filter Section -->
         <div class="filters">
             <div class="search-box">
                 <input type="text" placeholder="Search users by name, username, email..." class="search-input">
-                <button class="btn-search"><i class="bi bi-search"></i> Search</button>
+                <button class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
+                <a href="{{ route('users.add-new') }}" class="btn btn-primary">
+                    <i class="bi bi-person-plus"></i> Add New User
+                </a>
             </div>
 
             <div class="filter-options">

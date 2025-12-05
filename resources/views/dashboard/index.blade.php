@@ -5,8 +5,8 @@
 @section('page-title', 'Dashboard')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/patients.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/patients.css?v=' . time()) }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css?v=' . time()) }}">
 @endpush
 
 @section('content')

@@ -5,20 +5,12 @@
 @section('page-title', 'Audit Logs')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/patients.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/audit-logs.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/patients.css?v=' . time()) }}">
+    <link rel="stylesheet" href="{{ asset('css/audit-logs.css?v=' . time()) }}">
 @endpush
 
 @section('content')
     <div class="page-content">
-        <div class="content-header">
-            <div class="header-actions">
-                <button class="btn btn-secondary" onclick="exportLogs()">
-                    <i class="bi bi-download"></i> Export Logs
-                </button>
-            </div>
-        </div>
-
         <!-- Summary Stats -->
         <div class="stats-grid">
             <div class="stat-card">
@@ -65,8 +57,11 @@
                 <div class="search-box">
                     <input type="text" name="search" placeholder="Search logs by description, module, or IP address..."
                         class="search-input" value="{{ request('search') }}">
-                    <button class="btn btn-search" type="button" onclick="applyFilters()">
+                    <button class="btn btn-primary" type="button" onclick="applyFilters()">
                         <i class="bi bi-search"></i> Search
+                    </button>
+                    <button class="btn btn-secondary" type="button" onclick="exportLogs()">
+                        <i class="bi bi-download"></i> Export Logs
                     </button>
                 </div>
             </form>
@@ -74,97 +69,97 @@
 
         <!-- Audit Logs Table -->
         <div class="table-container">
-            <div class="table-heading">
-                <h3>Audit Logs</h3>
-                <span class="table-note">System activity and access logs</span>
+
+            <div style="overflow-x: auto;">
+                <table class="data-table" style="min-width: 900px;">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Module</th>
+                            <th>Description</th>
+                            <th>IP Address</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($logs as $log)
+                            @php
+                                $user = $log->user;
+                                $role = $log->user_role ?? ($user->role ?? null);
+                                $roleBadgeClass = 'badge-unknown';
+                                $roleLabel = 'N/A';
+                                if ($role === 'super_admin') {
+                                    $roleBadgeClass = 'badge-super-admin';
+                                    $roleLabel = 'Super Admin';
+                                } elseif ($role === 'admin') {
+                                    $roleBadgeClass = 'badge-admin';
+                                    $roleLabel = 'Admin';
+                                } elseif ($role === 'bhw') {
+                                    $roleBadgeClass = 'badge-bhw';
+                                    $roleLabel = 'BHW';
+                                }
+
+                                $actionClass = 'action-view';
+                                if ($log->action === 'login') {
+                                    $actionClass = 'action-login';
+                                } elseif ($log->action === 'logout') {
+                                    $actionClass = 'action-logout';
+                                } elseif ($log->action === 'create') {
+                                    $actionClass = 'action-create';
+                                } elseif ($log->action === 'update') {
+                                    $actionClass = 'action-update';
+                                } elseif ($log->action === 'delete') {
+                                    $actionClass = 'action-delete';
+                                } elseif ($log->action === 'export') {
+                                    $actionClass = 'action-export';
+                                }
+
+                                $statusClass = $log->status === 'failed' ? 'status-failed' : 'status-success';
+                            @endphp
+                            <tr>
+                                <td>
+                                    <div style="white-space: nowrap;">
+                                        {{ $log->created_at ? $log->created_at->format('M d, Y') : '—' }}
+                                        <br>
+                                        <small
+                                            style="color: #7f8c8d;">{{ $log->created_at ? $log->created_at->format('g:i:s A') : '—' }}</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="user-info">
+                                        <span class="user-name">{{ $user->name ?? 'System' }}</span>
+                                        <span class="user-badge {{ $roleBadgeClass }}">{{ $roleLabel }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="action-badge {{ $actionClass }}">{{ ucfirst($log->action ?? 'other') }}</span>
+                                </td>
+                                <td>{{ $log->module ?? '—' }}</td>
+                                <td style="max-width: 300px;" title="{{ $log->description ?? '—' }}">
+                                    @php
+                                        $desc = $log->description ?? '—';
+                                        $truncated = strlen($desc) > 60 ? substr($desc, 0, 60) . '...' : $desc;
+                                    @endphp
+                                    {{ $truncated }}
+                                </td>
+                                <td>
+                                    <code style="font-size: 12px; color: #555;">{{ $log->ip_address ?? '—' }}</code>
+                                </td>
+                                <td>
+                                    <span
+                                        class="status-badge {{ $statusClass }}">{{ ucfirst($log->status ?? 'unknown') }}</span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" style="text-align: center;">No logs found for the selected filters.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>User</th>
-                        <th>Action</th>
-                        <th>Module</th>
-                        <th>Description</th>
-                        <th>IP Address</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($logs as $log)
-                        @php
-                            $user = $log->user;
-                            $role = $log->user_role ?? ($user->role ?? null);
-                            $roleBadgeClass = 'badge-unknown';
-                            $roleLabel = 'N/A';
-                            if ($role === 'super_admin') {
-                                $roleBadgeClass = 'badge-super-admin';
-                                $roleLabel = 'Super Admin';
-                            } elseif ($role === 'admin') {
-                                $roleBadgeClass = 'badge-admin';
-                                $roleLabel = 'Admin';
-                            } elseif ($role === 'bhw') {
-                                $roleBadgeClass = 'badge-bhw';
-                                $roleLabel = 'BHW';
-                            }
-
-                            $actionClass = 'action-view';
-                            if ($log->action === 'login') {
-                                $actionClass = 'action-login';
-                            } elseif ($log->action === 'logout') {
-                                $actionClass = 'action-logout';
-                            } elseif ($log->action === 'create') {
-                                $actionClass = 'action-create';
-                            } elseif ($log->action === 'update') {
-                                $actionClass = 'action-update';
-                            } elseif ($log->action === 'delete') {
-                                $actionClass = 'action-delete';
-                            } elseif ($log->action === 'export') {
-                                $actionClass = 'action-export';
-                            }
-
-                            $statusClass = $log->status === 'failed' ? 'status-failed' : 'status-success';
-                        @endphp
-                        <tr>
-                            <td>
-                                <div style="white-space: nowrap;">
-                                    {{ $log->created_at ? $log->created_at->format('M d, Y') : '—' }}
-                                    <br>
-                                    <small
-                                        style="color: #7f8c8d;">{{ $log->created_at ? $log->created_at->format('g:i:s A') : '—' }}</small>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="user-info">
-                                    <span class="user-name">{{ $user->name ?? 'System' }}</span>
-                                    <span class="user-badge {{ $roleBadgeClass }}">{{ $roleLabel }}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="action-badge {{ $actionClass }}">{{ ucfirst($log->action ?? 'other') }}</span>
-                            </td>
-                            <td>{{ $log->module ?? '—' }}</td>
-                            <td style="max-width: 300px;" title="{{ $log->description ?? '—' }}">
-                                @php
-                                    $desc = $log->description ?? '—';
-                                    $truncated = strlen($desc) > 60 ? substr($desc, 0, 60) . '...' : $desc;
-                                @endphp
-                                {{ $truncated }}
-                            </td>
-                            <td>
-                                <code style="font-size: 12px; color: #555;">{{ $log->ip_address ?? '—' }}</code>
-                            </td>
-                            <td>
-                                <span class="status-badge {{ $statusClass }}">{{ ucfirst($log->status ?? 'unknown') }}</span>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" style="text-align: center;">No logs found for the selected filters.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
         </div>
 
         @php
