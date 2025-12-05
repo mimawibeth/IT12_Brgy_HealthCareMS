@@ -27,14 +27,29 @@ use App\Http\Controllers\ApprovalController;
 // AUTHENTICATION ROUTES
 // ====================
 Route::get('/', function () {
+    // If user is authenticated, redirect to dashboard, otherwise to login
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
     return redirect()->route('login');
 });
 
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+// Auth check endpoint (for JavaScript to verify authentication status)
+Route::get('/auth/check', function () {
+    return response()->json(['authenticated' => auth()->check()]);
+})->name('auth.check');
 
-Route::post('/login', function () {
+// Login routes - only accessible to guests (non-authenticated users)
+Route::middleware('guest')->group(function () {
+    Route::get('/login', function () {
+        return response()
+            ->view('auth.login')
+            ->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
+    })->name('login');
+
+    Route::post('/login', function () {
     // Validate login credentials
     $credentials = request()->validate([
         'email' => ['required', 'email'],
@@ -81,7 +96,8 @@ Route::post('/login', function () {
     return back()->withErrors([
         'email' => 'Invalid credentials. Please try again.',
     ])->onlyInput('email');
-})->name('login.post');
+    })->name('login.post');
+}); // End of guest middleware group
 
 Route::get('/logout', function () {
     $user = auth()->user();
