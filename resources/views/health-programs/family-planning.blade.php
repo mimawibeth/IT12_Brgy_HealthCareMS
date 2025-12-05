@@ -47,7 +47,7 @@
                         <th>Type</th>
                         <th>Reason</th>
                         <th>Last Update</th>
-                        <th>Status</th>
+                        <!-- <th>Status</th> -->
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -65,7 +65,7 @@
                                 @endif
                             </td>
                             <td>{{ optional($record->updated_at)->format('Y-m-d') }}</td>
-                            <td style="color: #48bb78;"><i class="bi bi-check-circle"></i> Recorded</td>
+                            <!-- <td style="color: #48bb78;"><i class="bi bi-check-circle"></i> Recorded</td> -->
                             <td>
                                 <a href="javascript:void(0)" class="btn-action btn-view view-fp" data-id="{{ $record->id }}"
                                     data-record="{{ $record->record_no ?? 'FP-' . str_pad($record->id, 3, '0', STR_PAD_LEFT) }}">

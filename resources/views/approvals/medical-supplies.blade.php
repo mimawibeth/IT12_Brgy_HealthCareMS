@@ -9,6 +9,7 @@
 
     <div class="page-content">
         <div class="page-header">
+            <h1>Medical Supplies Requests</h1>
             @if(auth()->user()->role !== 'super_admin')
                 <button type="button" class="btn-action btn-edit" id="openRequestModal">
                     <i class="bi bi-plus-circle"></i> New Request
@@ -29,45 +30,6 @@
                 </ul>
             </div>
         @endif
-
-        <!-- Filters -->
-        <div class="filters-container" style="background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
-            <form method="GET" action="{{ route('approvals.medical.index') }}" class="filters-form">
-                <div class="filter-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <select name="status" id="status" class="form-control">
-                            <option value="">All Status</option>
-                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="approved_by_admin" {{ request('status') == 'approved_by_admin' ? 'selected' : '' }}>Approved by Admin</option>
-                            <option value="rejected_by_admin" {{ request('status') == 'rejected_by_admin' ? 'selected' : '' }}>Rejected by Admin</option>
-                            <option value="approved_by_superadmin" {{ request('status') == 'approved_by_superadmin' ? 'selected' : '' }}>Approved by Superadmin</option>
-                            <option value="rejected_by_superadmin" {{ request('status') == 'rejected_by_superadmin' ? 'selected' : '' }}>Rejected by Superadmin</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="item_name">Item Name</label>
-                        <input type="text" name="item_name" id="item_name" class="form-control" placeholder="Search item..." value="{{ request('item_name') }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="date_from">Date From</label>
-                        <input type="date" name="date_from" id="date_from" class="form-control" value="{{ request('date_from') }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="date_to">Date To</label>
-                        <input type="date" name="date_to" id="date_to" class="form-control" value="{{ request('date_to') }}">
-                    </div>
-                </div>
-                <div class="filter-actions" style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-funnel"></i> Apply Filters
-                    </button>
-                    <a href="{{ route('approvals.medical.index') }}" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> Clear
-                    </a>
-                </div>
-            </form>
-        </div>
 
         <!-- Request Form Modal -->
         <div class="modal" id="requestModal" style="display: none;">

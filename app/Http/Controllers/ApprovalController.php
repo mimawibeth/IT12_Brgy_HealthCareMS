@@ -64,40 +64,36 @@ class ApprovalController extends Controller
     public function financialIndex(Request $request): View
     {
         $user = auth()->user();
-        $query = FinancialAssistanceRequest::query();
-
-        // Apply filters
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
-        }
-        if ($request->filled('date_from')) {
-            $query->whereDate('submitted_at', '>=', $request->date_from);
-        }
-        if ($request->filled('date_to')) {
-            $query->whereDate('submitted_at', '<=', $request->date_to);
-        }
+        $query = FinancialAssistanceRequest::query()->with(['requestor', 'admin', 'superadmin', 'user']);
 
         if ($user->role === 'super_admin') {
-            // Superadmin sees requests approved by admin and all reviewed by superadmin
-            $query->whereIn('status', ['approved_by_admin', 'approved_by_superadmin', 'rejected_by_superadmin'])
-                ->with(['requestor', 'admin', 'superadmin', 'user'])
-                ->orderByDesc('admin_reviewed_at');
+            // Superadmin sees only requests approved by admin or all statuses based on filter
+            if ($request->has('status') && $request->status !== '') {
+                $query->where('status', $request->status);
+            } else {
+                $query->where('status', 'approved_by_admin');
+            }
         } elseif ($user->role === 'admin') {
             // Admin sees pending requests and their decisions
-            $query->whereIn('status', ['pending', 'approved_by_admin', 'rejected_by_admin'])
-                ->with(['requestor', 'admin', 'superadmin', 'user'])
-                ->orderByDesc('submitted_at');
+            if ($request->has('status') && $request->status !== '') {
+                $query->where('status', $request->status);
+            } else {
+                $query->whereIn('status', ['pending', 'approved_by_admin', 'rejected_by_admin', 'approved_by_superadmin', 'rejected_by_superadmin']);
+            }
         } else {
             // BHW users see their own requests and status
-            $query->where('user_id', $user->id)
-                ->with(['admin', 'superadmin', 'user'])
-                ->orderByDesc('submitted_at');
+            $query->where('user_id', $user->id);
+            if ($request->has('status') && $request->status !== '') {
+                $query->where('status', $request->status);
+            }
         }
 
-        $requests = $query->paginate(15)->appends($request->query());
+        // Apply type filter
+        if ($request->has('type') && $request->type !== '') {
+            $query->where('type', $request->type);
+        }
+
+        $requests = $query->orderByDesc('submitted_at')->paginate(15)->appends($request->query());
 
         return view('approvals.financial-assistance', compact('requests'));
     }
@@ -145,43 +141,29 @@ class ApprovalController extends Controller
     /**
      * Show medical supplies requests table
      */
-    public function medicalIndex(Request $request): View
+    public function medicalIndex(): View
     {
         $user = auth()->user();
-        $query = MedicalSuppliesRequest::query();
-
-        // Apply filters
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-        if ($request->filled('item_name')) {
-            $query->where('item_name', 'like', '%' . $request->item_name . '%');
-        }
-        if ($request->filled('date_from')) {
-            $query->whereDate('submitted_at', '>=', $request->date_from);
-        }
-        if ($request->filled('date_to')) {
-            $query->whereDate('submitted_at', '<=', $request->date_to);
-        }
 
         if ($user->role === 'super_admin') {
             // Superadmin sees only requests approved by admin
-            $query->where('status', 'approved_by_admin')
+            $requests = MedicalSuppliesRequest::where('status', 'approved_by_admin')
                 ->with(['requestor', 'admin', 'user'])
-                ->orderByDesc('admin_reviewed_at');
+                ->orderByDesc('admin_reviewed_at')
+                ->paginate(15);
         } elseif ($user->role === 'admin') {
             // Admin sees pending requests and their decisions
-            $query->whereIn('status', ['pending', 'approved_by_admin', 'rejected_by_admin'])
+            $requests = MedicalSuppliesRequest::whereIn('status', ['pending', 'approved_by_admin', 'rejected_by_admin'])
                 ->with(['requestor', 'admin', 'superadmin', 'user'])
-                ->orderByDesc('submitted_at');
+                ->orderByDesc('submitted_at')
+                ->paginate(15);
         } else {
             // BHW users see their own requests and status
-            $query->where('user_id', $user->id)
+            $requests = MedicalSuppliesRequest::where('user_id', $user->id)
                 ->with(['admin', 'superadmin', 'user'])
-                ->orderByDesc('submitted_at');
+                ->orderByDesc('submitted_at')
+                ->paginate(15);
         }
-
-        $requests = $query->paginate(15)->appends($request->query());
 
         return view('approvals.medical-supplies', compact('requests'));
     }
@@ -246,7 +228,6 @@ class ApprovalController extends Controller
 
         $approvalRequest->update([
             'status' => 'approved_by_admin',
-            'approved_by_admin' => 1,
             'admin_id' => $user->id,
             'admin_reviewed_at' => now(),
             'admin_notes' => $request->input('notes'),
@@ -275,7 +256,6 @@ class ApprovalController extends Controller
 
         $approvalRequest->update([
             'status' => 'rejected_by_admin',
-            'approved_by_admin' => 0,
             'admin_id' => $user->id,
             'admin_reviewed_at' => now(),
             'admin_notes' => $request->input('notes'),
@@ -304,7 +284,6 @@ class ApprovalController extends Controller
 
         $approvalRequest->update([
             'status' => 'approved_by_superadmin',
-            'approved_by_superadmin' => 1,
             'superadmin_id' => $user->id,
             'superadmin_reviewed_at' => now(),
             'superadmin_notes' => $request->input('notes'),
@@ -333,7 +312,6 @@ class ApprovalController extends Controller
 
         $approvalRequest->update([
             'status' => 'rejected_by_superadmin',
-            'approved_by_superadmin' => 0,
             'superadmin_id' => $user->id,
             'superadmin_reviewed_at' => now(),
             'superadmin_notes' => $request->input('notes'),

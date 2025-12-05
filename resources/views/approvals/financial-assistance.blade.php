@@ -31,52 +31,35 @@
         @endif
 
         <!-- Filters -->
-        <div class="filters-container"
-            style="background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
-            <form method="GET" action="{{ route('approvals.financial.index') }}" class="filters-form">
-                <div class="filter-row"
-                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <select name="status" id="status" class="form-control">
-                            <option value="">All Status</option>
-                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="approved_by_admin" {{ request('status') == 'approved_by_admin' ? 'selected' : '' }}>Approved by Admin</option>
-                            <option value="rejected_by_admin" {{ request('status') == 'rejected_by_admin' ? 'selected' : '' }}>Rejected by Admin</option>
-                            <option value="approved_by_superadmin" {{ request('status') == 'approved_by_superadmin' ? 'selected' : '' }}>Approved by Superadmin</option>
-                            <option value="rejected_by_superadmin" {{ request('status') == 'rejected_by_superadmin' ? 'selected' : '' }}>Rejected by Superadmin</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="type">Type</label>
-                        <select name="type" id="type" class="form-control">
-                            <option value="">All Types</option>
-                            <option value="Emergency" {{ request('type') == 'Emergency' ? 'selected' : '' }}>Emergency
-                            </option>
-                            <option value="Medical" {{ request('type') == 'Medical' ? 'selected' : '' }}>Medical</option>
-                            <option value="Educational" {{ request('type') == 'Educational' ? 'selected' : '' }}>Educational
-                            </option>
-                            <option value="Livelihood" {{ request('type') == 'Livelihood' ? 'selected' : '' }}>Livelihood
-                            </option>
-                            <option value="Housing" {{ request('type') == 'Housing' ? 'selected' : '' }}>Housing</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="date_from">Date From</label>
-                        <input type="date" name="date_from" id="date_from" class="form-control"
-                            value="{{ request('date_from') }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="date_to">Date To</label>
-                        <input type="date" name="date_to" id="date_to" class="form-control"
-                            value="{{ request('date_to') }}">
-                    </div>
+        <div class="filters-container" style="background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <form method="GET" action="{{ route('approvals.financial.index') }}" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Status</label>
+                    <select name="status" class="form-control" style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="">All Statuses</option>
+                        <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="approved_by_admin" {{ request('status') === 'approved_by_admin' ? 'selected' : '' }}>Approved by Admin</option>
+                        <option value="rejected_by_admin" {{ request('status') === 'rejected_by_admin' ? 'selected' : '' }}>Rejected by Admin</option>
+                        <option value="approved_by_superadmin" {{ request('status') === 'approved_by_superadmin' ? 'selected' : '' }}>Approved by Superadmin</option>
+                        <option value="rejected_by_superadmin" {{ request('status') === 'rejected_by_superadmin' ? 'selected' : '' }}>Rejected by Superadmin</option>
+                    </select>
                 </div>
-                <div class="filter-actions" style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-funnel"></i> Apply Filters
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Type</label>
+                    <select name="type" class="form-control" style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="">All Types</option>
+                        <option value="Emergency" {{ request('type') === 'Emergency' ? 'selected' : '' }}>Emergency</option>
+                        <option value="Medical" {{ request('type') === 'Medical' ? 'selected' : '' }}>Medical</option>
+                        <option value="Educational" {{ request('type') === 'Educational' ? 'selected' : '' }}>Educational</option>
+                        <option value="Livelihood" {{ request('type') === 'Livelihood' ? 'selected' : '' }}>Livelihood</option>
+                        <option value="Housing" {{ request('type') === 'Housing' ? 'selected' : '' }}>Housing</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1.5rem;">
+                        <i class="bi bi-funnel"></i> Filter
                     </button>
-                    <a href="{{ route('approvals.financial.index') }}" class="btn btn-secondary">
+                    <a href="{{ route('approvals.financial.index') }}" class="btn btn-secondary" style="padding: 0.5rem 1.5rem; text-decoration: none; display: inline-flex; align-items: center;">
                         <i class="bi bi-x-circle"></i> Clear
                     </a>
                 </div>
@@ -92,8 +75,10 @@
                         <th>Type</th>
                         <th>Amount</th>
                         <th>Reason</th>
+                        <th>Requested By</th>
                         <th>Submitted</th>
-                        <th>Status</th>
+                        <th>Admin Status</th>
+                        <th>Superadmin Status</th>
                         @if(auth()->user()->role === 'admin' || auth()->user()->role === 'super_admin')
                             <th>Actions</th>
                         @endif
@@ -106,11 +91,31 @@
                             <td>{{ $request->type }}</td>
                             <td>₱{{ number_format($request->amount, 2) }}</td>
                             <td>{{ Str::limit($request->reason, 50) }}</td>
+                            <td>{{ $request->user->name ?? 'N/A' }}</td>
                             <td>{{ $request->submitted_at->format('M d, Y') }}</td>
                             <td>
-                                <span class="status-badge {{ $request->getStatusBadge()['class'] }}">
-                                    {{ $request->getStatusBadge()['label'] }}
-                                </span>
+                                @if($request->status === 'pending')
+                                    <span class="status-badge badge-pending">Pending</span>
+                                @elseif($request->status === 'approved_by_admin')
+                                    <span class="status-badge badge-approved">Approved</span>
+                                @elseif($request->status === 'rejected_by_admin')
+                                    <span class="status-badge badge-rejected">Rejected</span>
+                                @else
+                                    <span class="status-badge badge-pending">{{ ucfirst(str_replace('_', ' ', $request->status)) }}</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if(in_array($request->status, ['approved_by_superadmin', 'rejected_by_superadmin']))
+                                    @if($request->status === 'approved_by_superadmin')
+                                        <span class="status-badge badge-approved">Approved</span>
+                                    @else
+                                        <span class="status-badge badge-rejected">Rejected</span>
+                                    @endif
+                                @elseif($request->status === 'approved_by_admin')
+                                    <span class="status-badge badge-pending">Pending</span>
+                                @else
+                                    <span class="status-badge" style="background: #f5f5f5; color: #9e9e9e;">N/A</span>
+                                @endif
                             </td>
                             @if(auth()->user()->role === 'admin')
                                 <td class="actions">
@@ -145,7 +150,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" style="text-align: center; padding: 2rem; color: #7f8c8d;">
+                            <td colspan="9" style="text-align: center; padding: 2rem; color: #7f8c8d;">
                                 <i class="bi bi-inbox"
                                     style="font-size: 48px; display: block; margin-bottom: 10px; opacity: 0.5;"></i>
                                 No financial assistance requests found.
@@ -384,7 +389,7 @@
                         });
                     });
                 @endif
-                            });
+                    });
         </script>
     @endpush <style>
         .form-container {

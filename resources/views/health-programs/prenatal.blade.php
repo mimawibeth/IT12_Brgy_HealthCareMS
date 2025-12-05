@@ -42,7 +42,7 @@
                         <th>LMP</th>
                         <th>Contact</th>
                         <th>Purok</th>
-                        <th>Status</th>
+                        <!-- <th>Status</th> -->
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -54,7 +54,7 @@
                             <td>{{ optional($record->lmp)->format('Y-m-d') }}</td>
                             <td>{{ $record->cell }}</td>
                             <td>{{ $record->purok }}</td>
-                            <td style="color: #48bb78;"><i class="bi bi-check-circle"></i> Recorded</td>
+                            <!-- <td style="color: #48bb78;"><i class="bi bi-check-circle"></i> Recorded</td> -->
                             <td>
                                 <a href="javascript:void(0)" class="btn-action btn-view view-prenatal"
                                     data-id="{{ $record->id }}"
@@ -447,130 +447,130 @@
                 let visitCount = 0;
 
                 const visitTemplate = (index) => `
-                                                                                        <div class="visit-box" data-index="${index}">
-                                                                                            <div class="visit-box-header">
-                                                                                                <h4>Visit ${index + 1}</h4>
-                                                                                                <button type="button" class="btn btn-link remove-visit" ${index === 0 ? 'disabled' : ''}>Remove</button>
-                                                                                            </div>
-                                                                                            <div class="visit-subsection">
-                                                                                                <h5>S – Subjective</h5>
-                                                                                                <div class="form-row">
-                                                                                                    <div class="form-group">
-                                                                                                        <label>Date</label>
-                                                                                                        <input type="date" name="visits[${index}][date]" class="form-control">
+                                                                                                <div class="visit-box" data-index="${index}">
+                                                                                                    <div class="visit-box-header">
+                                                                                                        <h4>Visit ${index + 1}</h4>
+                                                                                                        <button type="button" class="btn btn-link remove-visit" ${index === 0 ? 'disabled' : ''}>Remove</button>
                                                                                                     </div>
-                                                                                                    <div class="form-group">
-                                                                                                        <label>Trimester</label>
-                                                                                                        <select name="visits[${index}][trimester]" class="form-control">
-                                                                                                            <option value="">Select</option>
-                                                                                                            <option value="1st">1st</option>
-                                                                                                            <option value="2nd">2nd</option>
-                                                                                                            <option value="3rd">3rd</option>
-                                                                                                        </select>
+                                                                                                    <div class="visit-subsection">
+                                                                                                        <h5>S – Subjective</h5>
+                                                                                                        <div class="form-row">
+                                                                                                            <div class="form-group">
+                                                                                                                <label>Date</label>
+                                                                                                                <input type="date" name="visits[${index}][date]" class="form-control">
+                                                                                                            </div>
+                                                                                                            <div class="form-group">
+                                                                                                                <label>Trimester</label>
+                                                                                                                <select name="visits[${index}][trimester]" class="form-control">
+                                                                                                                    <option value="">Select</option>
+                                                                                                                    <option value="1st">1st</option>
+                                                                                                                    <option value="2nd">2nd</option>
+                                                                                                                    <option value="3rd">3rd</option>
+                                                                                                                </select>
+                                                                                                            </div>
+                                                                                                            <div class="form-group">
+                                                                                                                <label>Risk Code</label>
+                                                                                                                <select name="visits[${index}][risk]" class="form-control">
+                                                                                                                    <option value="">Select</option>
+                                                                                                                    <option value="low">Low Risk</option>
+                                                                                                                    <option value="high">High Risk</option>
+                                                                                                                </select>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="form-row">
+                                                                                                            <div class="form-group">
+                                                                                                                <label>Is this the 1st Visit?</label>
+                                                                                                                <select name="visits[${index}][first_visit]" class="form-control">
+                                                                                                                    <option value="">Select</option>
+                                                                                                                    <option value="yes">Yes</option>
+                                                                                                                    <option value="no">No</option>
+                                                                                                                </select>
+                                                                                                            </div>
+                                                                                                            <div class="form-group full-width">
+                                                                                                                <label>Subjective Notes</label>
+                                                                                                                <textarea name="visits[${index}][subjective]" class="form-control" rows="2" placeholder="Patient concerns / complaints"></textarea>
+                                                                                                            </div>
+                                                                                                        </div>
                                                                                                     </div>
-                                                                                                    <div class="form-group">
-                                                                                                        <label>Risk Code</label>
-                                                                                                        <select name="visits[${index}][risk]" class="form-control">
-                                                                                                            <option value="">Select</option>
-                                                                                                            <option value="low">Low Risk</option>
-                                                                                                            <option value="high">High Risk</option>
-                                                                                                        </select>
+                                                                                                    <div class="visit-subsection">
+                                                                                                        <h5>O – Objective</h5>
+                                                                                                        <div class="form-row small-row">
+                                                                                                            <div class="form-group">
+                                                                                                                <label>AOG (weeks)</label>
+                                                                                                                <input type="text" name="visits[${index}][aog]" class="form-control">
+                                                                                                            </div>
+                                                                                                            <div class="form-group">
+                                                                                                                <label>Weight (kg)</label>
+                                                                                                                <input type="text" name="visits[${index}][weight]" class="form-control">
+                                                                                                            </div>
+                                                                                                            <div class="form-group">
+                                                                                                                <label>Height (cm)</label>
+                                                                                                                <input type="text" name="visits[${index}][height]" class="form-control">
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="form-row small-row">
+                                                                                                            <div class="form-group">
+                                                                                                                <label>B/P</label>
+                                                                                                                <input type="text" name="visits[${index}][bp]" class="form-control" placeholder="mmHg">
+                                                                                                            </div>
+                                                                                                            <div class="form-group">
+                                                                                                                <label>PR</label>
+                                                                                                                <input type="text" name="visits[${index}][pr]" class="form-control">
+                                                                                                            </div>
+                                                                                                            <div class="form-group">
+                                                                                                                <label>FH (Fundal Height)</label>
+                                                                                                                <input type="text" name="visits[${index}][fh]" class="form-control">
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="form-row small-row">
+                                                                                                            <div class="form-group">
+                                                                                                                <label>FHT</label>
+                                                                                                                <input type="text" name="visits[${index}][fht]" class="form-control">
+                                                                                                            </div>
+                                                                                                            <div class="form-group">
+                                                                                                                <label>Presentation</label>
+                                                                                                                <input type="text" name="visits[${index}][presentation]" class="form-control" placeholder="Cephalic / Breech">
+                                                                                                            </div>
+                                                                                                            <div class="form-group">
+                                                                                                                <label>BMI</label>
+                                                                                                                <input type="text" name="visits[${index}][bmi]" class="form-control">
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="form-row small-row">
+                                                                                                            <div class="form-group">
+                                                                                                                <label>RR</label>
+                                                                                                                <input type="text" name="visits[${index}][rr]" class="form-control">
+                                                                                                            </div>
+                                                                                                            <div class="form-group">
+                                                                                                                <label>HR</label>
+                                                                                                                <input type="text" name="visits[${index}][hr]" class="form-control">
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="visit-subsection">
+                                                                                                        <h5>A – Assessment</h5>
+                                                                                                        <div class="form-row">
+                                                                                                            <div class="form-group full-width">
+                                                                                                                <label>Assessment</label>
+                                                                                                                <textarea name="visits[${index}][assessment]" class="form-control" rows="2" placeholder="e.g., Normal pregnancy, at risk, etc."></textarea>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="visit-subsection">
+                                                                                                        <h5>P – Plan</h5>
+                                                                                                        <div class="form-row">
+                                                                                                            <div class="form-group">
+                                                                                                                <label>Next Visit</label>
+                                                                                                                <input type="date" name="visits[${index}][next_visit]" class="form-control">
+                                                                                                            </div>
+                                                                                                            <div class="form-group full-width">
+                                                                                                                <label>Plan / Orders</label>
+                                                                                                                <textarea name="visits[${index}][plan]" class="form-control" rows="2" placeholder="Medications, tests, advice"></textarea>
+                                                                                                            </div>
+                                                                                                        </div>
                                                                                                     </div>
                                                                                                 </div>
-                                                                                                <div class="form-row">
-                                                                                                    <div class="form-group">
-                                                                                                        <label>Is this the 1st Visit?</label>
-                                                                                                        <select name="visits[${index}][first_visit]" class="form-control">
-                                                                                                            <option value="">Select</option>
-                                                                                                            <option value="yes">Yes</option>
-                                                                                                            <option value="no">No</option>
-                                                                                                        </select>
-                                                                                                    </div>
-                                                                                                    <div class="form-group full-width">
-                                                                                                        <label>Subjective Notes</label>
-                                                                                                        <textarea name="visits[${index}][subjective]" class="form-control" rows="2" placeholder="Patient concerns / complaints"></textarea>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="visit-subsection">
-                                                                                                <h5>O – Objective</h5>
-                                                                                                <div class="form-row small-row">
-                                                                                                    <div class="form-group">
-                                                                                                        <label>AOG (weeks)</label>
-                                                                                                        <input type="text" name="visits[${index}][aog]" class="form-control">
-                                                                                                    </div>
-                                                                                                    <div class="form-group">
-                                                                                                        <label>Weight (kg)</label>
-                                                                                                        <input type="text" name="visits[${index}][weight]" class="form-control">
-                                                                                                    </div>
-                                                                                                    <div class="form-group">
-                                                                                                        <label>Height (cm)</label>
-                                                                                                        <input type="text" name="visits[${index}][height]" class="form-control">
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <div class="form-row small-row">
-                                                                                                    <div class="form-group">
-                                                                                                        <label>B/P</label>
-                                                                                                        <input type="text" name="visits[${index}][bp]" class="form-control" placeholder="mmHg">
-                                                                                                    </div>
-                                                                                                    <div class="form-group">
-                                                                                                        <label>PR</label>
-                                                                                                        <input type="text" name="visits[${index}][pr]" class="form-control">
-                                                                                                    </div>
-                                                                                                    <div class="form-group">
-                                                                                                        <label>FH (Fundal Height)</label>
-                                                                                                        <input type="text" name="visits[${index}][fh]" class="form-control">
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <div class="form-row small-row">
-                                                                                                    <div class="form-group">
-                                                                                                        <label>FHT</label>
-                                                                                                        <input type="text" name="visits[${index}][fht]" class="form-control">
-                                                                                                    </div>
-                                                                                                    <div class="form-group">
-                                                                                                        <label>Presentation</label>
-                                                                                                        <input type="text" name="visits[${index}][presentation]" class="form-control" placeholder="Cephalic / Breech">
-                                                                                                    </div>
-                                                                                                    <div class="form-group">
-                                                                                                        <label>BMI</label>
-                                                                                                        <input type="text" name="visits[${index}][bmi]" class="form-control">
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <div class="form-row small-row">
-                                                                                                    <div class="form-group">
-                                                                                                        <label>RR</label>
-                                                                                                        <input type="text" name="visits[${index}][rr]" class="form-control">
-                                                                                                    </div>
-                                                                                                    <div class="form-group">
-                                                                                                        <label>HR</label>
-                                                                                                        <input type="text" name="visits[${index}][hr]" class="form-control">
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="visit-subsection">
-                                                                                                <h5>A – Assessment</h5>
-                                                                                                <div class="form-row">
-                                                                                                    <div class="form-group full-width">
-                                                                                                        <label>Assessment</label>
-                                                                                                        <textarea name="visits[${index}][assessment]" class="form-control" rows="2" placeholder="e.g., Normal pregnancy, at risk, etc."></textarea>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="visit-subsection">
-                                                                                                <h5>P – Plan</h5>
-                                                                                                <div class="form-row">
-                                                                                                    <div class="form-group">
-                                                                                                        <label>Next Visit</label>
-                                                                                                        <input type="date" name="visits[${index}][next_visit]" class="form-control">
-                                                                                                    </div>
-                                                                                                    <div class="form-group full-width">
-                                                                                                        <label>Plan / Orders</label>
-                                                                                                        <textarea name="visits[${index}][plan]" class="form-control" rows="2" placeholder="Medications, tests, advice"></textarea>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    `;
+                                                                                            `;
 
                 const refreshVisitHeadings = () => {
                     const boxes = visitsContainer.querySelectorAll('.visit-box');
@@ -687,117 +687,117 @@
                             const data = await response.json();
 
                             modalBody.innerHTML = `
-                                                                        <div class="form-section section-patient-info">
-                                                                            <h3 class="section-header"><span class="section-indicator"></span>Mother Information</h3>
-                                                                            <div class="form-row">
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Record #:</strong></label>
-                                                                                    <p>${data.record_no || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Name:</strong></label>
-                                                                                    <p>${data.mother_name || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Age:</strong></label>
-                                                                                    <p>${data.age || 'N/A'}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-row">
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Purok:</strong></label>
-                                                                                    <p>${data.purok || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Contact:</strong></label>
-                                                                                    <p>${data.cell || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Occupation:</strong></label>
-                                                                                    <p>${data.occupation || 'N/A'}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-row">
-                                                                                <div class="form-group">
-                                                                                    <label><strong>LMP (Last Menstrual Period):</strong></label>
-                                                                                    <p>${data.lmp || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>EDC (Expected Date of Confinement):</strong></label>
-                                                                                    <p>${data.edc || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Blood Type:</strong></label>
-                                                                                    <p>${data.blood_type || 'N/A'}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="form-section section-screening">
-                                                                            <h3 class="section-header"><span class="section-indicator"></span>Pregnancy History</h3>
-                                                                            <div class="form-row">
-                                                                                <div class="form-group">
-                                                                                    <label><strong>G (Gravida):</strong></label>
-                                                                                    <p>${data.gravida ?? 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>P (Para):</strong></label>
-                                                                                    <p>${data.para ?? 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>A (Abortion):</strong></label>
-                                                                                    <p>${data.abortion ?? 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Last Delivery:</strong></label>
-                                                                                    <p>${data.last_delivery_date || 'N/A'}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="form-section section-history">
-                                                                            <h3 class="section-header"><span class="section-indicator"></span>Partner Information</h3>
-                                                                            <div class="form-row">
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Husband/Partner:</strong></label>
-                                                                                    <p>${data.husband_name || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Occupation:</strong></label>
-                                                                                    <p>${data.husband_occupation || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>PhilHealth:</strong></label>
-                                                                                    <p>${data.philhealth_member || 'N/A'}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        ${data.visits && data.visits.length > 0 ? `
-                                                                        <div class="form-section section-assessment">
-                                                                            <h3 class="section-header"><span class="section-indicator"></span>Prenatal Visits (${data.visits.length})</h3>
-                                                                            ${data.visits.map((visit, idx) => `
-                                                                                <div class="visit-box" style="margin-bottom: 1rem; border: 1px solid #ddd; padding: 1rem; border-radius: 4px;">
-                                                                                    <h4 style="margin-bottom: 0.5rem;">Visit ${idx + 1} - ${visit.date || 'N/A'}</h4>
+                                                                                <div class="form-section section-patient-info">
+                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Mother Information</h3>
                                                                                     <div class="form-row">
                                                                                         <div class="form-group">
-                                                                                            <label><strong>Trimester:</strong></label>
-                                                                                            <p>${visit.trimester || 'N/A'}</p>
+                                                                                            <label><strong>Record #:</strong></label>
+                                                                                            <p>${data.record_no || 'N/A'}</p>
                                                                                         </div>
                                                                                         <div class="form-group">
-                                                                                            <label><strong>Weight:</strong></label>
-                                                                                            <p>${visit.weight || 'N/A'} kg</p>
+                                                                                            <label><strong>Name:</strong></label>
+                                                                                            <p>${data.mother_name || 'N/A'}</p>
                                                                                         </div>
                                                                                         <div class="form-group">
-                                                                                            <label><strong>BP:</strong></label>
-                                                                                            <p>${visit.bp || 'N/A'}</p>
+                                                                                            <label><strong>Age:</strong></label>
+                                                                                            <p>${data.age || 'N/A'}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="form-row">
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Purok:</strong></label>
+                                                                                            <p>${data.purok || 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Contact:</strong></label>
+                                                                                            <p>${data.cell || 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Occupation:</strong></label>
+                                                                                            <p>${data.occupation || 'N/A'}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="form-row">
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>LMP (Last Menstrual Period):</strong></label>
+                                                                                            <p>${data.lmp || 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>EDC (Expected Date of Confinement):</strong></label>
+                                                                                            <p>${data.edc || 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Blood Type:</strong></label>
+                                                                                            <p>${data.blood_type || 'N/A'}</p>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                            `).join('')}
-                                                                        </div>
-                                                                        ` : ''}
-                                                                    `;
+
+                                                                                <div class="form-section section-screening">
+                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Pregnancy History</h3>
+                                                                                    <div class="form-row">
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>G (Gravida):</strong></label>
+                                                                                            <p>${data.gravida ?? 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>P (Para):</strong></label>
+                                                                                            <p>${data.para ?? 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>A (Abortion):</strong></label>
+                                                                                            <p>${data.abortion ?? 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Last Delivery:</strong></label>
+                                                                                            <p>${data.last_delivery_date || 'N/A'}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="form-section section-history">
+                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Partner Information</h3>
+                                                                                    <div class="form-row">
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Husband/Partner:</strong></label>
+                                                                                            <p>${data.husband_name || 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Occupation:</strong></label>
+                                                                                            <p>${data.husband_occupation || 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>PhilHealth:</strong></label>
+                                                                                            <p>${data.philhealth_member || 'N/A'}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                ${data.visits && data.visits.length > 0 ? `
+                                                                                <div class="form-section section-assessment">
+                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Prenatal Visits (${data.visits.length})</h3>
+                                                                                    ${data.visits.map((visit, idx) => `
+                                                                                        <div class="visit-box" style="margin-bottom: 1rem; border: 1px solid #ddd; padding: 1rem; border-radius: 4px;">
+                                                                                            <h4 style="margin-bottom: 0.5rem;">Visit ${idx + 1} - ${visit.date || 'N/A'}</h4>
+                                                                                            <div class="form-row">
+                                                                                                <div class="form-group">
+                                                                                                    <label><strong>Trimester:</strong></label>
+                                                                                                    <p>${visit.trimester || 'N/A'}</p>
+                                                                                                </div>
+                                                                                                <div class="form-group">
+                                                                                                    <label><strong>Weight:</strong></label>
+                                                                                                    <p>${visit.weight || 'N/A'} kg</p>
+                                                                                                </div>
+                                                                                                <div class="form-group">
+                                                                                                    <label><strong>BP:</strong></label>
+                                                                                                    <p>${visit.bp || 'N/A'}</p>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    `).join('')}
+                                                                                </div>
+                                                                                ` : ''}
+                                                                            `;
                         } catch (error) {
                             modalBody.innerHTML = '<div style="text-align:center; padding: 2rem; color: red;"><p>Error loading record details.</p></div>';
                         }

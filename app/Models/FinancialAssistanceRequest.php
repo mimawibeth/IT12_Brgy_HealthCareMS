@@ -17,8 +17,6 @@ class FinancialAssistanceRequest extends Model
         'amount',
         'description',
         'status',
-        'approved_by_admin',
-        'approved_by_superadmin',
         'admin_id',
         'superadmin_id',
         'admin_notes',

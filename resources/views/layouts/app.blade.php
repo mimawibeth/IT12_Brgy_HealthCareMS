@@ -159,10 +159,10 @@
                 @if(in_array(auth()->user()->role ?? '', ['bhw', 'admin']))
                     <div class="nav-dropdown">
                         <!-- <button class="nav-dropdown-toggle">
-                                <i class="bi bi-ui-checks-grid icon"></i>
-                                <span>Approvals</span>
-                                <i class="bi bi-chevron-down arrow"></i>
-                            </button> -->
+                                    <i class="bi bi-ui-checks-grid icon"></i>
+                                    <span>Approvals</span>
+                                    <i class="bi bi-chevron-down arrow"></i>
+                                </button> -->
 
                         <div class="nav-dropdown-menu">
                             <a href="{{ route('approvals.financial.index') }}"
@@ -185,7 +185,7 @@
                     <div class="nav-dropdown">
                         <button class="nav-dropdown-toggle">
                             <i class="bi bi-check2-square icon"></i>
-                            <span>Pending Approvals</span>
+                            <span>Financial Assistance</span>
                             <i class="bi bi-chevron-down arrow"></i>
                         </button>
 
@@ -196,11 +196,11 @@
                                 <span>Financial Assistance</span>
                             </a>
 
-                            <a href="{{ route('approvals.medical.index') }}"
-                                class="nav-item {{ request()->routeIs('approvals.medical.*') ? 'active' : '' }}">
-                                <i class="bi bi-bag-plus icon"></i>
-                                <span>Medical Supplies</span>
-                            </a>
+                            <!-- <a href="{{ route('approvals.medical.index') }}"
+                                    class="nav-item {{ request()->routeIs('approvals.medical.*') ? 'active' : '' }}">
+                                    <i class="bi bi-bag-plus icon"></i>
+                                    <span>Medical Supplies</span>
+                                </a> -->
                         </div>
                     </div>
                 @endif
