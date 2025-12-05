@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Login - Barangay Health Center</title>
     <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 </head>
@@ -132,6 +135,52 @@
     </div>
 
     <script>
+        // Prevent authenticated users from accessing login page (including via browser back button)
+        (function() {
+            function checkAuthAndRedirect() {
+                fetch('{{ route("auth.check") }}', {
+                    method: 'GET',
+                    credentials: 'same-origin',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.authenticated) {
+                        window.location.href = '{{ route("dashboard") }}';
+                    }
+                })
+                .catch(() => {
+                    // If request fails, assume not authenticated (which is fine for login page)
+                });
+            }
+
+            // Check immediately on page load
+            checkAuthAndRedirect();
+
+            // Check when page becomes visible (user switches back to tab/window)
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    checkAuthAndRedirect();
+                }
+            });
+
+            // Check when page is loaded from browser cache (back/forward button)
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted) {
+                    // Page was loaded from cache, check auth status
+                    checkAuthAndRedirect();
+                }
+            });
+
+            // Also check on focus (when user clicks back into the window)
+            window.addEventListener('focus', function() {
+                checkAuthAndRedirect();
+            });
+        })();
+
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eye-icon');
