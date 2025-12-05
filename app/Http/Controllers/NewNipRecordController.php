@@ -15,6 +15,12 @@ class NewNipRecordController extends Controller
         return view('health-programs.newnip', compact('records'));
     }
 
+    public function show(NipRecord $record)
+    {
+        $record->load('visits');
+        return response()->json($record);
+    }
+
     protected function mapRecordData(Request $request): array
     {
         return [
