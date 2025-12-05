@@ -25,13 +25,7 @@
                 <div class="form-section compact-section">
                     <h3 class="section-header">Account Credentials</h3>
 
-                    <div class="form-row two-col">
-                        <div class="form-group">
-                            <label for="username">Username <span class="required-asterisk">*</span></label>
-                            <input type="text" id="username" name="username" class="form-control" required
-                                placeholder="Username">
-                        </div>
-
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="email">Email Address <span class="required-asterisk">*</span></label>
                             <input type="email" id="email" name="email" class="form-control" required

@@ -59,11 +59,60 @@ class ApprovalController extends Controller
     }
 
     /**
+     * Show financial assistance requests table
+     */
+    public function financialIndex(Request $request): View
+    {
+        $user = auth()->user();
+        $query = FinancialAssistanceRequest::query();
+
+        // Apply filters
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+        if ($request->filled('date_from')) {
+            $query->whereDate('submitted_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('submitted_at', '<=', $request->date_to);
+        }
+
+        if ($user->role === 'super_admin') {
+            // Superadmin sees only requests approved by admin
+            $query->where('status', 'approved_by_admin')
+                ->with(['requestor', 'admin', 'user'])
+                ->orderByDesc('admin_reviewed_at');
+        } elseif ($user->role === 'admin') {
+            // Admin sees pending requests and their decisions
+            $query->whereIn('status', ['pending', 'approved_by_admin', 'rejected_by_admin'])
+                ->with(['requestor', 'admin', 'superadmin', 'user'])
+                ->orderByDesc('submitted_at');
+        } else {
+            // BHW users see their own requests and status
+            $query->where('user_id', $user->id)
+                ->with(['admin', 'superadmin', 'user'])
+                ->orderByDesc('submitted_at');
+        }
+
+        $requests = $query->paginate(15)->appends($request->query());
+
+        return view('approvals.financial-assistance', compact('requests'));
+    }
+
+    /**
      * Show create financial assistance request form
      */
     public function createFinancial(): View
     {
-        return view('approvals.financial-assistance');
+        $requests = FinancialAssistanceRequest::where('user_id', auth()->id())
+            ->with(['admin', 'superadmin'])
+            ->orderByDesc('submitted_at')
+            ->paginate(15);
+
+        return view('approvals.financial-assistance', compact('requests'));
     }
 
     /**
@@ -89,8 +138,52 @@ class ApprovalController extends Controller
         ]);
 
         return redirect()
-            ->route('approvals.index')
+            ->route('approvals.financial.create')
             ->with('success', 'Financial assistance request submitted successfully.');
+    }
+
+    /**
+     * Show medical supplies requests table
+     */
+    public function medicalIndex(Request $request): View
+    {
+        $user = auth()->user();
+        $query = MedicalSuppliesRequest::query();
+
+        // Apply filters
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('item_name')) {
+            $query->where('item_name', 'like', '%' . $request->item_name . '%');
+        }
+        if ($request->filled('date_from')) {
+            $query->whereDate('submitted_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('submitted_at', '<=', $request->date_to);
+        }
+
+        if ($user->role === 'super_admin') {
+            // Superadmin sees only requests approved by admin
+            $query->where('status', 'approved_by_admin')
+                ->with(['requestor', 'admin', 'user'])
+                ->orderByDesc('admin_reviewed_at');
+        } elseif ($user->role === 'admin') {
+            // Admin sees pending requests and their decisions
+            $query->whereIn('status', ['pending', 'approved_by_admin', 'rejected_by_admin'])
+                ->with(['requestor', 'admin', 'superadmin', 'user'])
+                ->orderByDesc('submitted_at');
+        } else {
+            // BHW users see their own requests and status
+            $query->where('user_id', $user->id)
+                ->with(['admin', 'superadmin', 'user'])
+                ->orderByDesc('submitted_at');
+        }
+
+        $requests = $query->paginate(15)->appends($request->query());
+
+        return view('approvals.medical-supplies', compact('requests'));
     }
 
     /**
@@ -98,7 +191,12 @@ class ApprovalController extends Controller
      */
     public function createMedical(): View
     {
-        return view('approvals.medical-supplies');
+        $requests = MedicalSuppliesRequest::where('user_id', auth()->id())
+            ->with(['admin', 'superadmin'])
+            ->orderByDesc('submitted_at')
+            ->paginate(15);
+
+        return view('approvals.medical-supplies', compact('requests'));
     }
 
     /**
@@ -124,7 +222,7 @@ class ApprovalController extends Controller
         ]);
 
         return redirect()
-            ->route('approvals.index')
+            ->route('approvals.medical.create')
             ->with('success', 'Medical supplies request submitted successfully.');
     }
 
@@ -148,6 +246,7 @@ class ApprovalController extends Controller
 
         $approvalRequest->update([
             'status' => 'approved_by_admin',
+            'approved_by_admin' => 1,
             'admin_id' => $user->id,
             'admin_reviewed_at' => now(),
             'admin_notes' => $request->input('notes'),
@@ -176,6 +275,7 @@ class ApprovalController extends Controller
 
         $approvalRequest->update([
             'status' => 'rejected_by_admin',
+            'approved_by_admin' => 0,
             'admin_id' => $user->id,
             'admin_reviewed_at' => now(),
             'admin_notes' => $request->input('notes'),
@@ -191,7 +291,7 @@ class ApprovalController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->role !== 'superadmin') {
+        if ($user->role !== 'super_admin') {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -204,6 +304,7 @@ class ApprovalController extends Controller
 
         $approvalRequest->update([
             'status' => 'approved_by_superadmin',
+            'approved_by_superadmin' => 1,
             'superadmin_id' => $user->id,
             'superadmin_reviewed_at' => now(),
             'superadmin_notes' => $request->input('notes'),
@@ -219,7 +320,7 @@ class ApprovalController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->role !== 'superadmin') {
+        if ($user->role !== 'super_admin') {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -232,6 +333,7 @@ class ApprovalController extends Controller
 
         $approvalRequest->update([
             'status' => 'rejected_by_superadmin',
+            'approved_by_superadmin' => 0,
             'superadmin_id' => $user->id,
             'superadmin_reviewed_at' => now(),
             'superadmin_notes' => $request->input('notes'),
