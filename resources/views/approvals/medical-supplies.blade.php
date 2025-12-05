@@ -9,7 +9,6 @@
 
     <div class="page-content">
         <div class="page-header">
-            <h1>Medical Supplies Requests</h1>
             @if(auth()->user()->role !== 'super_admin')
                 <button type="button" class="btn-action btn-edit" id="openRequestModal">
                     <i class="bi bi-plus-circle"></i> New Request

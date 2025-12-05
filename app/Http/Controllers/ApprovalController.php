@@ -81,9 +81,9 @@ class ApprovalController extends Controller
         }
 
         if ($user->role === 'super_admin') {
-            // Superadmin sees only requests approved by admin
-            $query->where('status', 'approved_by_admin')
-                ->with(['requestor', 'admin', 'user'])
+            // Superadmin sees requests approved by admin and all reviewed by superadmin
+            $query->whereIn('status', ['approved_by_admin', 'approved_by_superadmin', 'rejected_by_superadmin'])
+                ->with(['requestor', 'admin', 'superadmin', 'user'])
                 ->orderByDesc('admin_reviewed_at');
         } elseif ($user->role === 'admin') {
             // Admin sees pending requests and their decisions

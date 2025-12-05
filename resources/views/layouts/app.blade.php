@@ -158,11 +158,11 @@
                 {{-- BHW and Admin: Request Forms --}}
                 @if(in_array(auth()->user()->role ?? '', ['bhw', 'admin']))
                     <div class="nav-dropdown">
-                        <button class="nav-dropdown-toggle">
-                            <i class="bi bi-ui-checks-grid icon"></i>
-                            <span>Approvals</span>
-                            <i class="bi bi-chevron-down arrow"></i>
-                        </button>
+                        <!-- <button class="nav-dropdown-toggle">
+                                <i class="bi bi-ui-checks-grid icon"></i>
+                                <span>Approvals</span>
+                                <i class="bi bi-chevron-down arrow"></i>
+                            </button> -->
 
                         <div class="nav-dropdown-menu">
                             <a href="{{ route('approvals.financial.index') }}"
@@ -183,11 +183,11 @@
                 {{-- Super Admin: Pending Approvals Only --}}
                 @if(auth()->user()->role ?? '' === 'super_admin')
                     <div class="nav-dropdown">
-                        <!-- <button class="nav-dropdown-toggle">
-                                <i class="bi bi-check2-square icon"></i>
-                                <span>Pending Approvals</span>
-                                <i class="bi bi-chevron-down arrow"></i>
-                            </button> -->
+                        <button class="nav-dropdown-toggle">
+                            <i class="bi bi-check2-square icon"></i>
+                            <span>Pending Approvals</span>
+                            <i class="bi bi-chevron-down arrow"></i>
+                        </button>
 
                         <div class="nav-dropdown-menu">
                             <a href="{{ route('approvals.financial.index') }}"
