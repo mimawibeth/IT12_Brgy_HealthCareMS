@@ -167,6 +167,24 @@
     resize: vertical;
 }
 
+/* Filter Styles */
+.filters-container select:focus {
+    outline: none;
+    border-color: #2f6d7e;
+    box-shadow: 0 0 0 3px rgba(47, 109, 126, 0.1);
+}
+
+.filters-container button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.filters-container a:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .header-actions {

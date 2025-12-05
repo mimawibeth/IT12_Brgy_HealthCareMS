@@ -33,33 +33,33 @@
         <!-- Filters -->
         <div class="filters-container" style="background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             <form method="GET" action="{{ route('approvals.financial.index') }}" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Status</label>
-                    <select name="status" class="form-control" style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                <div style="margin-bottom: 0;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Status</label>
+                    <select name="status" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; background: white;">
                         <option value="">All Statuses</option>
-                        <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
-                        <option value="approved_by_admin" {{ request('status') === 'approved_by_admin' ? 'selected' : '' }}>Approved by Admin</option>
-                        <option value="rejected_by_admin" {{ request('status') === 'rejected_by_admin' ? 'selected' : '' }}>Rejected by Admin</option>
-                        <option value="approved_by_superadmin" {{ request('status') === 'approved_by_superadmin' ? 'selected' : '' }}>Approved by Superadmin</option>
-                        <option value="rejected_by_superadmin" {{ request('status') === 'rejected_by_superadmin' ? 'selected' : '' }}>Rejected by Superadmin</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="approved_by_admin" {{ request('status') == 'approved_by_admin' ? 'selected' : '' }}>Approved by Admin</option>
+                        <option value="rejected_by_admin" {{ request('status') == 'rejected_by_admin' ? 'selected' : '' }}>Rejected by Admin</option>
+                        <option value="approved_by_superadmin" {{ request('status') == 'approved_by_superadmin' ? 'selected' : '' }}>Approved by Superadmin</option>
+                        <option value="rejected_by_superadmin" {{ request('status') == 'rejected_by_superadmin' ? 'selected' : '' }}>Rejected by Superadmin</option>
                     </select>
                 </div>
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Type</label>
-                    <select name="type" class="form-control" style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px;">
+                <div style="margin-bottom: 0;">
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Type</label>
+                    <select name="type" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; font-size: 1rem; background: white;">
                         <option value="">All Types</option>
-                        <option value="Emergency" {{ request('type') === 'Emergency' ? 'selected' : '' }}>Emergency</option>
-                        <option value="Medical" {{ request('type') === 'Medical' ? 'selected' : '' }}>Medical</option>
-                        <option value="Educational" {{ request('type') === 'Educational' ? 'selected' : '' }}>Educational</option>
-                        <option value="Livelihood" {{ request('type') === 'Livelihood' ? 'selected' : '' }}>Livelihood</option>
-                        <option value="Housing" {{ request('type') === 'Housing' ? 'selected' : '' }}>Housing</option>
+                        <option value="Emergency" {{ request('type') == 'Emergency' ? 'selected' : '' }}>Emergency</option>
+                        <option value="Medical" {{ request('type') == 'Medical' ? 'selected' : '' }}>Medical</option>
+                        <option value="Educational" {{ request('type') == 'Educational' ? 'selected' : '' }}>Educational</option>
+                        <option value="Livelihood" {{ request('type') == 'Livelihood' ? 'selected' : '' }}>Livelihood</option>
+                        <option value="Housing" {{ request('type') == 'Housing' ? 'selected' : '' }}>Housing</option>
                     </select>
                 </div>
                 <div style="display: flex; gap: 0.5rem;">
-                    <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1.5rem;">
+                    <button type="submit" style="padding: 0.5rem 1.5rem; background: #2f6d7e; color: white; border: none; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 500;">
                         <i class="bi bi-funnel"></i> Filter
                     </button>
-                    <a href="{{ route('approvals.financial.index') }}" class="btn btn-secondary" style="padding: 0.5rem 1.5rem; text-decoration: none; display: inline-flex; align-items: center;">
+                    <a href="{{ route('approvals.financial.index') }}" style="padding: 0.5rem 1.5rem; background: #6c757d; color: white; border: none; border-radius: 4px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 500;">
                         <i class="bi bi-x-circle"></i> Clear
                     </a>
                 </div>
