@@ -14,6 +14,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\ApprovalController;
+use App\Http\Controllers\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -239,20 +240,23 @@ Route::middleware('auth')->group(function () {
         // Process dispense
         Route::post('/dispense/store', [MedicineController::class, 'storeDispense'])->name('dispense.store');
 
+        // Medicine batches (per-batch inventory tracking)
+        Route::get('/batches', [MedicineBatchController::class, 'index'])->name('batches.index');
+        Route::post('/batches', [MedicineBatchController::class, 'store'])->name('batches.store');
+        Route::put('/batches/{batch}', [MedicineBatchController::class, 'update'])->name('batches.update');
+        Route::delete('/batches/{batch}', [MedicineBatchController::class, 'destroy'])->name('batches.destroy');
+
         // Edit medicine
         Route::get('/{medicine}/edit', [MedicineController::class, 'edit'])->name('edit');
+
+        // Show medicine details
+        Route::get('/{medicine}', [MedicineController::class, 'show'])->name('show');
 
         // Update medicine
         Route::put('/{medicine}', [MedicineController::class, 'update'])->name('update');
 
         // Delete medicine
         Route::delete('/{medicine}', [MedicineController::class, 'destroy'])->name('destroy');
-
-        // Medicine batches (per-batch inventory tracking)
-        Route::get('/batches', [MedicineBatchController::class, 'index'])->name('batches.index');
-        Route::post('/batches', [MedicineBatchController::class, 'store'])->name('batches.store');
-        Route::put('/batches/{batch}', [MedicineBatchController::class, 'update'])->name('batches.update');
-        Route::delete('/batches/{batch}', [MedicineBatchController::class, 'destroy'])->name('batches.destroy');
     });
 
     // ====================
@@ -274,11 +278,11 @@ Route::middleware('auth')->group(function () {
         // Role Management - View and manage user roles and permissions
         Route::get('/role-management', [UserController::class, 'roleManagement'])->name('role-management');
 
-        // View user details
-        Route::get('/{id}', [UserController::class, 'show'])->name('show');
-
         // Edit user
         Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit');
+
+        // View user details (must be after /edit to avoid conflicts)
+        Route::get('/{id}', [UserController::class, 'show'])->name('show');
 
         // Update user
         Route::put('/{id}', [UserController::class, 'update'])->name('update');
@@ -429,6 +433,24 @@ Route::middleware('auth')->group(function () {
 
     // View request details (JSON endpoint for modal)
     Route::get('/approvals/{type}/{id}', [ApprovalController::class, 'show'])->name('approvals.show');
+
+    // ====================
+    // EVENT CALENDAR ROUTES
+    // ====================
+    Route::prefix('events')->name('events.')->group(function () {
+        // Event calendar view (accessible to all authenticated users)
+        Route::get('/', [EventController::class, 'index'])->name('index');
+        
+        // Get events as JSON for calendar
+        Route::get('/api', [EventController::class, 'getEvents'])->name('api');
+        
+        // CRUD routes (only for superadmin and admin - authorization checked in controller)
+        Route::get('/create', [EventController::class, 'create'])->name('create');
+        Route::post('/', [EventController::class, 'store'])->name('store');
+        Route::get('/{event}/edit', [EventController::class, 'edit'])->name('edit');
+        Route::put('/{event}', [EventController::class, 'update'])->name('update');
+        Route::delete('/{event}', [EventController::class, 'destroy'])->name('destroy');
+    });
 
 }); // End of auth middleware group
 

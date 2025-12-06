@@ -16,7 +16,7 @@ class ApprovalController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->role === 'superadmin') {
+        if ($user->role === 'super_admin') {
             // Superadmin sees only requests approved by admin
             $financialRequests = FinancialAssistanceRequest::where('status', 'approved_by_admin')
                 ->with(['requestor', 'admin'])

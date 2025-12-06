@@ -42,6 +42,13 @@
                     <span>Dashboard</span>
                 </a>
 
+                <!-- Event Calendar Link -->
+                <a href="{{ route('events.index') }}"
+                    class="nav-item {{ request()->routeIs('events.*') ? 'active' : '' }}">
+                    <i class="bi bi-calendar-event icon"></i>
+                    <span>Event Calendar</span>
+                </a>
+
                 <!-- PATIENT RECORDS SECTION -->
                 <!-- Patient Management Dropdown -->
                 <div class="nav-dropdown">
