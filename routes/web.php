@@ -14,6 +14,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\ApprovalController;
+use App\Http\Controllers\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -436,6 +437,24 @@ Route::middleware('auth')->group(function () {
 
     // View request details (JSON endpoint for modal)
     Route::get('/approvals/{type}/{id}', [ApprovalController::class, 'show'])->name('approvals.show');
+
+    // ====================
+    // EVENT CALENDAR ROUTES
+    // ====================
+    Route::prefix('events')->name('events.')->group(function () {
+        // Event calendar view (accessible to all authenticated users)
+        Route::get('/', [EventController::class, 'index'])->name('index');
+        
+        // Get events as JSON for calendar
+        Route::get('/api', [EventController::class, 'getEvents'])->name('api');
+        
+        // CRUD routes (only for superadmin and admin - authorization checked in controller)
+        Route::get('/create', [EventController::class, 'create'])->name('create');
+        Route::post('/', [EventController::class, 'store'])->name('store');
+        Route::get('/{event}/edit', [EventController::class, 'edit'])->name('edit');
+        Route::put('/{event}', [EventController::class, 'update'])->name('update');
+        Route::delete('/{event}', [EventController::class, 'destroy'])->name('destroy');
+    });
 
 }); // End of auth middleware group
 

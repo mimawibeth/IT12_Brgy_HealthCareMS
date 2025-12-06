@@ -126,7 +126,7 @@
                             }
                             const data = await response.json();
 
-                            modalBody.innerHTML = `
+                        modalBody.innerHTML = `
                                 <div class="form-section section-patient-info">
                                     <h3 class="section-header"><span class="section-indicator"></span>Child Information</h3>
                                     <div class="form-row">

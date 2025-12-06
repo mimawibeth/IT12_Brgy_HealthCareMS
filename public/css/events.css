@@ -1,0 +1,741 @@
+/* ==============================================
+   EVENT CALENDAR STYLES
+   ============================================== */
+
+/* Events Header */
+.events-header {
+    margin-bottom: 2rem;
+}
+
+.events-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.events-title-section {
+    flex: 1;
+    min-width: 200px;
+}
+
+.events-page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0 0 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.events-page-title i {
+    color: #4a90a4;
+    font-size: 1.5rem;
+}
+
+.events-subtitle {
+    font-size: 0.95rem;
+    color: #718096;
+    margin: 0;
+    font-weight: 400;
+}
+
+.events-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.btn-add-event {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(74, 144, 164, 0.25);
+    transition: all 0.2s ease;
+}
+
+.btn-add-event:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 144, 164, 0.35);
+}
+
+/* Calendar Wrapper */
+.calendar-wrapper {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+/* Ensure calendar has proper spacing */
+.calendar-wrapper .fc {
+    padding: 0;
+}
+
+.calendar-wrapper .fc-scroller {
+    overflow-y: auto;
+}
+
+/* FullCalendar Customization */
+#calendar {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.fc {
+    background-color: transparent;
+}
+
+.fc-header-toolbar {
+    margin-bottom: 2rem;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+/* Toolbar chunks alignment */
+.fc-toolbar-chunk {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.fc-toolbar-chunk:first-child {
+    flex: 0 0 auto;
+}
+
+.fc-toolbar-chunk:nth-child(2) {
+    flex: 1;
+    justify-content: center;
+    min-width: 200px;
+}
+
+.fc-toolbar-chunk:last-child {
+    flex: 0 0 auto;
+    justify-content: flex-end;
+}
+
+.fc-toolbar-title {
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    color: #2d3748 !important;
+    letter-spacing: -0.5px;
+}
+
+/* Navigation Buttons (Prev/Next) */
+.fc-prev-button,
+.fc-next-button {
+    background-color: #f7fafc !important;
+    border: 2px solid #e2e8f0 !important;
+    color: #4a90a4 !important;
+    padding: 0.625rem 0.875rem !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    min-width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.fc-prev-button:hover,
+.fc-next-button:hover {
+    background-color: #4a90a4 !important;
+    border-color: #4a90a4 !important;
+    color: white !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(74, 144, 164, 0.25) !important;
+}
+
+.fc-prev-button:active,
+.fc-next-button:active {
+    transform: translateY(0) !important;
+}
+
+/* Today Button */
+.fc-today-button {
+    background-color: #14b8a6 !important;
+    border: 2px solid #14b8a6 !important;
+    color: white !important;
+    padding: 0.625rem 1.25rem !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 6px rgba(20, 184, 166, 0.3) !important;
+    text-transform: capitalize !important;
+}
+
+.fc-today-button:hover {
+    background-color: #0d9488 !important;
+    border-color: #0d9488 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4) !important;
+}
+
+.fc-today-button:active {
+    transform: translateY(0) !important;
+}
+
+/* View Switcher Buttons (Month/Week/Day) - Segmented Control Style */
+.fc-button-group {
+    display: inline-flex !important;
+    background: #f7fafc !important;
+    border-radius: 10px !important;
+    padding: 4px !important;
+    border: 2px solid #e2e8f0 !important;
+    gap: 4px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+
+.fc-button-group .fc-button {
+    background-color: transparent !important;
+    border: none !important;
+    color: #718096 !important;
+    padding: 0.625rem 1.25rem !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    transition: all 0.2s ease !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    text-transform: capitalize !important;
+    position: relative !important;
+}
+
+.fc-button-group .fc-button:hover {
+    background-color: #e2e8f0 !important;
+    color: #4a90a4 !important;
+    transform: none !important;
+}
+
+.fc-button-group .fc-button-active {
+    background: linear-gradient(135deg, #4a90a4 0%, #3a7485 100%) !important;
+    color: white !important;
+    box-shadow: 0 2px 6px rgba(74, 144, 164, 0.3) !important;
+}
+
+.fc-button-group .fc-button-active:hover {
+    background: linear-gradient(135deg, #3a7485 0%, #2f6d7e 100%) !important;
+    color: white !important;
+}
+
+/* General Button Styles (for any other buttons) */
+.fc-button {
+    background-color: #4a90a4 !important;
+    border: 2px solid #4a90a4 !important;
+    color: white !important;
+    padding: 0.625rem 1.25rem !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 4px rgba(74, 144, 164, 0.2) !important;
+}
+
+.fc-button:hover {
+    background-color: #3a7485 !important;
+    border-color: #3a7485 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(74, 144, 164, 0.3) !important;
+}
+
+.fc-button:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(74, 144, 164, 0.2) !important;
+}
+
+.fc-button:active {
+    transform: translateY(0) !important;
+}
+
+.fc-button:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+.fc-daygrid-day {
+    border-color: #e9ecef;
+    transition: background-color 0.2s ease;
+}
+
+.fc-daygrid-day:hover {
+    background-color: #f8f9fa;
+}
+
+.fc-day-today {
+    background-color: #f0f9ff !important;
+    border-color: #4a90a4 !important;
+}
+
+.fc-day-today .fc-daygrid-day-number {
+    color: #4a90a4 !important;
+    font-weight: 700 !important;
+}
+
+.fc-col-header-cell {
+    background: linear-gradient(135deg, #4a90a4 0%, #3a7485 100%);
+    color: white;
+    font-weight: 600;
+    padding: 1rem 0.5rem;
+    border-color: #3a7485;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fc-col-header-cell:first-child {
+    border-top-left-radius: 8px;
+}
+
+.fc-col-header-cell:last-child {
+    border-top-right-radius: 8px;
+}
+
+.fc-daygrid-day-number {
+    padding: 0.75rem;
+    color: #2d3748;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.fc-daygrid-day-top {
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.fc-event {
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+    cursor: pointer;
+    border: none !important;
+    font-size: 0.9375rem !important; /* 15px - larger for better readability */
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+    min-height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important; /* Text shadow for readability */
+}
+
+.fc-event:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    z-index: 10 !important;
+    filter: brightness(1.05) !important; /* Slightly brighter on hover */
+}
+
+.fc-event-title {
+    font-weight: 600 !important;
+    padding: 0 !important;
+    line-height: 1.5 !important; /* Better line height */
+    color: white !important;
+    font-size: inherit !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: block !important;
+    width: 100% !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.fc-event-time {
+    font-weight: 500 !important;
+    opacity: 0.95 !important;
+    margin-right: 6px !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.fc-daygrid-event {
+    margin: 4px 8px !important; /* More spacing */
+}
+
+.fc-daygrid-event .fc-event {
+    width: calc(100% - 16px) !important; /* Ensure full width with margins */
+}
+
+.fc-timegrid-event {
+    border-radius: 8px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
+    padding: 10px 14px !important;
+    min-height: 36px !important;
+}
+
+.fc-timegrid-event .fc-event-title {
+    font-size: 0.9375rem !important;
+    line-height: 1.5 !important;
+}
+
+/* Ensure text is always readable on colored backgrounds */
+.fc-event[style*="background-color"] .fc-event-title,
+.fc-event[style*="background"] .fc-event-title {
+    color: white !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Better contrast for light colored events */
+.fc-event[style*="background-color: #"] .fc-event-title {
+    filter: contrast(1.1) !important;
+}
+
+/* Improve event text wrapping and display */
+.fc-event-main {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    gap: 6px !important;
+}
+
+/* Make sure event content is properly aligned */
+.fc-event-main-frame {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+/* Improve readability for multi-line events */
+.fc-event-title-container {
+    flex: 1 !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Dark mode event readability */
+.dark-mode .fc-event {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .fc-event-title {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.3s;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: #4a90a4;
+    color: white;
+    border-radius: 8px 8px 0 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.close {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+.close:hover,
+.close:focus {
+    color: #f0f0f0;
+    transform: scale(1.1);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.event-detail-item {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.event-detail-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.event-detail-item strong {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #2d3748;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
+.event-detail-item strong i {
+    color: #4a90a4;
+    font-size: 1.1rem;
+}
+
+.event-detail-item p {
+    margin: 0.5rem 0 0 1.75rem;
+    color: #4a5568;
+    line-height: 1.6;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.modal-actions .btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .events-header-content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .events-title-section {
+        margin-bottom: 1rem;
+    }
+
+    .events-header-actions {
+        width: 100%;
+    }
+
+    .btn-add-event {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .calendar-wrapper {
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .fc-header-toolbar {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .fc-toolbar-chunk {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .fc-toolbar-title {
+        font-size: 1.5rem !important;
+        text-align: center;
+        width: 100%;
+    }
+
+    .fc-button-group {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .fc-button-group .fc-button {
+        flex: 1;
+        min-width: 0;
+        padding: 0.625rem 0.875rem !important;
+    }
+
+    .fc-prev-button,
+    .fc-next-button,
+    .fc-today-button {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+    }
+
+    .modal-actions .btn {
+        width: 100%;
+    }
+}
+
+/* Dark mode support */
+.dark-mode .events-page-title {
+    color: #e2e8f0;
+}
+
+.dark-mode .events-subtitle {
+    color: #a0aec0;
+}
+
+.dark-mode .calendar-wrapper {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+}
+
+.dark-mode .fc {
+    background-color: transparent;
+    color: #e2e8f0;
+}
+
+.dark-mode .fc-header-toolbar {
+    background: transparent;
+}
+
+.dark-mode .fc-toolbar-title {
+    color: #e2e8f0 !important;
+}
+
+.dark-mode .fc-prev-button,
+.dark-mode .fc-next-button {
+    background-color: #374151 !important;
+    border-color: #4a5568 !important;
+    color: #e2e8f0 !important;
+}
+
+.dark-mode .fc-prev-button:hover,
+.dark-mode .fc-next-button:hover {
+    background-color: #4a90a4 !important;
+    border-color: #4a90a4 !important;
+    color: white !important;
+}
+
+.dark-mode .fc-button-group {
+    background: #374151 !important;
+    border-color: #4a5568 !important;
+}
+
+.dark-mode .fc-button-group .fc-button {
+    color: #a0aec0 !important;
+}
+
+.dark-mode .fc-button-group .fc-button:hover {
+    background-color: #4a5568 !important;
+    color: #e2e8f0 !important;
+}
+
+.dark-mode .fc-button-group .fc-button-active {
+    background: linear-gradient(135deg, #4a90a4 0%, #3a7485 100%) !important;
+    color: white !important;
+}
+
+.dark-mode .fc-daygrid-day {
+    border-color: #4a5568;
+}
+
+.dark-mode .fc-daygrid-day:hover {
+    background-color: #374151;
+}
+
+.dark-mode .fc-day-today {
+    background-color: #1e3a5f !important;
+    border-color: #4a90a4 !important;
+}
+
+.dark-mode .fc-day-today .fc-daygrid-day-number {
+    color: #60a5fa !important;
+}
+
+.dark-mode .fc-col-header-cell {
+    background: linear-gradient(135deg, #3a7485 0%, #2f6d7e 100%);
+    border-color: #2f6d7e;
+}
+
+.dark-mode .fc-daygrid-day-number {
+    color: #e2e8f0;
+}
+
+.dark-mode .modal-content {
+    background-color: #2d3748;
+    color: #e2e8f0;
+}
+
+.dark-mode .event-detail-item {
+    border-bottom-color: #4a5568;
+}
+
+.dark-mode .event-detail-item strong {
+    color: #e2e8f0;
+}
+
+.dark-mode .event-detail-item p {
+    color: #cbd5e0;
+}
+
+.dark-mode .modal-actions {
+    border-top-color: #4a5568;
+}
+
