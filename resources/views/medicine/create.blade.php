@@ -64,14 +64,15 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="quantity_on_hand">Quantity on Hand <span class="required-asterisk">*</span></label>
-                            <input type="number" id="quantity_on_hand" name="quantity_on_hand" class="form-control" min="0" required value="{{ old('quantity_on_hand', 0) }}">
-                            <span class="error-message" data-for="quantity_on_hand"></span>
-                        </div>
-
-                        <div class="form-group">
                             <label for="reorder_level">Reorder Level</label>
                             <input type="number" id="reorder_level" name="reorder_level" class="form-control" min="0" value="{{ old('reorder_level', 0) }}">
+                            <small class="form-text">Stock quantity that triggers low stock alert</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="alert" style="background: #e8f4f8; border-left: 4px solid #0066cc; padding: 1rem; margin: 0;">
+                            <strong>Note:</strong> Quantity on hand is managed through batches. After creating the medicine, add batches from the Batches page.
                         </div>
                     </div>
 

@@ -221,7 +221,7 @@ class PatientController extends Controller
     public function storeAssessments(Request $request, $id)
     {
         $patient = Patient::findOrFail($id);
-        
+
         $assessments = $request->input('assessments', []);
 
         foreach ($assessments as $assessmentData) {

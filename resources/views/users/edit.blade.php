@@ -39,8 +39,8 @@
                     <div class="form-row two-col">
                         <div class="form-group">
                             <label for="username">Username *</label>
-                            <input type="text" id="username" name="username" class="form-control" required value="{{ old('username', $user->username) }}"
-                                readonly>
+                            <input type="text" id="username" name="username" class="form-control" required
+                                value="{{ old('username', $user->username) }}" readonly>
                             <small class="form-text text-muted">Cannot be changed</small>
                         </div>
 
@@ -56,7 +56,8 @@
                             <label for="password">New Password</label>
                             <input type="password" id="password" name="password" class="form-control"
                                 placeholder="Leave blank to keep current password">
-                            <small class="form-text">Only fill if you want to change password (min 12 chars, must include uppercase, lowercase, number, and special character)</small>
+                            <small class="form-text">Only fill if you want to change password (min 12 chars, must include
+                                uppercase, lowercase, number, and special character)</small>
                         </div>
 
                         <div class="form-group">
@@ -74,12 +75,14 @@
                     <div class="form-row three-col">
                         <div class="form-group">
                             <label for="first_name">First Name *</label>
-                            <input type="text" id="first_name" name="first_name" class="form-control" required value="{{ old('first_name', $user->first_name) }}">
+                            <input type="text" id="first_name" name="first_name" class="form-control" required
+                                value="{{ old('first_name', $user->first_name) }}">
                         </div>
 
                         <div class="form-group">
                             <label for="middle_name">Middle Name</label>
-                            <input type="text" id="middle_name" name="middle_name" class="form-control" value="{{ old('middle_name', $user->middle_name) }}">
+                            <input type="text" id="middle_name" name="middle_name" class="form-control"
+                                value="{{ old('middle_name', $user->middle_name) }}">
                         </div>
 
                         <div class="form-group">
@@ -91,21 +94,15 @@
 
                     <div class="form-row three-col">
                         <div class="form-group">
-<<<<<<< HEAD
-                            <label for="contact_number"><i class="bi bi-telephone"></i> Contact Number</label>
+                            <label for="contact_number">Contact Number</label>
                             <input type="text" id="contact_number" name="contact_number" class="form-control"
-                                value="0912-345-6789">
+                                value="{{ old('contact_number', $user->contact_number) }}">
                         </div>
 
                         <div class="form-group col-span-2">
-                            <label for="address"><i class="bi bi-geo-alt"></i> Address</label>
+                            <label for="address">Address</label>
                             <input type="text" id="address" name="address" class="form-control"
-                                value="123 Barangay Street, City">
-=======
-                            <label for="contact_number">Contact Number *</label>
-                            <input type="text" id="contact_number" name="contact_number" class="form-control" required
-                                value="{{ old('contact_number', $user->contact_number) }}">
->>>>>>> 3723e67444b4297a57b2a8d141a24e107def6990
+                                value="{{ old('address', $user->address) }}">
                         </div>
                     </div>
                 </div>
@@ -119,15 +116,16 @@
                             <label for="role"><i class="bi bi-person-check"></i> User Role *</label>
                             <select id="role" name="role" class="form-control" required>
                                 <option value="">Select Role</option>
-<<<<<<< HEAD
-                                <option value="admin" selected>Admin</option>
-                                <option value="bhw">Barangay Health Worker</option>
-                                <option value="staff">Staff</option>
-=======
-                                <option value="super_admin" @selected(old('role', $user->role) === 'super_admin')>Super Admin</option>
-                                <option value="admin" @selected(old('role', $user->role) === 'admin')>Admin</option>
-                                <option value="bhw" @selected(old('role', $user->role) === 'bhw')>Barangay Health Worker (BHW)</option>
->>>>>>> 3723e67444b4297a57b2a8d141a24e107def6990
+                                <<<<<<< HEAD <option value="admin" selected>Admin</option>
+                                    <option value="bhw">Barangay Health Worker</option>
+                                    <option value="staff">Staff</option>
+                                    =======
+                                    <option value="super_admin" @selected(old('role', $user->role) === 'super_admin')>Super
+                                        Admin</option>
+                                    <option value="admin" @selected(old('role', $user->role) === 'admin')>Admin</option>
+                                    <option value="bhw" @selected(old('role', $user->role) === 'bhw')>Barangay Health Worker
+                                        (BHW)</option>
+                                    >>>>>>> 3723e67444b4297a57b2a8d141a24e107def6990
                             </select>
                         </div>
 
@@ -135,35 +133,34 @@
                             <label for="status"><i class="bi bi-toggle-on"></i> Status *</label>
                             <select id="status" name="status" class="form-control" required>
                                 <option value="active" @selected(old('status', $user->status) === 'active')>Active</option>
-                                <option value="inactive" @selected(old('status', $user->status) === 'inactive')>Inactive</option>
+                                <option value="inactive" @selected(old('status', $user->status) === 'inactive')>Inactive
+                                </option>
                             </select>
                         </div>
                     </div>
-<<<<<<< HEAD
-
-                    <div class="form-row">
+                    <<<<<<< HEAD <div class="form-row">
                         <div class="form-group full-width">
                             <label for="notes"><i class="bi bi-chat-left-text"></i> Notes/Remarks</label>
                             <textarea id="notes" name="notes" class="form-control"
                                 rows="2">Primary system administrator responsible for user management and system configuration.</textarea>
                         </div>
-                    </div>
-=======
->>>>>>> 3723e67444b4297a57b2a8d141a24e107def6990
                 </div>
-
-                <!-- Form Actions -->
-                <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="window.history.back()">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save"></i> Update User
-                    </button>
-                </div>
-
-            </form>
+                =======
+                >>>>>>> 3723e67444b4297a57b2a8d141a24e107def6990
         </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="window.history.back()">
+                Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i> Update User
+            </button>
+        </div>
+
+        </form>
+    </div>
 
     </div>
 @endsection

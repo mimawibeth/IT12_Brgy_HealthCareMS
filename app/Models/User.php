@@ -28,6 +28,7 @@ class User extends Authenticatable
         'role',
         'dark_mode',
         'contact_number',
+        'address',
         'status',
     ];
 

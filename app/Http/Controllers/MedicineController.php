@@ -60,7 +60,6 @@ class MedicineController extends Controller
             'strength' => ['nullable', 'string', 'max:100'],
             'unit' => ['nullable', 'string', 'max:50'],
             'reorder_level' => ['nullable', 'integer', 'min:0'],
-            'expiry_date' => ['nullable', 'date'],
             'remarks' => ['nullable', 'string'],
         ]);
 

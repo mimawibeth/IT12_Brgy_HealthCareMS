@@ -71,16 +71,15 @@
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="quantity_on_hand">Quantity on Hand <span class="required-asterisk">*</span></label>
-                            <input type="number" id="quantity_on_hand" name="quantity_on_hand" class="form-control" min="0"
-                                required value="{{ old('quantity_on_hand', $medicine->quantity_on_hand) }}">
-                            <span class="error-message" data-for="quantity_on_hand"></span>
-                        </div>
-
-                        <div class="form-group">
                             <label for="reorder_level">Reorder Level</label>
                             <input type="number" id="reorder_level" name="reorder_level" class="form-control" min="0"
                                 value="{{ old('reorder_level', $medicine->reorder_level) }}">
+                            <small class="form-text">Stock quantity that triggers low stock alert</small>
+                        </div>
+                        <div class="form-group">
+                            <label>Current Quantity on Hand</label>
+                            <input type="text" class="form-control" value="{{ $medicine->quantity_on_hand }}" readonly>
+                            <small class="form-text">Calculated from batches (manage in Batches page)</small>
                         </div>
                     </div>
 

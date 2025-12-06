@@ -50,52 +50,52 @@ Route::middleware('guest')->group(function () {
     })->name('login');
 
     Route::post('/login', function () {
-    // Validate login credentials
-    $credentials = request()->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required'],
-    ]);
-
-    $ip = request()->ip();
-
-    // Attempt to authenticate user
-    $remember = request()->boolean('remember');
-
-    if (
-        auth()->attempt([
-            'email' => $credentials['email'],
-            'password' => $credentials['password'],
-        ], $remember)
-    ) {
-        request()->session()->regenerate();
-
-        \App\Models\AuditLog::create([
-            'user_id' => auth()->id(),
-            'user_role' => auth()->user()->role ?? null,
-            'action' => 'login',
-            'module' => 'Authentication',
-            'description' => 'User logged in successfully',
-            'ip_address' => $ip,
-            'status' => 'success',
+        // Validate login credentials
+        $credentials = request()->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
         ]);
 
-        return redirect()->intended('dashboard');
-    }
+        $ip = request()->ip();
 
-    \App\Models\AuditLog::create([
-        'user_id' => null,
-        'user_role' => null,
-        'action' => 'login',
-        'module' => 'Authentication',
-        'description' => 'Failed login attempt - Invalid credentials',
-        'ip_address' => $ip,
-        'status' => 'failed',
-    ]);
+        // Attempt to authenticate user
+        $remember = request()->boolean('remember');
 
-    // Authentication failed
-    return back()->withErrors([
-        'email' => 'Invalid credentials. Please try again.',
-    ])->onlyInput('email');
+        if (
+            auth()->attempt([
+                'email' => $credentials['email'],
+                'password' => $credentials['password'],
+            ], $remember)
+        ) {
+            request()->session()->regenerate();
+
+            \App\Models\AuditLog::create([
+                'user_id' => auth()->id(),
+                'user_role' => auth()->user()->role ?? null,
+                'action' => 'login',
+                'module' => 'Authentication',
+                'description' => 'User logged in successfully',
+                'ip_address' => $ip,
+                'status' => 'success',
+            ]);
+
+            return redirect()->intended('dashboard');
+        }
+
+        \App\Models\AuditLog::create([
+            'user_id' => null,
+            'user_role' => null,
+            'action' => 'login',
+            'module' => 'Authentication',
+            'description' => 'Failed login attempt - Invalid credentials',
+            'ip_address' => $ip,
+            'status' => 'failed',
+        ]);
+
+        // Authentication failed
+        return back()->withErrors([
+            'email' => 'Invalid credentials. Please try again.',
+        ])->onlyInput('email');
     })->name('login.post');
 }); // End of guest middleware group
 

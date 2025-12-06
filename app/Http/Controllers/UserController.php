@@ -37,7 +37,8 @@ class UserController extends Controller
             'first_name' => ['required', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'contact_number' => ['required', 'string', 'max:50'],
+            'contact_number' => ['nullable', 'string', 'max:50'],
+            'address' => ['nullable', 'string', 'max:500'],
             'role' => ['required', 'in:super_admin,admin,bhw'],
             'status' => ['required', 'in:active,inactive'],
         ]);
@@ -53,7 +54,8 @@ class UserController extends Controller
             'username' => $validated['username'],
             'password' => Hash::make($validated['password']),
             'role' => $validated['role'],
-            'contact_number' => $validated['contact_number'],
+            'contact_number' => $validated['contact_number'] ?? null,
+            'address' => $validated['address'] ?? null,
             'status' => $validated['status'],
         ]);
 
@@ -165,7 +167,8 @@ class UserController extends Controller
             'first_name' => ['required', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'contact_number' => ['required', 'string', 'max:50'],
+            'contact_number' => ['nullable', 'string', 'max:50'],
+            'address' => ['nullable', 'string', 'max:500'],
             'role' => ['required', 'in:super_admin,admin,bhw'],
             'status' => ['required', 'in:active,inactive'],
         ]);
@@ -180,7 +183,8 @@ class UserController extends Controller
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
             'role' => $validated['role'],
-            'contact_number' => $validated['contact_number'],
+            'contact_number' => $validated['contact_number'] ?? null,
+            'address' => $validated['address'] ?? null,
             'status' => $validated['status'],
         ];
 
