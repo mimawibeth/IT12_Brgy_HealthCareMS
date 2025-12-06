@@ -21,49 +21,53 @@
         <div class="stats-grid">
             <!-- Total Registered Patients Card -->
             <div class="stat-card">
-                <div class="stat-icon stat-icon-blue">
-                    <i class="bi bi-people"></i>
+                <div class="stat-icon-wrapper"
+                    style="background: #dbeafe; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="bi bi-people-fill" style="font-size: 18px; color: #3b82f6;"></i>
                 </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ number_format($registeredPatients ?? 0) }}</div>
-                    <div class="stat-label">Registered Patients</div>
-                    <div class="stat-change">Total ITR Records</div>
+                <div class="stat-text">
+                    <h3 class="stat-title">Registered Patients</h3>
+                    <p class="stat-number">{{ number_format($registeredPatients ?? 0) }}</p>
+                    <span class="stat-trend">Total ITR Records</span>
                 </div>
             </div>
 
             <!-- Active Health Programs Card -->
             <div class="stat-card">
-                <div class="stat-icon stat-icon-green">
-                    <i class="bi bi-heart-pulse"></i>
+                <div class="stat-icon-wrapper"
+                    style="background: #d1f4e0; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="bi bi-heart-pulse-fill" style="font-size: 18px; color: #10b981;"></i>
                 </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ number_format($healthPrograms ?? 0) }}</div>
-                    <div class="stat-label">Health Programs</div>
-                    <div class="stat-change">Active Participants</div>
+                <div class="stat-text">
+                    <h3 class="stat-title">Health Programs</h3>
+                    <p class="stat-number">{{ number_format($healthPrograms ?? 0) }}</p>
+                    <span class="stat-trend">Active Participants</span>
                 </div>
             </div>
 
             <!-- Monthly Services Card -->
             <div class="stat-card">
-                <div class="stat-icon stat-icon-purple">
-                    <i class="bi bi-clipboard2-pulse"></i>
+                <div class="stat-icon-wrapper"
+                    style="background: #ede9fe; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="bi bi-clipboard2-pulse-fill" style="font-size: 18px; color: #8b5cf6;"></i>
                 </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ number_format($monthlyServices ?? 0) }}</div>
-                    <div class="stat-label">Monthly Services</div>
-                    <div class="stat-change">{{ $currentMonthName ?? 'Current Month' }}</div>
+                <div class="stat-text">
+                    <h3 class="stat-title">Monthly Services</h3>
+                    <p class="stat-number">{{ number_format($monthlyServices ?? 0) }}</p>
+                    <span class="stat-trend">{{ $currentMonthName ?? 'Current Month' }}</span>
                 </div>
             </div>
 
             <!-- Medicine Inventory Card -->
             <div class="stat-card">
-                <div class="stat-icon stat-icon-orange">
-                    <i class="bi bi-capsule"></i>
+                <div class="stat-icon-wrapper"
+                    style="background: #fed7aa; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="bi bi-capsule-pill" style="font-size: 18px; color: #f59e0b;"></i>
                 </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ number_format($totalMedicineStock ?? 0) }}</div>
-                    <div class="stat-label">Medicine Stock</div>
-                    <div class="stat-change">Available Items</div>
+                <div class="stat-text">
+                    <h3 class="stat-title">Medicine Stock</h3>
+                    <p class="stat-number">{{ number_format($totalMedicineStock ?? 0) }}</p>
+                    <span class="stat-trend">Available Items</span>
                 </div>
             </div>
         </div>

@@ -17,9 +17,86 @@
     <link rel="stylesheet" href="{{ asset('css/main.css?v=' . time()) }}">
     <!-- Page-specific CSS -->
     @stack('styles')
+    <style>
+        /* Text Size Adjustments */
+        body.text-size-small {
+            font-size: 13px;
+        }
+
+        body.text-size-small .stat-number {
+            font-size: 32px;
+        }
+
+        body.text-size-small .stat-title {
+            font-size: 12px;
+        }
+
+        body.text-size-small h1 {
+            font-size: 22px;
+        }
+
+        body.text-size-small h2 {
+            font-size: 19px;
+        }
+
+        body.text-size-small h3 {
+            font-size: 16px;
+        }
+
+        body.text-size-small .btn {
+            font-size: 13px;
+            padding: 8px 14px;
+        }
+
+        body.text-size-small .form-control {
+            font-size: 13px;
+        }
+
+        body.text-size-small .nav-item span {
+            font-size: 13px;
+        }
+
+        body.text-size-large {
+            font-size: 17px;
+        }
+
+        body.text-size-large .stat-number {
+            font-size: 40px;
+        }
+
+        body.text-size-large .stat-title {
+            font-size: 14px;
+        }
+
+        body.text-size-large h1 {
+            font-size: 30px;
+        }
+
+        body.text-size-large h2 {
+            font-size: 26px;
+        }
+
+        body.text-size-large h3 {
+            font-size: 22px;
+        }
+
+        body.text-size-large .btn {
+            font-size: 17px;
+            padding: 12px 22px;
+        }
+
+        body.text-size-large .form-control {
+            font-size: 17px;
+        }
+
+        body.text-size-large .nav-item span {
+            font-size: 17px;
+        }
+    </style>
 </head>
 
-<body class="{{ (auth()->user()->dark_mode ?? false) ? 'dark-mode' : '' }}">
+<body
+    class="{{ (auth()->user()->dark_mode ?? false) ? 'dark-mode' : '' }} {{ 'text-size-' . (auth()->user()->text_size ?? 'medium') }}">
     <!-- Main Container: holds sidebar and content -->
     <div class="app-container">
 
@@ -104,7 +181,7 @@
                 <div class="nav-dropdown">
                     <button class="nav-dropdown-toggle">
                         <i class="bi bi-capsule icon"></i>
-                        <span>Medicine</span>
+                        <span>Supplies</span>
                         <i class="bi bi-chevron-down arrow"></i>
                     </button>
                     <div class="nav-dropdown-menu">
@@ -122,6 +199,16 @@
                             class="nav-item {{ request()->routeIs('medicine.dispense') ? 'active' : '' }}">
                             <i class="bi bi-prescription2 icon"></i>
                             <span>Dispense History</span>
+                        </a>
+                        <a href="{{ route('supplies.index') }}"
+                            class="nav-item {{ request()->routeIs('supplies.index') ? 'active' : '' }}">
+                            <i class="bi bi-box2-heart icon"></i>
+                            <span>Medical Supplies</span>
+                        </a>
+                        <a href="{{ route('supplies.history') }}"
+                            class="nav-item {{ request()->routeIs('supplies.history') ? 'active' : '' }}">
+                            <i class="bi bi-clock-history icon"></i>
+                            <span>Supply History</span>
                         </a>
                     </div>
                 </div>
@@ -161,57 +248,6 @@
                         </div>
                     </div>
                 @endif
-
-                {{-- BHW and Admin: Request Forms --}}
-                @if(in_array(auth()->user()->role ?? '', ['bhw', 'admin']))
-                    <div class="nav-dropdown">
-                        <!-- <button class="nav-dropdown-toggle">
-                                    <i class="bi bi-ui-checks-grid icon"></i>
-                                    <span>Approvals</span>
-                                    <i class="bi bi-chevron-down arrow"></i>
-                                </button> -->
-
-                        <div class="nav-dropdown-menu">
-                            <a href="{{ route('approvals.financial.index') }}"
-                                class="nav-item {{ request()->routeIs('approvals.financial.*') ? 'active' : '' }}">
-                                <i class="bi bi-wallet2 icon"></i>
-                                <span>Financial Assistance</span>
-                            </a>
-
-                            <a href="{{ route('approvals.medical.index') }}"
-                                class="nav-item {{ request()->routeIs('approvals.medical.*') ? 'active' : '' }}">
-                                <i class="bi bi-bag-plus icon"></i>
-                                <span>Medical Supplies</span>
-                            </a>
-                        </div>
-                    </div>
-                @endif
-
-                {{-- Super Admin: Pending Approvals Only --}}
-                @if(auth()->user()->role ?? '' === 'super_admin')
-                    <div class="nav-dropdown">
-                        <button class="nav-dropdown-toggle">
-                            <i class="bi bi-check2-square icon"></i>
-                            <span>Financial Assistance</span>
-                            <i class="bi bi-chevron-down arrow"></i>
-                        </button>
-
-                        <div class="nav-dropdown-menu">
-                            <a href="{{ route('approvals.financial.index') }}"
-                                class="nav-item {{ request()->routeIs('approvals.financial.*') ? 'active' : '' }}">
-                                <i class="bi bi-wallet2 icon"></i>
-                                <span>Financial Assistance</span>
-                            </a>
-
-                            <!-- <a href="{{ route('approvals.medical.index') }}"
-                                    class="nav-item {{ request()->routeIs('approvals.medical.*') ? 'active' : '' }}">
-                                    <i class="bi bi-bag-plus icon"></i>
-                                    <span>Medical Supplies</span>
-                                </a> -->
-                        </div>
-                    </div>
-                @endif
-
 
                 <!-- Reports -->
                 @if((auth()->user()->role ?? '') !== 'bhw')

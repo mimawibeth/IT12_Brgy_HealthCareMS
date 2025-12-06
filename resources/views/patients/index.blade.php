@@ -12,36 +12,37 @@
     <div class="page-content">
 
         <!-- Search and Filter Section -->
-        <form method="GET" action="{{ route('patients.index') }}" class="filters">
-            <div class="search-box">
-                <input type="text" name="search" placeholder="Search patients..." class="search-input"
-                    value="{{ request('search') }}">
-                <button type="submit" class="btn-search"><i class="bi bi-search"></i> Search</button>
-                <a href="{{ route('patients.create') }}" class="btn btn-primary" style="margin-left: 10px;">
-                    <i class="bi bi-person-plus"></i> Add New Patient
-                </a>
-            </div>
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .3rem; flex-wrap: wrap;">
+            <form method="GET" action="{{ route('patients.index') }}" id="patientFilterForm" class="filters"
+                style="flex: 1; display: flex; gap: 12px; align-items: center;">
+                <input type="text" name="search" id="searchInput" placeholder="Search patients..." class="search-input"
+                    value="{{ request('search') }}" style="flex: 1; min-width: 300px;">
 
-            <div class="filter-options">
-                <select name="gender" class="filter-select">
+                <select name="gender" id="genderFilter" class="filter-select">
                     <option value="">All Gender</option>
                     <option value="male" {{ request('gender') === 'male' ? 'selected' : '' }}>Male</option>
                     <option value="female" {{ request('gender') === 'female' ? 'selected' : '' }}>Female</option>
                 </select>
 
-                <select name="age_group" class="filter-select">
+                <select name="age_group" id="ageGroupFilter" class="filter-select">
                     <option value="">All Ages</option>
-                    <option value="child" {{ request('age_group') === 'child' ? 'selected' : '' }}>Children (0-12)
-                    </option>
-                    <option value="teen" {{ request('age_group') === 'teen' ? 'selected' : '' }}>Teenagers (13-19)
-                    </option>
-                    <option value="adult" {{ request('age_group') === 'adult' ? 'selected' : '' }}>Adults (20-59)
-                    </option>
-                    <option value="senior" {{ request('age_group') === 'senior' ? 'selected' : '' }}>Senior (60+)
-                    </option>
+                    <option value="child" {{ request('age_group') === 'child' ? 'selected' : '' }}>Children (0-12)</option>
+                    <option value="teen" {{ request('age_group') === 'teen' ? 'selected' : '' }}>Teenagers (13-19)</option>
+                    <option value="adult" {{ request('age_group') === 'adult' ? 'selected' : '' }}>Adults (20-59)</option>
+                    <option value="senior" {{ request('age_group') === 'senior' ? 'selected' : '' }}>Senior (60+)</option>
                 </select>
-            </div>
-        </form>
+
+                <button type="button" id="clearFiltersBtn" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Clear
+                </button>
+
+                <a href="{{ route('patients.create') }}" class="btn btn-primary"
+                    style="padding: 6px 12px; font-size: 13px; white-space: nowrap;">
+                    <i class="bi bi-person-plus"></i> Add New Patient
+                </a>
+            </form>
+        </div>
 
         <!-- Patients Table -->
         <div class="table-container">
@@ -273,6 +274,42 @@
     </div>
 
     <script>
+        // Auto-submit filter form on input/change
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('patientFilterForm');
+            const searchInput = document.getElementById('searchInput');
+            const genderFilter = document.getElementById('genderFilter');
+            const ageGroupFilter = document.getElementById('ageGroupFilter');
+            const clearBtn = document.getElementById('clearFiltersBtn');
+
+            let searchTimeout;
+
+            // Auto-submit on search input with debounce
+            searchInput.addEventListener('input', function () {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    form.submit();
+                }, 500);
+            });
+
+            // Auto-submit on filter change
+            genderFilter.addEventListener('change', function () {
+                form.submit();
+            });
+
+            ageGroupFilter.addEventListener('change', function () {
+                form.submit();
+            });
+
+            // Clear all filters
+            clearBtn.addEventListener('click', function () {
+                searchInput.value = '';
+                genderFilter.value = '';
+                ageGroupFilter.value = '';
+                form.submit();
+            });
+        });
+
         function openPatientViewModal(patientId) {
             fetch('{{ route('patients.index') }}/' + patientId)
                 .then(response => response.json())

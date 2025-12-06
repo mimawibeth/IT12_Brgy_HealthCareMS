@@ -13,7 +13,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AuditLogController;
-use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\EventController;
 
 /*
@@ -260,6 +259,28 @@ Route::middleware('auth')->group(function () {
     });
 
     // ====================
+    // MEDICAL SUPPLIES INVENTORY ROUTES
+    // ====================
+    Route::prefix('medical-supplies')->name('supplies.')->group(function () {
+        // Display medical supplies inventory list
+        Route::get('/', function () {
+            return view('medicine.barangay-medical-supplies-inventory');
+        })->name('index');
+
+        // Display supply history (incoming and outgoing transactions)
+        Route::get('/history', function () {
+            return view('medicine.barangay-supply-history');
+        })->name('history');
+
+        // TODO: Implement these routes with proper controller when ready
+        // Route::post('/store', [MedicalSupplyController::class, 'store'])->name('store');
+        // Route::post('/receive', [MedicalSupplyController::class, 'receive'])->name('receive');
+        // Route::post('/issue', [MedicalSupplyController::class, 'issue'])->name('issue');
+        // Route::get('/{id}', [MedicalSupplyController::class, 'show'])->name('show');
+        // Route::put('/{id}', [MedicalSupplyController::class, 'update'])->name('update');
+    });
+
+    // ====================
     // USER MANAGEMENT ROUTES (Super Admin/Admin UI; backend checks can be added via middleware later)
     // ====================
     Route::prefix('users')->name('users.')->group(function () {
@@ -363,12 +384,30 @@ Route::middleware('auth')->group(function () {
         // Update settings
         Route::post('/update', function () {
             $data = request()->validate([
+                'first_name' => ['required', 'string', 'max:255'],
+                'middle_name' => ['nullable', 'string', 'max:255'],
+                'last_name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'email', 'max:255'],
+                'username' => ['required', 'string', 'max:255'],
+                'contact_number' => ['nullable', 'string', 'max:20'],
+                'address' => ['nullable', 'string', 'max:500'],
                 'dark_mode' => ['required', 'in:0,1'],
+                'text_size' => ['required', 'in:small,medium,large'],
             ]);
 
             $user = auth()->user();
             if ($user) {
-                $user->dark_mode = $data['dark_mode'] === '1';
+                $user->fill([
+                    'first_name' => $data['first_name'],
+                    'middle_name' => $data['middle_name'],
+                    'last_name' => $data['last_name'],
+                    'email' => $data['email'],
+                    'username' => $data['username'],
+                    'contact_number' => $data['contact_number'],
+                    'address' => $data['address'],
+                    'dark_mode' => $data['dark_mode'] === '1',
+                    'text_size' => $data['text_size'],
+                ]);
                 $user->save();
             }
 
@@ -408,42 +447,15 @@ Route::middleware('auth')->group(function () {
     });
 
     // ====================
-    // APPROVAL ROUTES
-    // ====================
-    // Dashboard - accessible to all authenticated users
-    Route::get('/approvals', [ApprovalController::class, 'index'])->name('approvals.index');
-
-    // Financial Assistance Requests
-    Route::get('/approvals/financial', [ApprovalController::class, 'financialIndex'])->name('approvals.financial.index');
-    Route::get('/approvals/financial/create', [ApprovalController::class, 'createFinancial'])->name('approvals.financial.create');
-    Route::post('/approvals/financial', [ApprovalController::class, 'storeFinancial'])->name('approvals.financial.store');
-
-    // Medical Supplies Requests
-    Route::get('/approvals/medical', [ApprovalController::class, 'medicalIndex'])->name('approvals.medical.index');
-    Route::get('/approvals/medical/create', [ApprovalController::class, 'createMedical'])->name('approvals.medical.create');
-    Route::post('/approvals/medical', [ApprovalController::class, 'storeMedical'])->name('approvals.medical.store');
-
-    // Admin approval actions
-    Route::post('/approvals/{type}/{id}/admin-approve', [ApprovalController::class, 'adminApprove'])->name('approvals.admin-approve');
-    Route::post('/approvals/{type}/{id}/admin-reject', [ApprovalController::class, 'adminReject'])->name('approvals.admin-reject');
-
-    // Superadmin approval actions
-    Route::post('/approvals/{type}/{id}/superadmin-approve', [ApprovalController::class, 'superadminApprove'])->name('approvals.superadmin-approve');
-    Route::post('/approvals/{type}/{id}/superadmin-reject', [ApprovalController::class, 'superadminReject'])->name('approvals.superadmin-reject');
-
-    // View request details (JSON endpoint for modal)
-    Route::get('/approvals/{type}/{id}', [ApprovalController::class, 'show'])->name('approvals.show');
-
-    // ====================
     // EVENT CALENDAR ROUTES
     // ====================
     Route::prefix('events')->name('events.')->group(function () {
         // Event calendar view (accessible to all authenticated users)
         Route::get('/', [EventController::class, 'index'])->name('index');
-        
+
         // Get events as JSON for calendar
         Route::get('/api', [EventController::class, 'getEvents'])->name('api');
-        
+
         // CRUD routes (only for superadmin and admin - authorization checked in controller)
         Route::get('/create', [EventController::class, 'create'])->name('create');
         Route::post('/', [EventController::class, 'store'])->name('store');

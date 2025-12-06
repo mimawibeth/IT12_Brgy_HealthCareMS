@@ -11,8 +11,6 @@ use App\Models\MedicineBatch;
 use App\Models\MedicineDispense;
 use App\Models\AuditLog;
 use App\Models\User;
-use App\Models\FinancialAssistanceRequest;
-use App\Models\MedicalSuppliesRequest;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -41,7 +39,7 @@ class DashboardController extends Controller
             $months->push($now->copy()->subMonths($i));
         }
 
-        $monthLabels = $months->map(fn (Carbon $d) => $d->format('M'));
+        $monthLabels = $months->map(fn(Carbon $d) => $d->format('M'));
         $currentIndex = 5;
         $currentMonth = $months[$currentIndex];
         $previousMonth = $months[$currentIndex - 1] ?? $months[$currentIndex];
@@ -52,7 +50,7 @@ class DashboardController extends Controller
         $activeUsers = User::where('status', 'active')->count();
         $registeredPatients = Patient::count();
         $healthPrograms = PrenatalRecord::count() + FamilyPlanningRecord::count() + NipRecord::count();
-        
+
         // User statistics by role
         $userStats = [
             'super_admin' => User::where('role', 'super_admin')->where('status', 'active')->count(),
@@ -60,10 +58,7 @@ class DashboardController extends Controller
             'bhw' => User::where('role', 'bhw')->where('status', 'active')->count(),
         ];
 
-        // Approval requests statistics
-        $pendingFinancialRequests = FinancialAssistanceRequest::where('status', 'pending')->count();
-        $pendingMedicalRequests = MedicalSuppliesRequest::where('status', 'pending')->count();
-        $totalPendingApprovals = $pendingFinancialRequests + $pendingMedicalRequests;
+
 
         // Health program statistics
         $prenatalTotal = PrenatalRecord::count();
@@ -138,7 +133,7 @@ class DashboardController extends Controller
 
         foreach ($dispenses as $dispense) {
             $day = optional($dispense->dispensed_at)->day ?? optional($dispense->created_at)->day ?? 1;
-            $index = (int)floor(($day - 1) / 7);
+            $index = (int) floor(($day - 1) / 7);
             $index = max(0, min(3, $index));
             $weeksData[$index] += $dispense->quantity;
         }
@@ -149,13 +144,7 @@ class DashboardController extends Controller
         // Recent audit logs
         $recentLogs = AuditLog::with('user')->orderByDesc('created_at')->limit(5)->get();
 
-        // Recent approval requests
-        $recentApprovals = collect();
-        $recentApprovals = $recentApprovals->merge(
-            FinancialAssistanceRequest::with('requestor')->orderByDesc('created_at')->limit(5)->get()
-        )->merge(
-            MedicalSuppliesRequest::with('requestor')->orderByDesc('created_at')->limit(5)->get()
-        )->sortByDesc('created_at')->take(5);
+
 
         return view('dashboard.super-admin', compact(
             'registeredPatients',
@@ -184,7 +173,7 @@ class DashboardController extends Controller
             $months->push($now->copy()->subMonths($i));
         }
 
-        $monthLabels = $months->map(fn (Carbon $d) => $d->format('M'));
+        $monthLabels = $months->map(fn(Carbon $d) => $d->format('M'));
         $currentIndex = 5;
         $currentMonth = $months[$currentIndex];
         $previousMonth = $months[$currentIndex - 1] ?? $months[$currentIndex];
@@ -193,7 +182,7 @@ class DashboardController extends Controller
         // System statistics
         $registeredPatients = Patient::count();
         $healthPrograms = PrenatalRecord::count() + FamilyPlanningRecord::count() + NipRecord::count();
-        
+
         // Health program statistics
         $prenatalTotal = PrenatalRecord::count();
         $familyPlanningTotal = FamilyPlanningRecord::count();
@@ -277,15 +266,12 @@ class DashboardController extends Controller
 
         foreach ($dispenses as $dispense) {
             $day = optional($dispense->dispensed_at)->day ?? optional($dispense->created_at)->day ?? 1;
-            $index = (int)floor(($day - 1) / 7);
+            $index = (int) floor(($day - 1) / 7);
             $index = max(0, min(3, $index));
             $weeksData[$index] += $dispense->quantity;
         }
 
-        // Approval requests pending admin review
-        $pendingFinancialRequests = FinancialAssistanceRequest::where('status', 'pending')->count();
-        $pendingMedicalRequests = MedicalSuppliesRequest::where('status', 'pending')->count();
-        $totalPendingApprovals = $pendingFinancialRequests + $pendingMedicalRequests;
+
 
         // Recent activities
         $recentLogs = AuditLog::with('user')->orderByDesc('created_at')->limit(5)->get();
@@ -307,9 +293,6 @@ class DashboardController extends Controller
             'totalMedicines',
             'totalMedicineStock',
             'lowStockMedicines',
-            'totalPendingApprovals',
-            'pendingFinancialRequests',
-            'pendingMedicalRequests',
             'recentLogs'
         ));
     }
@@ -322,7 +305,7 @@ class DashboardController extends Controller
             $months->push($now->copy()->subMonths($i));
         }
 
-        $monthLabels = $months->map(fn (Carbon $d) => $d->format('M'));
+        $monthLabels = $months->map(fn(Carbon $d) => $d->format('M'));
         $currentIndex = 5;
         $currentMonth = $months[$currentIndex];
         $previousMonth = $months[$currentIndex - 1] ?? $months[$currentIndex];
@@ -331,7 +314,7 @@ class DashboardController extends Controller
         // System statistics
         $registeredPatients = Patient::count();
         $healthPrograms = PrenatalRecord::count() + FamilyPlanningRecord::count() + NipRecord::count();
-        
+
         // Health program statistics
         $prenatalTotal = PrenatalRecord::count();
         $familyPlanningTotal = FamilyPlanningRecord::count();
@@ -405,7 +388,7 @@ class DashboardController extends Controller
 
         foreach ($dispenses as $dispense) {
             $day = optional($dispense->dispensed_at)->day ?? optional($dispense->created_at)->day ?? 1;
-            $index = (int)floor(($day - 1) / 7);
+            $index = (int) floor(($day - 1) / 7);
             $index = max(0, min(3, $index));
             $weeksData[$index] += $dispense->quantity;
         }

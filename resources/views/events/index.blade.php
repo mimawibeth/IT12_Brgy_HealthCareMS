@@ -17,23 +17,14 @@
             $canManage = in_array($user->role ?? '', ['super_admin', 'admin']);
         @endphp
 
-        <div class="events-header">
-            <div class="events-header-content">
-                <div class="events-title-section">
-                    <h2 class="events-page-title">
-                        <i class="bi bi-calendar-event"></i>
-                        Upcoming Events
-                    </h2>
-                    <p class="events-subtitle">View and manage your scheduled events</p>
+        <div class="events-header" style="display: flex; justify-content: flex-end; margin-bottom: 1.5rem;">
+            @if($canManage)
+                <div class="events-header-actions">
+                    <a href="{{ route('events.create') }}" class="btn btn-primary btn-add-event">
+                        <i class="bi bi-plus-circle"></i> Add New Event
+                    </a>
                 </div>
-                @if($canManage)
-                    <div class="events-header-actions">
-                        <a href="{{ route('events.create') }}" class="btn btn-primary btn-add-event">
-                            <i class="bi bi-plus-circle"></i> Add New Event
-                        </a>
-                    </div>
-                @endif
-            </div>
+            @endif
         </div>
 
         <div class="calendar-wrapper">
@@ -67,7 +58,7 @@
     <!-- FullCalendar JS -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.5/main.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const calendarEl = document.getElementById('calendar');
             const canManage = {{ $canManage ? 'true' : 'false' }};
             let currentEventId = null;
@@ -80,11 +71,11 @@
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
                 events: '{{ route("events.api") }}',
-                eventClick: function(info) {
+                eventClick: function (info) {
                     currentEventId = info.event.id;
                     showEventDetails(info.event);
                 },
-                dateClick: function(info) {
+                dateClick: function (info) {
                     if (canManage) {
                         window.location.href = '{{ route("events.create") }}?date=' + info.dateStr;
                     }
@@ -109,14 +100,14 @@
                 const deleteBtn = document.getElementById('deleteEventBtn');
 
                 modalTitle.textContent = event.title;
-                
+
                 let detailsHtml = '<div class="event-detail-item">';
                 detailsHtml += '<strong><i class="bi bi-calendar"></i> Date:</strong> ';
-                detailsHtml += event.start.toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
+                detailsHtml += event.start.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
                 });
                 detailsHtml += '</div>';
 
@@ -154,7 +145,7 @@
                 if (canManage) {
                     eventActions.style.display = 'flex';
                     editBtn.href = '{{ url("events") }}/' + currentEventId + '/edit';
-                    deleteBtn.onclick = function() {
+                    deleteBtn.onclick = function () {
                         if (confirm('Are you sure you want to delete this event?')) {
                             deleteEvent(currentEventId);
                         }
@@ -176,37 +167,37 @@
                         'X-Requested-With': 'XMLHttpRequest'
                     }
                 })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    return response.text().then(text => {
-                        throw new Error(text || 'Network response was not ok');
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        return response.text().then(text => {
+                            throw new Error(text || 'Network response was not ok');
+                        });
+                    })
+                    .then(data => {
+                        calendar.refetchEvents();
+                        document.getElementById('eventModal').style.display = 'none';
+                        // Show success message
+                        const alert = document.createElement('div');
+                        alert.className = 'alert alert-success';
+                        alert.textContent = data.message || 'Event deleted successfully.';
+                        alert.style.marginBottom = '1rem';
+                        document.querySelector('.page-content').insertBefore(alert, document.querySelector('.calendar-wrapper'));
+                        setTimeout(() => alert.remove(), 3000);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error deleting event. Please try again.');
                     });
-                })
-                .then(data => {
-                    calendar.refetchEvents();
-                    document.getElementById('eventModal').style.display = 'none';
-                    // Show success message
-                    const alert = document.createElement('div');
-                    alert.className = 'alert alert-success';
-                    alert.textContent = data.message || 'Event deleted successfully.';
-                    alert.style.marginBottom = '1rem';
-                    document.querySelector('.page-content').insertBefore(alert, document.querySelector('.calendar-wrapper'));
-                    setTimeout(() => alert.remove(), 3000);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error deleting event. Please try again.');
-                });
             }
 
             // Close modal
-            document.getElementById('closeModal').onclick = function() {
+            document.getElementById('closeModal').onclick = function () {
                 document.getElementById('eventModal').style.display = 'none';
             };
 
-            window.onclick = function(event) {
+            window.onclick = function (event) {
                 const modal = document.getElementById('eventModal');
                 if (event.target == modal) {
                     modal.style.display = 'none';
@@ -215,4 +206,3 @@
         });
     </script>
 @endpush
-

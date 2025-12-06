@@ -143,18 +143,20 @@ button.btn-action {
 }
 
 .btn-view {
-    color: #3498db;
+    color: #17a2b8;
     background-color: transparent;
-    border-color: #3498db;
+    border-color: #17a2b8;
     display: inline-flex;
     align-items: center;
     gap: 5px;
 }
 
-.btn-view:hover {
-    background-color: transparent;
-    color: #2874a6;
-    border-color: #2874a6;
+.btn-view:hover,
+.btn-view:active,
+.btn-view.active {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-color: #17a2b8;
 }
 
 .btn-edit {
@@ -166,10 +168,12 @@ button.btn-action {
     gap: 5px;
 }
 
-.btn-edit:hover {
-    background-color: transparent;
-    color: #d68910;
-    border-color: #d68910;
+.btn-edit:hover,
+.btn-edit:active,
+.btn-edit.active {
+    background-color: #f39c12;
+    color: #fff;
+    border-color: #f39c12;
 }
 
 .btn-delete {
@@ -208,10 +212,23 @@ button.btn-action {
     border-radius: 5px;
     cursor: pointer;
     font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
 }
 
-.btn-page:hover {
+.btn-page:hover:not(:disabled):not(.active) {
     background-color: #1f4d5c;
+}
+
+.btn-page.active {
+    background-color: #1f4d5c;
+    cursor: default;
+}
+
+.btn-page:disabled {
+    background-color: #cbd5e1;
+    color: #94a3b8;
+    cursor: not-allowed;
 }
 
 .page-info {
@@ -1350,4 +1367,34 @@ textarea.form-control {
         padding: 15px 20px;
         flex-wrap: wrap;
     }
+}
+
+   
+
+/* === STATUS BADGES === */
+.badge {
+    display: inline-block;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 25px;
+}
+
+.badge-success {
+    background-color: #00d9a5;
+    color: #ffffff;
+}
+
+.badge-warning {
+    background-color: #ffb020;
+    color: #ffffff;
+}
+
+.badge-danger {
+    background-color: #ffcccb;
+    color: #e74c3c;
 }

@@ -14,39 +14,47 @@
         <!-- Summary Stats -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon stat-icon-blue">
-                    <i class="bi bi-activity"></i>
+                <div class="stat-icon-wrapper"
+                    style="background: #dbeafe; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="bi bi-activity" style="font-size: 18px; color: #3b82f6;"></i>
                 </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ $stats['totalToday'] ?? 0 }}</div>
-                    <div class="stat-label">Total Activities Today</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon stat-icon-green">
-                    <i class="bi bi-check-circle"></i>
-                </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ $stats['successToday'] ?? 0 }}</div>
-                    <div class="stat-label">Successful Actions</div>
+                <div class="stat-text">
+                    <h3 class="stat-title">Total Activities Today</h3>
+                    <p class="stat-number">{{ $stats['totalToday'] ?? 0 }}</p>
+                    <span class="stat-trend">System Activities</span>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon stat-icon-red">
-                    <i class="bi bi-x-circle"></i>
+                <div class="stat-icon-wrapper"
+                    style="background: #d1f4e0; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="bi bi-check-circle-fill" style="font-size: 18px; color: #10b981;"></i>
                 </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ $stats['failedToday'] ?? 0 }}</div>
-                    <div class="stat-label">Failed Attempts</div>
+                <div class="stat-text">
+                    <h3 class="stat-title">Successful Actions</h3>
+                    <p class="stat-number">{{ $stats['successToday'] ?? 0 }}</p>
+                    <span class="stat-trend">Completed</span>
                 </div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon stat-icon-purple">
-                    <i class="bi bi-people"></i>
+                <div class="stat-icon-wrapper"
+                    style="background: #fee2e2; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="bi bi-x-circle-fill" style="font-size: 18px; color: #ef4444;"></i>
                 </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ $stats['activeUsersToday'] ?? 0 }}</div>
-                    <div class="stat-label">Active Users</div>
+                <div class="stat-text">
+                    <h3 class="stat-title">Failed Attempts</h3>
+                    <p class="stat-number">{{ $stats['failedToday'] ?? 0 }}</p>
+                    <span class="stat-trend">Errors</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-wrapper"
+                    style="background: #ede9fe; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="bi bi-people-fill" style="font-size: 18px; color: #8b5cf6;"></i>
+                </div>
+                <div class="stat-text">
+                    <h3 class="stat-title">Active Users</h3>
+                    <p class="stat-number">{{ $stats['activeUsersToday'] ?? 0 }}</p>
+                    <span class="stat-trend">Today</span>
                 </div>
             </div>
         </div>

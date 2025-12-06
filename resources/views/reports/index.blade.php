@@ -25,46 +25,50 @@
         <!-- Summary Statistics -->
         <div class="stats-grid">
             <div class="stat-card stat-card-primary">
-                <div class="stat-icon">
-                    <i class="bi bi-people"></i>
+                <div class="stat-icon-wrapper"
+                    style="background: #dbeafe; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="bi bi-people-fill" style="font-size: 18px; color: #3b82f6;"></i>
                 </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ number_format($totalPatients ?? 0) }}</div>
-                    <div class="stat-label">Total Patients</div>
-                    <div class="stat-change">{{ $selectedMonthLabel ?? '' }}</div>
+                <div class="stat-text">
+                    <h3 class="stat-title">Total Patients</h3>
+                    <p class="stat-number">{{ number_format($totalPatients ?? 0) }}</p>
+                    <span class="stat-trend">{{ $selectedMonthLabel ?? '' }}</span>
                 </div>
             </div>
 
             <div class="stat-card stat-card-danger">
-                <div class="stat-icon">
-                    <i class="bi bi-heart-pulse"></i>
+                <div class="stat-icon-wrapper"
+                    style="background: #fee2e2; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="bi bi-heart-pulse-fill" style="font-size: 18px; color: #ef4444;"></i>
                 </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ number_format($prenatalCount ?? 0) }}</div>
-                    <div class="stat-label">Prenatal Consultations</div>
-                    <div class="stat-change">{{ $selectedMonthLabel ?? '' }}</div>
+                <div class="stat-text">
+                    <h3 class="stat-title">Prenatal Consultations</h3>
+                    <p class="stat-number">{{ number_format($prenatalCount ?? 0) }}</p>
+                    <span class="stat-trend">{{ $selectedMonthLabel ?? '' }}</span>
                 </div>
             </div>
 
             <div class="stat-card stat-card-success">
-                <div class="stat-icon">
-                    <i class="bi bi-shield-check"></i>
+                <div class="stat-icon-wrapper"
+                    style="background: #d1f4e0; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="bi bi-shield-fill-check" style="font-size: 18px; color: #10b981;"></i>
                 </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ number_format($nipCount ?? 0) }}</div>
-                    <div class="stat-label">Immunizations Given</div>
-                    <div class="stat-change">{{ $selectedMonthLabel ?? '' }}</div>
+                <div class="stat-text">
+                    <h3 class="stat-title">Immunizations Given</h3>
+                    <p class="stat-number">{{ number_format($nipCount ?? 0) }}</p>
+                    <span class="stat-trend">{{ $selectedMonthLabel ?? '' }}</span>
                 </div>
             </div>
 
             <div class="stat-card stat-card-info">
-                <div class="stat-icon">
-                    <i class="bi bi-people-fill"></i>
+                <div class="stat-icon-wrapper"
+                    style="background: #e0f2f1; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                    <i class="bi bi-people-fill" style="font-size: 18px; color: #0d9488;"></i>
                 </div>
-                <div class="stat-details">
-                    <div class="stat-value">{{ number_format($fpCount ?? 0) }}</div>
-                    <div class="stat-label">Family Planning Clients</div>
-                    <div class="stat-change">{{ $selectedMonthLabel ?? '' }}</div>
+                <div class="stat-text">
+                    <h3 class="stat-title">Family Planning Clients</h3>
+                    <p class="stat-number">{{ number_format($fpCount ?? 0) }}</p>
+                    <span class="stat-trend">{{ $selectedMonthLabel ?? '' }}</span>
                 </div>
             </div>
         </div>
@@ -398,9 +402,9 @@
                     labels: ['Prenatal Care', 'Family Planning', 'Immunization'],
                     datasets: [{
                         data: [
-                                        {{ $programDistribution['prenatal'] ?? 0 }},
-                                        {{ $programDistribution['fp'] ?? 0 }},
-                                        {{ $programDistribution['nip'] ?? 0 }},
+                                                    {{ $programDistribution['prenatal'] ?? 0 }},
+                                                    {{ $programDistribution['fp'] ?? 0 }},
+                                                    {{ $programDistribution['nip'] ?? 0 }},
                         ],
                         backgroundColor: [
                             '#e74c3c',
@@ -512,8 +516,8 @@
                     labels: ['Female', 'Male'],
                     datasets: [{
                         data: [
-                                                    {{ $genderCounts['F'] ?? 0 }},
-                                                    {{ $genderCounts['M'] ?? 0 }},
+                                                                {{ $genderCounts['F'] ?? 0 }},
+                                                                {{ $genderCounts['M'] ?? 0 }},
                         ],
                         backgroundColor: ['#e74c3c', '#3498db'],
                         borderColor: '#fff',
