@@ -59,13 +59,32 @@ Route::middleware('guest')->group(function () {
 
         $ip = request()->ip();
 
-        // Attempt to authenticate user
+        // Check if user exists and is active
+        $user = \App\Models\User::where('email', $credentials['email'])->first();
+        if ($user && $user->status !== 'active') {
+            \App\Models\AuditLog::create([
+                'user_id' => $user->id,
+                'user_role' => $user->role ?? null,
+                'action' => 'login',
+                'module' => 'Authentication',
+                'description' => 'Failed login attempt - Inactive account',
+                'ip_address' => $ip,
+                'status' => 'failed',
+            ]);
+
+            return back()->withErrors([
+                'email' => 'Your account is inactive. Please contact the system administrator.',
+            ])->onlyInput('email');
+        }
+
+        // Attempt to authenticate only active users
         $remember = request()->boolean('remember');
 
         if (
             auth()->attempt([
                 'email' => $credentials['email'],
                 'password' => $credentials['password'],
+                'status' => 'active',
             ], $remember)
         ) {
             request()->session()->regenerate();
@@ -84,8 +103,8 @@ Route::middleware('guest')->group(function () {
         }
 
         \App\Models\AuditLog::create([
-            'user_id' => null,
-            'user_role' => null,
+            'user_id' => $user->id ?? null,
+            'user_role' => $user->role ?? null,
             'action' => 'login',
             'module' => 'Authentication',
             'description' => 'Failed login attempt - Invalid credentials',
