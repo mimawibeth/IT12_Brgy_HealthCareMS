@@ -18,6 +18,18 @@
                 <p class="form-subtitle">Fill in the required information below</p>
             </div>
 
+            @if ($errors->any())
+                <div class="alert alert-danger"
+                    style="background: #fee; border: 1px solid #fcc; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+                    <strong style="color: #c00;">Validation Errors:</strong>
+                    <ul style="margin: 10px 0 0 20px; color: #c00;">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('users.store') }}" class="user-form">
                 @csrf
 
@@ -29,7 +41,10 @@
                         <div class="form-group">
                             <label for="username">Username <span class="required-asterisk">*</span></label>
                             <input type="text" id="username" name="username" class="form-control" required
-                                placeholder="Enter username">
+                                placeholder="Enter username" value="{{ old('username') }}">
+                            @error('username')
+                                <small style="color: #c00;">{{ $message }}</small>
+                            @enderror
                         </div>
                     </div>
 
@@ -37,7 +52,10 @@
                         <div class="form-group">
                             <label for="email">Email Address <span class="required-asterisk">*</span></label>
                             <input type="email" id="email" name="email" class="form-control" required
-                                placeholder="user@example.com">
+                                placeholder="user@example.com" value="{{ old('email') }}">
+                            @error('email')
+                                <small style="color: #c00;">{{ $message }}</small>
+                            @enderror
                         </div>
                     </div>
 
@@ -45,7 +63,10 @@
                         <div class="form-group">
                             <label for="password">Password <span class="required-asterisk">*</span></label>
                             <input type="password" id="password" name="password" class="form-control" required
-                                placeholder="Min. 8 characters">
+                                placeholder="Min. 8 characters (uppercase, lowercase, digit, special char)">
+                            @error('password')
+                                <small style="color: #c00;">{{ $message }}</small>
+                            @enderror
                         </div>
 
                         <div class="form-group">
@@ -65,19 +86,19 @@
                         <div class="form-group">
                             <label for="first_name">First Name <span class="required-asterisk">*</span></label>
                             <input type="text" id="first_name" name="first_name" class="form-control" required
-                                placeholder="First name">
+                                placeholder="First name" value="{{ old('first_name') }}">
                         </div>
 
                         <div class="form-group">
                             <label for="middle_name">Middle Name</label>
                             <input type="text" id="middle_name" name="middle_name" class="form-control"
-                                placeholder="Middle name">
+                                placeholder="Middle name" value="{{ old('middle_name') }}">
                         </div>
 
                         <div class="form-group">
                             <label for="last_name">Last Name <span class="required-asterisk">*</span></label>
                             <input type="text" id="last_name" name="last_name" class="form-control" required
-                                placeholder="Last name">
+                                placeholder="Last name" value="{{ old('last_name') }}">
                         </div>
                     </div>
 
@@ -86,13 +107,14 @@
                             <label for="contact_number">Contact Number</label>
                             <input type="tel" id="contact_number" name="contact_number" class="form-control"
                                 placeholder="09XXXXXXXXX" maxlength="11" pattern="[0-9]{11}"
-                                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                value="{{ old('contact_number') }}">
                         </div>
 
                         <div class="form-group col-span-2">
                             <label for="address">Address</label>
                             <input type="text" id="address" name="address" class="form-control"
-                                placeholder="Complete address">
+                                placeholder="Complete address" value="{{ old('address') }}">
                         </div>
                     </div>
                 </div>
@@ -106,15 +128,24 @@
                             <label for="role">User Role <span class="required-asterisk">*</span></label>
                             <select id="role" name="role" class="form-control" required>
                                 <option value="">Select Role</option>
-                                <option value="bhw">Barangay Health Worker</option>
+                                <option value="super_admin" {{ old('role') === 'super_admin' ? 'selected' : '' }}>Super Admin
+                                </option>
+                                <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+                                <option value="bhw" {{ old('role') === 'bhw' ? 'selected' : '' }}>Barangay Health Worker
+                                </option>
                             </select>
+                            @error('role')
+                                <small style="color: #c00;">{{ $message }}</small>
+                            @enderror
                         </div>
 
                         <div class="form-group">
                             <label for="status">Status <span class="required-asterisk">*</span></label>
                             <select id="status" name="status" class="form-control" required>
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
+                                <option value="active" {{ old('status', 'active') === 'active' ? 'selected' : '' }}>Active
+                                </option>
+                                <option value="inactive" {{ old('status') === 'inactive' ? 'selected' : '' }}>Inactive
+                                </option>
                             </select>
                         </div>
                     </div>
