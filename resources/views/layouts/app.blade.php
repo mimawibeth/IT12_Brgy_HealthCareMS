@@ -200,13 +200,13 @@
                             <i class="bi bi-prescription2 icon"></i>
                             <span>Dispense History</span>
                         </a>
-                        <a href="{{ route('supplies.index') }}"
-                            class="nav-item {{ request()->routeIs('supplies.index') ? 'active' : '' }}">
+                        <a href="{{ route('medical-supplies.index') }}"
+                            class="nav-item {{ request()->routeIs('medical-supplies.index') ? 'active' : '' }}">
                             <i class="bi bi-box2-heart icon"></i>
                             <span>Medical Supplies</span>
                         </a>
-                        <a href="{{ route('supplies.history') }}"
-                            class="nav-item {{ request()->routeIs('supplies.history') ? 'active' : '' }}">
+                        <a href="{{ route('medical-supplies.history') }}"
+                            class="nav-item {{ request()->routeIs('medical-supplies.history') ? 'active' : '' }}">
                             <i class="bi bi-clock-history icon"></i>
                             <span>Supply History</span>
                         </a>

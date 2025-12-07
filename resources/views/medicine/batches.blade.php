@@ -371,26 +371,60 @@
                     const select = document.getElementById(selectId);
                     if (!select) return;
 
-                    // Add search functionality
-                    select.addEventListener('click', function () {
-                        this.size = Math.min(this.options.length, 10);
-                    });
+                    const wrapper = document.createElement('div');
+                    wrapper.style.position = 'relative';
+                    wrapper.style.width = '100%';
 
-                    select.addEventListener('blur', function () {
-                        this.size = 1;
-                    });
+                    const searchInput = document.createElement('input');
+                    searchInput.type = 'text';
+                    searchInput.className = 'form-control';
+                    searchInput.placeholder = 'Search medicine...';
+                    searchInput.style.marginBottom = '5px';
 
-                    select.addEventListener('keyup', function (e) {
-                        const searchTerm = e.key;
-                        if (searchTerm.length === 1) {
-                            const options = Array.from(this.options);
-                            const match = options.find(opt =>
-                                opt.text.toLowerCase().startsWith(searchTerm.toLowerCase())
-                            );
-                            if (match) {
-                                this.value = match.value;
+                    select.parentNode.insertBefore(wrapper, select);
+                    wrapper.appendChild(searchInput);
+                    wrapper.appendChild(select);
+
+                    let filteredOptions = Array.from(select.options).slice(1); // Skip first "Select" option
+
+                    searchInput.addEventListener('input', function () {
+                        const searchTerm = this.value.toLowerCase();
+                        let hasMatch = false;
+
+                        Array.from(select.options).forEach((option, index) => {
+                            if (index === 0) return; // Skip first option
+
+                            const text = option.text.toLowerCase();
+                            const matches = text.includes(searchTerm);
+                            option.style.display = matches ? '' : 'none';
+
+                            if (matches && !hasMatch) {
+                                hasMatch = true;
                             }
+                        });
+
+                        select.size = searchTerm ? Math.min(10, select.options.length) : 1;
+                    });
+
+                    searchInput.addEventListener('focus', function () {
+                        select.size = Math.min(10, select.options.length);
+                    });
+
+                    searchInput.addEventListener('blur', function () {
+                        setTimeout(() => {
+                            select.size = 1;
+                        }, 200);
+                    });
+
+                    select.addEventListener('change', function () {
+                        if (this.value) {
+                            searchInput.value = this.options[this.selectedIndex].text;
+                            select.size = 1;
                         }
+                    });
+
+                    select.addEventListener('click', function () {
+                        searchInput.focus();
                     });
                 }
 
@@ -440,11 +474,11 @@
 
                                 if (patients.length > 0) {
                                     patientSearchResults.innerHTML = patients.map(patient => `
-                                                <div class="patient-result-item" data-name="${patient.full_name}" data-id="${patient.patient_id}" 
-                                                    style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee;">
-                                                    <strong>${patient.full_name}</strong> <span style="color: #666;">(${patient.patient_id})</span>
-                                                </div>
-                                            `).join('');
+                                                        <div class="patient-result-item" data-name="${patient.full_name}" data-id="${patient.patient_id}" 
+                                                            style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee;">
+                                                            <strong>${patient.full_name}</strong> <span style="color: #666;">(${patient.patient_id})</span>
+                                                        </div>
+                                                    `).join('');
                                     patientSearchResults.style.display = 'block';
 
                                     // Add click handlers to results

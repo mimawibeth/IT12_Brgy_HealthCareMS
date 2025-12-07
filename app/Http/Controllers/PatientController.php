@@ -342,8 +342,7 @@ class PatientController extends Controller
         }
 
         $patients = Patient::where(function ($q) use ($query) {
-            $q->where('firstname', 'like', '%' . $query . '%')
-                ->orWhere('lastname', 'like', '%' . $query . '%')
+            $q->where('name', 'like', '%' . $query . '%')
                 ->orWhere('patientNo', 'like', '%' . $query . '%');
         })
             ->limit(10)
@@ -351,7 +350,7 @@ class PatientController extends Controller
             ->map(function ($patient) {
                 return [
                     'patient_id' => $patient->patientNo,
-                    'full_name' => $patient->firstname . ' ' . $patient->lastname,
+                    'full_name' => $patient->name,
                 ];
             });
 

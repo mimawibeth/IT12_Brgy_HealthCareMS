@@ -14,6 +14,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\MedicalSupplyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -265,24 +266,22 @@ Route::middleware('auth')->group(function () {
     // ====================
     // MEDICAL SUPPLIES INVENTORY ROUTES
     // ====================
-    Route::prefix('medical-supplies')->name('supplies.')->group(function () {
+    Route::prefix('medical-supplies')->name('medical-supplies.')->group(function () {
         // Display medical supplies inventory list
-        Route::get('/', function () {
-            return view('medicine.barangay-medical-supplies-inventory');
-        })->name('index');
+        Route::get('/', [MedicalSupplyController::class, 'index'])->name('index');
 
-        // Display supply history (incoming and outgoing transactions)
-        Route::get('/history', function () {
-            return view('medicine.barangay-supply-history');
-        })->name('history');
+        // Display supply history (incoming and outgoing transactions) - MUST be before /{supply}
+        Route::get('/history', [MedicalSupplyController::class, 'history'])->name('history');
 
-        // TODO: Implement these routes with proper controller when ready
-        // Route::post('/store', [MedicalSupplyController::class, 'store'])->name('store');
-        // Route::post('/receive', [MedicalSupplyController::class, 'receive'])->name('receive');
-        // Route::post('/issue', [MedicalSupplyController::class, 'issue'])->name('issue');
-        // Route::get('/{id}', [MedicalSupplyController::class, 'show'])->name('show');
-        // Route::put('/{id}', [MedicalSupplyController::class, 'update'])->name('update');
+        // Store new supply or add to existing
+        Route::post('/store', [MedicalSupplyController::class, 'store'])->name('store');
+
+        // View supply details - MUST be last due to dynamic parameter
+        Route::get('/{supply}', [MedicalSupplyController::class, 'show'])->name('show');
     });
+
+    // API route for supply search
+    Route::get('/api/medical-supplies/search', [MedicalSupplyController::class, 'search'])->name('api.medical-supplies.search');
 
     // ====================
     // USER MANAGEMENT ROUTES (Super Admin/Admin UI; backend checks can be added via middleware later)
