@@ -1,0 +1,530 @@
+BARANGAY HEALTH CENTER SYSTEM - TEXT ERD
+=======================================
+
+NOTE: This ERD is derived from Laravel migration files only. It lists tables,
+key columns, and inferred relationships (FKs) as defined in migrations.
+
+--------------------------------------------------
+TABLE: users
+--------------------------------------------------
+Columns:
+- id (PK, BIGINT, auto increment)
+- first_name (STRING)
+- middle_name (STRING, nullable)
+- last_name (STRING)
+- name (STRING)
+- email (STRING, unique)
+- username (STRING, unique)
+- password (STRING)
+- role (STRING, default 'employee')
+- dark_mode (BOOLEAN, default false)
+- text_size (STRING, default 'medium')
+- contact_number (STRING, nullable)
+- address (STRING, length 500, nullable)
+- status (STRING, default 'active')
+- email_verified_at (TIMESTAMP, nullable)
+- remember_token (STRING, nullable)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Related tables (by FK):
+- sessions.user_id → users.id (nullable)
+- audit_logs.user_id → users.id (nullable, nullOnDelete)
+- events.created_by → users.id (cascadeOnDelete)
+
+--------------------------------------------------
+TABLE: password_reset_tokens
+--------------------------------------------------
+Columns:
+- email (STRING, PK)
+- token (STRING)
+- created_at (TIMESTAMP, nullable)
+
+--------------------------------------------------
+TABLE: sessions
+--------------------------------------------------
+Columns:
+- id (STRING, PK)
+- user_id (BIGINT, FK → users.id, nullable, indexed)
+- ip_address (STRING(45), nullable)
+- user_agent (TEXT, nullable)
+- payload (LONGTEXT)
+- last_activity (INT, indexed)
+
+--------------------------------------------------
+TABLE: cache
+--------------------------------------------------
+Columns:
+- key (STRING, PK)
+- value (MEDIUMTEXT)
+- expiration (INT)
+
+--------------------------------------------------
+TABLE: cache_locks
+--------------------------------------------------
+Columns:
+- key (STRING, PK)
+- owner (STRING)
+- expiration (INT)
+
+--------------------------------------------------
+TABLE: jobs
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- queue (STRING, indexed)
+- payload (LONGTEXT)
+- attempts (UNSIGNED TINYINT)
+- reserved_at (UNSIGNED INT, nullable)
+- available_at (UNSIGNED INT)
+- created_at (UNSIGNED INT)
+
+--------------------------------------------------
+TABLE: job_batches
+--------------------------------------------------
+Columns:
+- id (STRING, PK)
+- name (STRING)
+- total_jobs (INT)
+- pending_jobs (INT)
+- failed_jobs (INT)
+- failed_job_ids (LONGTEXT)
+- options (MEDIUMTEXT, nullable)
+- cancelled_at (INT, nullable)
+- created_at (INT)
+- finished_at (INT, nullable)
+
+--------------------------------------------------
+TABLE: failed_jobs
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- uuid (STRING, unique)
+- connection (TEXT)
+- queue (TEXT)
+- payload (LONGTEXT)
+- exception (LONGTEXT)
+- failed_at (TIMESTAMP, default current)
+
+--------------------------------------------------
+TABLE: patients
+--------------------------------------------------
+Columns:
+- PatientID (BIGINT, PK)
+- dateRegistered (DATE)
+- patientNo (STRING, nullable)
+- sex (ENUM['M','F'])
+- name (STRING)
+- birthday (DATE)
+- contactNumber (STRING, nullable)
+- address (TEXT)
+- nhtsIdNo (STRING, nullable)
+- pwdIdNo (STRING, nullable)
+- phicIdNo (STRING, nullable)
+- fourPsCctIdNo (STRING, nullable)
+- ethnicGroup (STRING, nullable)
+- diabetesDate (DATE, nullable)
+- hypertensionDate (DATE, nullable)
+- copdDate (DATE, nullable)
+- asthmaDate (DATE, nullable)
+- cataractDate (DATE, nullable)
+- eorDate (DATE, nullable)
+- diabeticRetinopathyDate (DATE, nullable)
+- otherEyeDiseaseDate (DATE, nullable)
+- alcoholismDate (DATE, nullable)
+- substanceAbuseDate (DATE, nullable)
+- otherMentalDisordersDate (DATE, nullable)
+- atRiskSuicideDate (DATE, nullable)
+- philpenDate (DATE, nullable)
+- currentSmoker (BOOLEAN, default false)
+- passiveSmoker (BOOLEAN, default false)
+- stoppedSmoking (BOOLEAN, default false)
+- drinksAlcohol (BOOLEAN, default false)
+- hadFiveDrinks (BOOLEAN, default false)
+- dietaryRiskFactors (BOOLEAN, default false)
+- physicalInactivity (BOOLEAN, default false)
+- height (DECIMAL(5,2), nullable)
+- weight (DECIMAL(5,2), nullable)
+- waistCircumference (DECIMAL(5,2), nullable)
+- bmi (DECIMAL(5,2), nullable)
+- whoDasDate (DATE, nullable)
+- part1 (STRING, nullable)
+- part2Score (INT, nullable)
+- top1Domain (STRING, nullable)
+- top2Domain (STRING, nullable)
+- top3Domain (STRING, nullable)
+- lengthDiabetes (STRING, nullable)
+- lengthHypertension (STRING, nullable)
+- floaters (BOOLEAN, default false)
+- blurredVision (BOOLEAN, default false)
+- fluctuatingVision (BOOLEAN, default false)
+- impairedColorVision (BOOLEAN, default false)
+- darkEmptyAreas (BOOLEAN, default false)
+- visionLoss (BOOLEAN, default false)
+- visualAcuityLeft (STRING, nullable)
+- visualAcuityRight (STRING, nullable)
+- ophthalmoscopyResults (TEXT, nullable)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Related tables (by FK):
+- assessments.PatientID → patients.PatientID (cascadeOnDelete)
+
+--------------------------------------------------
+TABLE: assessments
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- PatientID (BIGINT, FK → patients.PatientID)
+- date (DATE, nullable)
+- age (STRING, nullable)
+- cvdRisk (STRING, nullable)
+- bpSystolic (STRING, nullable)
+- bpDiastolic (STRING, nullable)
+- wt (STRING, nullable)
+- ht (STRING, nullable)
+- fbsRbs (STRING, nullable)
+- lipidProfile (STRING, nullable)
+- urineKetones (STRING, nullable)
+- urineProtein (STRING, nullable)
+- footCheck (STRING, nullable)
+- chiefComplaint (TEXT, nullable)
+- historyPhysical (TEXT, nullable)
+- management (TEXT, nullable)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Relationships:
+- patients (1) --- (N) assessments
+
+--------------------------------------------------
+TABLE: prenatal_records
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- record_no (STRING, nullable)
+- mother_name (STRING)
+- purok (STRING, nullable)
+- age (UNSIGNED TINYINT, nullable)
+- dob (DATE, nullable)
+- occupation (STRING, nullable)
+- education (STRING, nullable)
+- is_4ps (BOOLEAN, default false)
+- four_ps_no (STRING, nullable)
+- cell (STRING, nullable)
+- lmp (DATE, nullable)
+- edc (DATE, nullable)
+- urinalysis (STRING, nullable)
+- gravida (UNSIGNED TINYINT, nullable)
+- para (UNSIGNED TINYINT, nullable)
+- abortion (UNSIGNED TINYINT, nullable)
+- delivery_count (UNSIGNED TINYINT, nullable)
+- last_delivery_date (DATE, nullable)
+- delivery_type (STRING, nullable)
+- hemoglobin_first (STRING, nullable)
+- hemoglobin_second (STRING, nullable)
+- blood_type (STRING, nullable)
+- urinalysis_protein (STRING, nullable)
+- urinalysis_sugar (STRING, nullable)
+- husband_name (STRING, nullable)
+- husband_occupation (STRING, nullable)
+- husband_education (STRING, nullable)
+- family_religion (STRING, nullable)
+- amount_prepared (STRING, nullable)
+- philhealth_member (STRING, nullable)
+- delivery_location (STRING, nullable)
+- delivery_partner (STRING, nullable)
+- td1, td2, td3, td4, td5, tdl (DATE, nullable)
+- fbs (STRING, nullable)
+- rbs (STRING, nullable)
+- ogtt (STRING, nullable)
+- vdrl (STRING, nullable)
+- hbsag (STRING, nullable)
+- hiv (STRING, nullable)
+- extra (JSON, nullable)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Related tables (by FK):
+- prenatal_visits.prenatal_record_id → prenatal_records.id (cascadeOnDelete)
+
+--------------------------------------------------
+TABLE: prenatal_visits
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- prenatal_record_id (BIGINT, FK → prenatal_records.id)
+- date (DATE, nullable)
+- trimester (STRING, nullable)
+- risk (STRING, nullable)
+- first_visit (STRING, nullable)
+- subjective (TEXT, nullable)
+- aog (STRING, nullable)
+- weight (STRING, nullable)
+- height (STRING, nullable)
+- bp (STRING, nullable)
+- pr (STRING, nullable)
+- fh (STRING, nullable)
+- fht (STRING, nullable)
+- presentation (STRING, nullable)
+- bmi (STRING, nullable)
+- rr (STRING, nullable)
+- hr (STRING, nullable)
+- assessment (TEXT, nullable)
+- plan (TEXT, nullable)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Relationships:
+- prenatal_records (1) --- (N) prenatal_visits
+
+--------------------------------------------------
+TABLE: family_planning_records
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- record_no (STRING, nullable)
+- client_name (STRING)
+- dob (DATE, nullable)
+- age (UNSIGNED TINYINT, nullable)
+- address (STRING, nullable)
+- contact (STRING, nullable)
+- occupation (STRING, nullable)
+- spouse_name (STRING, nullable)
+- spouse_age (UNSIGNED TINYINT, nullable)
+- children_count (UNSIGNED TINYINT, nullable)
+- client_type (STRING, nullable)
+- reason (JSON, nullable)
+- medical_history (JSON, nullable)
+- gravida (UNSIGNED TINYINT, nullable)
+- para (UNSIGNED TINYINT, nullable)
+- last_delivery (DATE, nullable)
+- last_period (DATE, nullable)
+- menstrual_flow (STRING, nullable)
+- dysmenorrhea (STRING, nullable)
+- sti_risk (JSON, nullable)
+- vaw_risk (JSON, nullable)
+- bp (STRING, nullable)
+- weight (STRING, nullable)
+- height (STRING, nullable)
+- exam_findings (TEXT, nullable)
+- counseled_by (STRING, nullable)
+- client_signature (STRING, nullable)
+- consent_date (DATE, nullable)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+--------------------------------------------------
+TABLE: nip_records
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- record_no (STRING, nullable)
+- date (DATE, nullable)
+- child_name (STRING)
+- dob (DATE)
+- address (STRING)
+- mother_name (STRING, nullable)
+- father_name (STRING, nullable)
+- contact (STRING, nullable)
+- place_delivery (STRING, nullable)
+- attended_by (STRING, nullable)
+- sex_baby (STRING(1), nullable)
+- nhts_4ps_id (STRING, nullable)
+- phic_id (STRING, nullable)
+- tt_status_mother (STRING, nullable)
+- birth_length (STRING, nullable)
+- birth_weight (STRING, nullable)
+- delivery_type (STRING, nullable)
+- initiated_breastfeeding (STRING, nullable)
+- birth_order (UNSIGNED TINYINT, nullable)
+- newborn_screening_date (DATE, nullable)
+- newborn_screening_result (STRING, nullable)
+- hearing_test_screened (STRING, nullable)
+- vit_k (STRING, nullable)
+- bcg (STRING, nullable)
+- hepa_b_24h (STRING, nullable)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Related tables (by FK):
+- nip_visits.nip_record_id → nip_records.id (cascadeOnDelete)
+
+--------------------------------------------------
+TABLE: nip_visits
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- nip_record_id (BIGINT, FK → nip_records.id)
+- visit_date (DATE, nullable)
+- age_months (UNSIGNED TINYINT, nullable)
+- weight (STRING, nullable)
+- length (STRING, nullable)
+- status (STRING, nullable)
+- breastfeeding (STRING, nullable)
+- temperature (STRING, nullable)
+- vaccine (STRING, nullable)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Relationships:
+- nip_records (1) --- (N) nip_visits
+
+--------------------------------------------------
+TABLE: medicines
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- name (STRING)
+- generic_name (STRING, nullable)
+- dosage_form (STRING, nullable)
+- strength (STRING, nullable)
+- unit (STRING, default 'tablet')
+- reorder_level (INT, default 0)
+- remarks (TEXT, nullable)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Related tables (by FK):
+- medicine_dispenses.medicine_id → medicines.id (cascadeOnDelete)
+- medicine_batches.medicine_id → medicines.id (cascadeOnDelete)
+
+--------------------------------------------------
+TABLE: medicine_dispenses
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- medicine_id (BIGINT, FK → medicines.id)
+- quantity (INT)
+- dispensed_to (STRING, nullable)
+- reference_no (STRING, nullable)
+- dispensed_at (DATE, nullable)
+- remarks (TEXT, nullable)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Related tables (by FK):
+- medicine_dispense_batches.medicine_dispense_id → medicine_dispenses.id (cascadeOnDelete)
+
+--------------------------------------------------
+TABLE: roles
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- name (STRING)
+- slug (STRING, unique)
+- badge_color (STRING, nullable)
+- permissions (JSON, nullable)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+(Note: No explicit FK from users → roles in migrations; roles are linked via users.role string.)
+
+--------------------------------------------------
+TABLE: audit_logs
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- user_id (BIGINT, FK → users.id, nullable, nullOnDelete)
+- user_role (STRING, nullable)
+- action (STRING)
+- module (STRING)
+- description (TEXT, nullable)
+- ip_address (STRING(45), nullable)
+- status (STRING, default 'success')
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Relationships:
+- users (1) --- (N) audit_logs
+
+--------------------------------------------------
+TABLE: medicine_batches
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- medicine_id (BIGINT, FK → medicines.id)
+- batch_code (STRING(100), nullable)
+- quantity_on_hand (INT, default 0)
+- expiry_date (DATE)
+- date_received (DATE)
+- supplier (STRING, nullable)
+- unit_price (DECIMAL(10,2), nullable)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Related tables (by FK):
+- medicine_dispense_batches.medicine_batch_id → medicine_batches.id (cascadeOnDelete)
+
+--------------------------------------------------
+TABLE: medicine_dispense_batches
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- medicine_dispense_id (BIGINT, FK → medicine_dispenses.id)
+- medicine_batch_id (BIGINT, FK → medicine_batches.id)
+- quantity (INT)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Relationships:
+- medicines (1) --- (N) medicine_batches
+- medicines (1) --- (N) medicine_dispenses
+- medicine_dispenses (1) --- (N) medicine_dispense_batches
+- medicine_batches (1) --- (N) medicine_dispense_batches
+
+--------------------------------------------------
+TABLE: events
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- title (STRING)
+- description (TEXT, nullable)
+- start_date (DATE)
+- end_date (DATE, nullable)
+- start_time (TIME, nullable)
+- end_time (TIME, nullable)
+- location (STRING, nullable)
+- color (STRING(7), default '#4a90a4')
+- created_by (BIGINT, FK → users.id)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Relationships:
+- users (1) --- (N) events (via created_by)
+
+--------------------------------------------------
+TABLE: medical_supplies
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- item_name (STRING, unique)
+- category (STRING, nullable)
+- description (TEXT, nullable)
+- unit_of_measure (STRING, nullable)
+- quantity_on_hand (INT, default 0)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Related tables (by FK):
+- supply_history.medical_supply_id → medical_supplies.id (cascadeOnDelete)
+
+--------------------------------------------------
+TABLE: supply_history
+--------------------------------------------------
+Columns:
+- id (BIGINT, PK)
+- medical_supply_id (BIGINT, FK → medical_supplies.id)
+- item_name (STRING)
+- quantity (INT)  // positive = incoming, negative = dispensed/used
+- received_from (STRING, nullable)
+- date_received (DATE)
+- handled_by (STRING, nullable)
+- created_at (TIMESTAMP)
+- updated_at (TIMESTAMP)
+
+Relationships:
+- medical_supplies (1) --- (N) supply_history
+
+=======================================
+END OF TEXT ERD
