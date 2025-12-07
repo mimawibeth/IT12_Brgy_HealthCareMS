@@ -276,6 +276,9 @@ Route::middleware('auth')->group(function () {
         // Store new supply or add to existing
         Route::post('/store', [MedicalSupplyController::class, 'store'])->name('store');
 
+        // Dispense existing supply (outgoing usage)
+        Route::post('/{supply}/dispense', [MedicalSupplyController::class, 'dispense'])->name('dispense');
+
         // View supply details - MUST be last due to dynamic parameter
         Route::get('/{supply}', [MedicalSupplyController::class, 'show'])->name('show');
     });

@@ -74,8 +74,15 @@
                                     <span class="item-name">{{ $record->item_name }}</span>
                                 </td>
                                 <td>
-                                    <span class="quantity-badge quantity-in">
-                                        +{{ $record->quantity }}
+                                    @php
+                                        $qty = (int) $record->quantity;
+                                        $isOutgoing = $qty < 0;
+                                        $displayQty = abs($qty);
+                                        $badgeClass = $isOutgoing ? 'quantity-out' : 'quantity-in';
+                                        $sign = $isOutgoing ? '-' : '+';
+                                    @endphp
+                                    <span class="quantity-badge {{ $badgeClass }}">
+                                        {{ $sign }}{{ $displayQty }}
                                     </span>
                                 </td>
                                 <td>
@@ -158,27 +165,32 @@
                         </div>
                         <div class="form-group">
                             <label>Quantity</label>
-                            <div class="form-control" id="trans_quantity" style="background: #f8f9fa; border: none; font-weight: bold;"></div>
+                            <div class="form-control" id="trans_quantity"
+                                style="background: #f8f9fa; border: none; font-weight: bold;"></div>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label>Received From</label>
-                            <div class="form-control" id="trans_received_from" style="background: #f8f9fa; border: none;"></div>
+                            <div class="form-control" id="trans_received_from" style="background: #f8f9fa; border: none;">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Date Received</label>
-                            <div class="form-control" id="trans_date_received" style="background: #f8f9fa; border: none;"></div>
+                            <div class="form-control" id="trans_date_received" style="background: #f8f9fa; border: none;">
+                            </div>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label>Handled By</label>
-                            <div class="form-control" id="trans_handled_by" style="background: #f8f9fa; border: none;"></div>
+                            <div class="form-control" id="trans_handled_by" style="background: #f8f9fa; border: none;">
+                            </div>
                         </div>
                         <div class="form-group">
                             <label>Transaction Date/Time</label>
-                            <div class="form-control" id="trans_created_at" style="background: #f8f9fa; border: none;"></div>
+                            <div class="form-control" id="trans_created_at" style="background: #f8f9fa; border: none;">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -193,7 +205,7 @@
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             function openModal(id) {
                 const modal = document.getElementById(id);
                 if (modal) {
@@ -210,21 +222,21 @@
 
             // Close modal handlers
             document.querySelectorAll('.close-modal[data-close-modal]').forEach(span => {
-                span.addEventListener('click', function() {
+                span.addEventListener('click', function () {
                     const targetId = this.getAttribute('data-close-modal');
                     closeModal(targetId);
                 });
             });
 
             document.querySelectorAll('button[data-close-modal]').forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function () {
                     const targetId = this.getAttribute('data-close-modal');
                     closeModal(targetId);
                 });
             });
 
             const viewTransactionModal = document.getElementById('viewTransactionModal');
-            window.addEventListener('click', function(event) {
+            window.addEventListener('click', function (event) {
                 if (event.target === viewTransactionModal) {
                     closeModal('viewTransactionModal');
                 }
@@ -232,10 +244,10 @@
 
             // View transaction functionality
             document.querySelectorAll('.view-transaction').forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function () {
                     const recordId = this.dataset.id;
                     const row = this.closest('tr');
-                    
+
                     // Extract data from the row
                     const cells = row.querySelectorAll('td');
                     const dateText = cells[0].querySelector('.transaction-date').textContent.trim();
@@ -243,7 +255,7 @@
                     const quantity = cells[2].querySelector('.quantity-badge').textContent.trim();
                     const receivedFrom = cells[3].querySelector('small').textContent.trim();
                     const handledBy = cells[4].querySelector('small').textContent.trim();
-                    
+
                     // Populate modal
                     document.getElementById('trans_item_name').textContent = itemName;
                     document.getElementById('trans_quantity').textContent = quantity;
@@ -251,7 +263,7 @@
                     document.getElementById('trans_date_received').textContent = dateText.split('\n')[0].trim();
                     document.getElementById('trans_handled_by').textContent = handledBy;
                     document.getElementById('trans_created_at').textContent = dateText.replace(/\s+/g, ' ').trim();
-                    
+
                     openModal('viewTransactionModal');
                 });
             });

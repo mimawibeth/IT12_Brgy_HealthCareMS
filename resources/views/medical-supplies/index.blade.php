@@ -60,7 +60,7 @@
                     </thead>
                     <tbody>
                         @forelse($supplies as $supply)
-                            <tr>
+                            <tr data-supply-id="{{ $supply->id }}">
                                 <td>{{ $supply->item_name }}</td>
                                 <td>{{ $supply->category ?? 'N/A' }}</td>
                                 <td>{{ $supply->description ?? 'N/A' }}</td>
@@ -70,6 +70,11 @@
                                     <a href="javascript:void(0)" class="btn-action btn-view view-supply"
                                         data-id="{{ $supply->id }}">
                                         <i class="bi bi-eye"></i> View
+                                    </a>
+                                    <a href="javascript:void(0)" class="btn-action btn-edit dispense-supply"
+                                        data-id="{{ $supply->id }}" data-name="{{ $supply->item_name }}"
+                                        data-max="{{ $supply->quantity_on_hand }}">
+                                        <i class="bi bi-box-arrow-up"></i> Dispense
                                     </a>
                                 </td>
                             </tr>
@@ -277,10 +282,76 @@
         </div>
     </div>
 
+    <!-- Dispense Supply Modal -->
+    <div class="modal" id="dispenseSupplyModal" style="display:none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Dispense Supply</h3>
+                <span class="close-modal" data-close-modal="dispenseSupplyModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form method="POST" id="dispenseSupplyForm" class="patient-form">
+                    @csrf
+                    <div class="form-section section-patient-info">
+                        <h3 class="section-header">
+                            <span class="section-indicator"></span>Supply to Dispense
+                        </h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Item Name</label>
+                                <div class="form-control" id="dispense_item_name"
+                                    style="background: #f8f9fa; border: none;"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Available Quantity</label>
+                                <div class="form-control" id="dispense_available_quantity"
+                                    style="background: #f8f9fa; border: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section section-assessment">
+                        <h3 class="section-header">
+                            <span class="section-indicator"></span>Dispense Details
+                        </h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dispense_quantity">Quantity <span class="required-asterisk">*</span></label>
+                                <input type="number" id="dispense_quantity" name="quantity" class="form-control" min="1"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="remarks">Remarks</label>
+                                <input type="text" id="remarks" name="remarks" class="form-control"
+                                    placeholder="Optional note on how the supply was used">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="date_dispensed">Date Dispensed <span class="required-asterisk">*</span></label>
+                                <input type="date" id="date_dispensed" name="date_dispensed" class="form-control"
+                                    value="{{ date('Y-m-d') }}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary"
+                            data-close-modal="dispenseSupplyModal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Dispense</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const addSupplyModal = document.getElementById('addSupplyModal');
+                const dispenseSupplyModal = document.getElementById('dispenseSupplyModal');
                 const openAddSupplyBtn = document.getElementById('openAddSupplyModal');
 
                 function openModal(id) {
@@ -321,6 +392,9 @@
                     if (event.target === addSupplyModal) {
                         closeModal('addSupplyModal');
                     }
+                    if (event.target === dispenseSupplyModal) {
+                        closeModal('dispenseSupplyModal');
+                    }
                 });
 
                 // Supply search functionality
@@ -351,17 +425,17 @@
 
                                 if (supplies.length > 0) {
                                     supplySearchResults.innerHTML = supplies.map(supply => `
-                                                        <div class="supply-result-item" 
-                                                            data-id="${supply.id}"
-                                                            data-name="${supply.item_name}"
-                                                            data-category="${supply.category || ''}"
-                                                            data-description="${supply.description || ''}"
-                                                            data-unit="${supply.unit_of_measure || ''}"
-                                                            style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee;">
-                                                            <strong>${supply.item_name}</strong>
-                                                            ${supply.category ? `<span style="color: #666;"> - ${supply.category}</span>` : ''}
-                                                        </div>
-                                                    `).join('');
+                                                                <div class="supply-result-item" 
+                                                                    data-id="${supply.id}"
+                                                                    data-name="${supply.item_name}"
+                                                                    data-category="${supply.category || ''}"
+                                                                    data-description="${supply.description || ''}"
+                                                                    data-unit="${supply.unit_of_measure || ''}"
+                                                                    style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee;">
+                                                                    <strong>${supply.item_name}</strong>
+                                                                    ${supply.category ? `<span style="color: #666;"> - ${supply.category}</span>` : ''}
+                                                                </div>
+                                                            `).join('');
                                     supplySearchResults.style.display = 'block';
 
                                     // Add click handlers to results
@@ -441,14 +515,21 @@
                             // Populate transaction history
                             const historyList = document.getElementById('supply_history_list');
                             if (data.supply_history && data.supply_history.length > 0) {
-                                historyList.innerHTML = data.supply_history.map(record => `
-                                            <tr>
-                                                <td>${new Date(record.date_received).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
-                                                <td><span class="quantity-badge quantity-in">+${record.quantity}</span></td>
-                                                <td>${record.received_from || 'N/A'}</td>
-                                                <td>${record.handled_by}</td>
-                                            </tr>
-                                        `).join('');
+                                historyList.innerHTML = data.supply_history.map(record => {
+                                    const qty = Number(record.quantity);
+                                    const isOutgoing = qty < 0;
+                                    const displayQty = Math.abs(qty);
+                                    const badgeClass = isOutgoing ? 'quantity-out' : 'quantity-in';
+                                    const sign = isOutgoing ? '-' : '+';
+                                    return `
+                                                    <tr>
+                                                        <td>${new Date(record.date_received).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                                                        <td><span class="quantity-badge ${badgeClass}">${sign}${displayQty}</span></td>
+                                                        <td>${record.received_from || 'N/A'}</td>
+                                                        <td>${record.handled_by}</td>
+                                                    </tr>
+                                                `;
+                                }).join('');
                             } else {
                                 historyList.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: #999;">No transaction history</td></tr>';
                             }
@@ -458,6 +539,27 @@
                             console.error('Error fetching supply details:', error);
                             alert('Error loading supply details');
                         }
+                    });
+                });
+
+                // Dispense supply functionality
+                document.querySelectorAll('.dispense-supply').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const supplyId = this.dataset.id;
+                        const itemName = this.dataset.name;
+                        const maxQty = Number(this.dataset.max);
+
+                        document.getElementById('dispense_item_name').textContent = itemName || 'N/A';
+                        document.getElementById('dispense_available_quantity').textContent = isNaN(maxQty) ? '0' : maxQty;
+
+                        const quantityInput = document.getElementById('dispense_quantity');
+                        quantityInput.value = '';
+                        quantityInput.max = isNaN(maxQty) ? '' : maxQty;
+
+                        const form = document.getElementById('dispenseSupplyForm');
+                        form.action = `/medical-supplies/${supplyId}/dispense`;
+
+                        openModal('dispenseSupplyModal');
                     });
                 });
             });

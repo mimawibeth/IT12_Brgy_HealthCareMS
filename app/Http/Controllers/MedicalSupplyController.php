@@ -129,6 +129,52 @@ class MedicalSupplyController extends Controller
         return response()->json($supply->load('supplyHistory'));
     }
 
+    public function dispense(Request $request, MedicalSupply $supply)
+    {
+        $validated = $request->validate([
+            'quantity' => ['required', 'integer', 'min:1'],
+            'remarks' => ['nullable', 'string', 'max:255'],
+            'date_dispensed' => ['required', 'date'],
+        ]);
+
+        DB::beginTransaction();
+        try {
+            if ($supply->quantity_on_hand < $validated['quantity']) {
+                return redirect()->back()->with('error', 'Not enough stock to dispense the requested quantity.');
+            }
+
+            $supply->quantity_on_hand -= $validated['quantity'];
+            $supply->save();
+
+            $description = $validated['remarks'] ?? 'Dispensed';
+
+            SupplyHistory::create([
+                'medical_supply_id' => $supply->id,
+                'item_name' => $supply->item_name,
+                'quantity' => -$validated['quantity'],
+                'received_from' => $description,
+                'date_received' => $validated['date_dispensed'],
+                'handled_by' => auth()->user()->name ?? 'System',
+            ]);
+
+            AuditLog::create([
+                'user_id' => auth()->id(),
+                'user_role' => auth()->user()->role ?? null,
+                'action' => 'update',
+                'module' => 'Medical Supplies',
+                'description' => 'Dispensed supply: ' . $supply->item_name . ' (Qty: ' . $validated['quantity'] . ')',
+                'ip_address' => $request->ip(),
+                'status' => 'success',
+            ]);
+
+            DB::commit();
+            return redirect()->route('medical-supplies.index')->with('success', 'Supply dispensed successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error dispensing supply: ' . $e->getMessage());
+        }
+    }
+
     public function history(Request $request)
     {
         $query = SupplyHistory::with('medicalSupply');

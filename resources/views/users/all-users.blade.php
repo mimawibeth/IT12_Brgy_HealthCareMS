@@ -81,6 +81,12 @@
                                 <a href="javascript:void(0)" class="btn-action btn-view view-user"
                                     data-id="{{ $user->id }}">View</a>
                                 <a href="{{ route('users.edit', $user->id) }}" class="btn-action btn-edit">Edit</a>
+                                @if(in_array(auth()->user()->role ?? null, ['super_admin', 'admin']))
+                                    @if($user->role !== 'super_admin' || auth()->user()->role === 'super_admin')
+                                        <a href="javascript:void(0)" class="btn-action btn-reset-password" data-id="{{ $user->id }}"
+                                            data-name="{{ $user->name }}" style="background: #f39c12; color: white;">Reset Password</a>
+                                    @endif
+                                @endif
                             </td>
                         </tr>
                     @empty
@@ -131,4 +137,91 @@
     </div>
 
     @include('users.partials.view-modal')
+
+    <!-- Reset Password Modal -->
+    <div class="modal" id="resetPasswordModal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reset User Password</h3>
+                <span class="close-modal" data-close-modal="resetPasswordModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 20px;">Are you sure you want to reset the password for <strong
+                        id="reset_user_name"></strong>?</p>
+                <p
+                    style="background: #fff3cd; padding: 15px; border-radius: 4px; border-left: 4px solid #f39c12; margin-bottom: 20px;">
+                    <strong>Note:</strong> A temporary password will be generated in the format:
+                    <code>FirstName + 4 random digits</code><br>
+                    Example: <code>Juan1234</code><br><br>
+                    You will see the temporary password after clicking confirm. Please share it with the user.
+                </p>
+                <form id="resetPasswordForm" method="POST" action="">
+                    @csrf
+                    <div class="form-actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary"
+                            data-close-modal="resetPasswordModal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" style="background: #f39c12;">Confirm Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const resetPasswordModal = document.getElementById('resetPasswordModal');
+            const resetPasswordForm = document.getElementById('resetPasswordForm');
+            const resetUserName = document.getElementById('reset_user_name');
+
+            function openModal(id) {
+                const modal = document.getElementById(id);
+                if (modal) {
+                    modal.style.display = 'flex';
+                }
+            }
+
+            function closeModal(id) {
+                const modal = document.getElementById(id);
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+            }
+
+            // Reset password button click
+            document.querySelectorAll('.btn-reset-password').forEach(button => {
+                button.addEventListener('click', function () {
+                    const userId = this.dataset.id;
+                    const userName = this.dataset.name;
+
+                    resetUserName.textContent = userName;
+                    resetPasswordForm.action = `/users/${userId}/reset-password`;
+
+                    openModal('resetPasswordModal');
+                });
+            });
+
+            // Close modal handlers
+            document.querySelectorAll('.close-modal[data-close-modal]').forEach(span => {
+                span.addEventListener('click', function () {
+                    const targetId = this.getAttribute('data-close-modal');
+                    closeModal(targetId);
+                });
+            });
+
+            document.querySelectorAll('button[data-close-modal]').forEach(button => {
+                button.addEventListener('click', function () {
+                    const targetId = this.getAttribute('data-close-modal');
+                    closeModal(targetId);
+                });
+            });
+
+            window.addEventListener('click', function (event) {
+                if (event.target === resetPasswordModal) {
+                    closeModal('resetPasswordModal');
+                }
+            });
+        });
+    </script>
+@endpush

@@ -266,19 +266,22 @@ class UserController extends Controller
 
     public function resetPassword(Request $request, $id)
     {
+        // Only super_admin and admin can reset passwords
+        if (!in_array(auth()->user()->role ?? null, ['super_admin', 'admin'])) {
+            abort(403);
+        }
+
         $user = User::findOrFail($id);
 
-        $validated = $request->validate([
-            'password' => [
-                'required',
-                'string',
-                'min:12',
-                'confirmed',
-                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/',
-            ],
-        ]);
+        // Prevent resetting super admin password unless you are super admin
+        if ($user->role === 'super_admin' && auth()->user()->role !== 'super_admin') {
+            return back()->with('error', 'Only Super Admin can reset Super Admin passwords');
+        }
 
-        $user->password = Hash::make($validated['password']);
+        // Generate temporary password: FirstName + random 4 digits
+        $temporaryPassword = ucfirst(strtolower($user->first_name)) . rand(1000, 9999);
+
+        $user->password = Hash::make($temporaryPassword);
         $user->save();
 
         AuditLog::create([
@@ -291,6 +294,6 @@ class UserController extends Controller
             'status' => 'success',
         ]);
 
-        return back()->with('success', 'Password reset successfully');
+        return back()->with('success', 'Password reset successfully. Temporary password: ' . $temporaryPassword . ' (Please share this with the user)');
     }
 }

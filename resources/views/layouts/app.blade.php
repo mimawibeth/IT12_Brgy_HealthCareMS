@@ -319,8 +319,8 @@
             <div class="content-wrapper">
                 <!-- Success/Error Messages -->
                 @if(session('success'))
-                    <div class="alert alert-success">
-                        ✓ {{ session('success') }}
+                    <div class="alert alert-success" style="font-size: 16px; padding: 20px;">
+                        ✓ {!! nl2br(e(session('success'))) !!}
                     </div>
                 @endif
 
