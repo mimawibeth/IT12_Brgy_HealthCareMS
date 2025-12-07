@@ -55,7 +55,14 @@
                         @enderror
                     </div>
 
-
+                    <div class="form-group">
+                        <label for="username">Username <span class="required">*</span></label>
+                        <input type="text" id="username" name="username" class="form-control"
+                            value="{{ old('username', auth()->user()->username) }}" required>
+                        @error('username')
+                            <span class="error-message">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
 
                 <div class="form-row">
@@ -117,4 +124,48 @@
             </div>
         </form>
     </div>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const darkModeSelect = document.getElementById('dark_mode');
+                const textSizeSelect = document.getElementById('text_size');
+
+                function applyDarkMode(value) {
+                    const body = document.body;
+                    if (!body) return;
+                    if (String(value) === '1') {
+                        body.classList.add('dark-mode');
+                    } else {
+                        body.classList.remove('dark-mode');
+                    }
+                }
+
+                function applyTextSize(value) {
+                    const body = document.body;
+                    if (!body) return;
+
+                    body.classList.remove('text-size-small', 'text-size-medium', 'text-size-large');
+
+                    if (value === 'small') {
+                        body.classList.add('text-size-small');
+                    } else if (value === 'large') {
+                        body.classList.add('text-size-large');
+                    }
+                }
+
+                if (darkModeSelect) {
+                    darkModeSelect.addEventListener('change', function () {
+                        applyDarkMode(this.value);
+                    });
+                }
+
+                if (textSizeSelect) {
+                    textSizeSelect.addEventListener('change', function () {
+                        applyTextSize(this.value);
+                    });
+                }
+            });
+        </script>
+    @endpush
 @endsection
