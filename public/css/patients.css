@@ -171,8 +171,8 @@ button.btn-action {
 .btn-edit:hover,
 .btn-edit:active,
 .btn-edit.active {
-    background-color: #f39c12;
-    color: #fff;
+    background-color: #fef3c7;
+    color: #f39c12;
     border-color: #f39c12;
 }
 

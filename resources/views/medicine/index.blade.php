@@ -63,60 +63,77 @@
             </div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-            <div class="search-container" style="flex: 1; max-width: 400px; margin: 0;">
-                <input type="text" id="medicineSearch" class="search-input" placeholder="Search medicines...">
-            </div>
-            <div class="header-actions">
-                <button type="button" class="btn btn-primary" id="openAddMedicineModal">
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .3rem; flex-wrap: wrap;">
+            <form method="GET" action="{{ route('medicine.index') }}" id="medicineFilterForm" class="filters"
+                style="flex: 1; display: flex; gap: 12px; align-items: center;">
+                <input type="text" name="search" id="medicineSearch" placeholder="Search medicines..." class="search-input"
+                    value="{{ request('search') }}" style="flex: 1; min-width: 300px;">
+
+                <select name="dosage_form" id="dosageFormFilter" class="filter-select">
+                    <option value="">All Forms</option>
+                    <option value="Tablet" {{ request('dosage_form') === 'Tablet' ? 'selected' : '' }}>Tablet</option>
+                    <option value="Capsule" {{ request('dosage_form') === 'Capsule' ? 'selected' : '' }}>Capsule</option>
+                    <option value="Syrup" {{ request('dosage_form') === 'Syrup' ? 'selected' : '' }}>Syrup</option>
+                    <option value="Injection" {{ request('dosage_form') === 'Injection' ? 'selected' : '' }}>Injection
+                    </option>
+                    <option value="Cream" {{ request('dosage_form') === 'Cream' ? 'selected' : '' }}>Cream</option>
+                    <option value="Ointment" {{ request('dosage_form') === 'Ointment' ? 'selected' : '' }}>Ointment</option>
+                </select>
+
+                <select name="stock_status" id="stockStatusFilter" class="filter-select">
+                    <option value="">All Stock</option>
+                    <option value="low" {{ request('stock_status') === 'low' ? 'selected' : '' }}>Low Stock</option>
+                    <option value="normal" {{ request('stock_status') === 'normal' ? 'selected' : '' }}>Normal Stock</option>
+                    <option value="out" {{ request('stock_status') === 'out' ? 'selected' : '' }}>Out of Stock</option>
+                </select>
+
+                <select name="expiry_status" id="expiryStatusFilter" class="filter-select">
+                    <option value="">All Expiry</option>
+                    <option value="expired" {{ request('expiry_status') === 'expired' ? 'selected' : '' }}>Expired</option>
+                    <option value="expiring_soon" {{ request('expiry_status') === 'expiring_soon' ? 'selected' : '' }}>
+                        Expiring Soon (30 days)</option>
+                    <option value="valid" {{ request('expiry_status') === 'valid' ? 'selected' : '' }}>Valid</option>
+                </select>
+
+                <button type="button" id="clearMedicineFilters" class="btn btn-secondary"
+                    style="padding: 10px 15px !important; font-size: 14px; font-weight: normal;">
+                    <i class="bi bi-x-circle"></i> Clear
+                </button>
+
+                <button type="button" class="btn btn-primary" id="openAddMedicineModal"
+                    style="padding: 10px 15px !important; font-size: 14px; font-weight: normal; white-space: nowrap;">
                     <i class="bi bi-plus-circle"></i> Add Medicine
                 </button>
-            </div>
+            </form>
         </div>
 
         <div class="table-container">
-            <div class="card">
-                <div style="overflow-x: auto;">
-                    <table class="data-table" style="min-width: 800px;">
-                        <thead>
+            <div style="overflow-x: auto;">
+                <table class="data-table" style="min-width: 800px;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Generic Name</th>
+                            <th>Form</th>
+                            <th>Dosage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($medicines as $medicine)
                             <tr>
-                                <th>Name</th>
-                                <th>Generic Name</th>
-                                <th>Form</th>
-                                <th>Strength</th>
-                                <th>Unit</th>
-                                <th>Qty on Hand</th>
-                                <th>Reorder Level</th>
-                                <th>Expiry Date</th>
-                                <th>Actions</th>
+                                <td>{{ $medicine->name }}</td>
+                                <td>{{ $medicine->generic_name }}</td>
+                                <td>{{ $medicine->dosage_form }}</td>
+                                <td>{{ $medicine->strength }}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($medicines as $medicine)
-                                <tr>
-                                    <td>{{ $medicine->name }}</td>
-                                    <td>{{ $medicine->generic_name }}</td>
-                                    <td>{{ $medicine->dosage_form }}</td>
-                                    <td>{{ $medicine->strength }}</td>
-                                    <td>{{ $medicine->unit }}</td>
-                                    <td>{{ $medicine->quantity_on_hand }}</td>
-                                    <td>{{ $medicine->reorder_level }}</td>
-                                    <td>{{ optional($medicine->expiry_date)->format('M d, Y') }}</td>
-                                    <td class="actions">
-                                        <a href="javascript:void(0)" class="btn-action btn-view view-medicine"
-                                            data-id="{{ $medicine->id }}" data-name="{{ $medicine->name }}">
-                                            <i class="bi bi-eye"></i> View
-                                        </a>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="9" style="text-align:center;">No medicines found.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                        @empty
+                            <tr>
+                                <td colspan="9" style="text-align:center;">No medicines found.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -125,7 +142,7 @@
                 @if($medicines->onFirstPage())
                     <button class="btn-page" disabled>« Previous</button>
                 @else
-                    <a class="btn-page" href="{{ $medicines->previousPageUrl() }}">« Previous</a>
+                    <a class="btn-page" href="{{ $medicines->appends(request()->query())->previousPageUrl() }}">« Previous</a>
                 @endif
 
                 @php
@@ -137,7 +154,7 @@
                     @if ($page === $medicines->currentPage())
                         <span class="btn-page active">{{ $page }}</span>
                     @else
-                        <a class="btn-page" href="{{ $medicines->url($page) }}">{{ $page }}</a>
+                        <a class="btn-page" href="{{ $medicines->appends(request()->query())->url($page) }}">{{ $page }}</a>
                     @endif
                 @endfor
 
@@ -147,7 +164,7 @@
                 </span>
 
                 @if($medicines->hasMorePages())
-                    <a class="btn-page" href="{{ $medicines->nextPageUrl() }}">Next »</a>
+                    <a class="btn-page" href="{{ $medicines->appends(request()->query())->nextPageUrl() }}">Next »</a>
                 @else
                     <button class="btn-page" disabled>Next »</button>
                 @endif
@@ -208,52 +225,11 @@
 
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="modal_strength">Strength</label>
+                                <label for="modal_strength">Dosage</label>
                                 <input type="text" id="modal_strength" name="strength" class="form-control"
                                     placeholder="e.g., 500 mg" value="{{ old('strength') }}">
                             </div>
 
-                            <div class="form-group">
-                                <label for="modal_unit">Unit</label>
-                                <input type="text" id="modal_unit" name="unit" class="form-control"
-                                    placeholder="tablet, mL, vial" value="{{ old('unit', 'tablet') }}">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="modal_expiry_date">Expiry Date</label>
-                                <input type="date" id="modal_expiry_date" name="expiry_date" class="form-control"
-                                    value="{{ old('expiry_date') }}">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-section section-assessment">
-                        <h3 class="section-header">
-                            <span class="section-indicator"></span>Inventory Details
-                        </h3>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="modal_quantity_on_hand">Quantity on Hand <span
-                                        class="required-asterisk">*</span></label>
-                                <input type="number" id="modal_quantity_on_hand" name="quantity_on_hand"
-                                    class="form-control" min="0" required value="{{ old('quantity_on_hand', 0) }}">
-                                <span class="error-message" data-for="quantity_on_hand"></span>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="modal_reorder_level">Reorder Level</label>
-                                <input type="number" id="modal_reorder_level" name="reorder_level" class="form-control"
-                                    min="0" value="{{ old('reorder_level', 0) }}">
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group full-width">
-                                <label for="modal_remarks">Remarks</label>
-                                <textarea id="modal_remarks" name="remarks" class="form-control"
-                                    rows="3">{{ old('remarks') }}</textarea>
-                            </div>
                         </div>
                     </div>
 
@@ -317,81 +293,81 @@
                             const isLowStock = data.quantity_on_hand <= data.reorder_level;
 
                             modalBody.innerHTML = `
-                                                                                                                <div class="form-section section-patient-info">
-                                                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Basic Information</h3>
-                                                                                                                    <div class="form-row">
-                                                                                                                        <div class="form-group">
-                                                                                                                            <label><strong>Medicine Name:</strong></label>
-                                                                                                                            <p>${data.name || 'N/A'}</p>
-                                                                                                                        </div>
-                                                                                                                        <div class="form-group">
-                                                                                                                            <label><strong>Generic Name:</strong></label>
-                                                                                                                            <p>${data.generic_name || 'N/A'}</p>
-                                                                                                                        </div>
-                                                                                                                        <div class="form-group">
-                                                                                                                            <label><strong>Dosage Form:</strong></label>
-                                                                                                                            <p>${data.dosage_form || 'N/A'}</p>
-                                                                                                                        </div>
-                                                                                                                    </div>
-                                                                                                                    <div class="form-row">
-                                                                                                                        <div class="form-group">
-                                                                                                                            <label><strong>Strength:</strong></label>
-                                                                                                                            <p>${data.strength || 'N/A'}</p>
-                                                                                                                        </div>
-                                                                                                                        <div class="form-group">
-                                                                                                                            <label><strong>Unit:</strong></label>
-                                                                                                                            <p>${data.unit || 'N/A'}</p>
-                                                                                                                        </div>
-                                                                                                                    </div>
-                                                                                                                </div>
+                                                                                                                                                                                <div class="form-section section-patient-info">
+                                                                                                                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Basic Information</h3>
+                                                                                                                                                                                    <div class="form-row">
+                                                                                                                                                                                        <div class="form-group">
+                                                                                                                                                                                            <label><strong>Medicine Name:</strong></label>
+                                                                                                                                                                                            <p>${data.name || 'N/A'}</p>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                        <div class="form-group">
+                                                                                                                                                                                            <label><strong>Generic Name:</strong></label>
+                                                                                                                                                                                            <p>${data.generic_name || 'N/A'}</p>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                        <div class="form-group">
+                                                                                                                                                                                            <label><strong>Dosage Form:</strong></label>
+                                                                                                                                                                                            <p>${data.dosage_form || 'N/A'}</p>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                    <div class="form-row">
+                                                                                                                                                                                        <div class="form-group">
+                                                                                                                                                                                            <label><strong>Dosage:</strong></label>
+                                                                                                                                                                                            <p>${data.strength || 'N/A'}</p>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                        <div class="form-group">
+                                                                                                                                                                                            <label><strong>Unit:</strong></label>
+                                                                                                                                                                                            <p>${data.unit || 'N/A'}</p>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
 
-                                                                                                                <div class="form-section section-screening">
-                                                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Inventory Status</h3>
-                                                                                                                    <div class="form-row">
-                                                                                                                        <div class="form-group">
-                                                                                                                            <label><strong>Quantity on Hand:</strong></label>
-                                                                                                                            <p style="${isLowStock ? 'color: #e74c3c; font-weight: bold;' : ''}">
-                                                                                                                                ${data.quantity_on_hand || 0}
-                                                                                                                                ${isLowStock ? '<span style="color: #e74c3c;"> ⚠ Low Stock</span>' : ''}
-                                                                                                                            </p>
-                                                                                                                        </div>
-                                                                                                                        <div class="form-group">
-                                                                                                                            <label><strong>Reorder Level:</strong></label>
-                                                                                                                            <p>${data.reorder_level || 'N/A'}</p>
-                                                                                                                        </div>
-                                                                                                                        <div class="form-group">
-                                                                                                                            <label><strong>Expiry Date:</strong></label>
-                                                                                                                            <p style="${isExpired ? 'color: #e74c3c; font-weight: bold;' : isNearExpiry ? 'color: #f39c12; font-weight: bold;' : ''}">
-                                                                                                                                ${expiryDate ? expiryDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}
-                                                                                                                                ${isExpired ? '<span style="color: #e74c3c;"> ⚠ Expired</span>' : ''}
-                                                                                                                                ${isNearExpiry ? '<span style="color: #f39c12;"> ⚠ Expiring Soon</span>' : ''}
-                                                                                                                            </p>
-                                                                                                                        </div>
-                                                                                                                    </div>
-                                                                                                                    ${data.remarks ? `
-                                                                                                                    <div class="form-row">
-                                                                                                                        <div class="form-group full-width">
-                                                                                                                            <label><strong>Remarks:</strong></label>
-                                                                                                                            <p>${data.remarks}</p>
-                                                                                                                        </div>
-                                                                                                                    </div>
-                                                                                                                    ` : ''}
-                                                                                                                </div>
+                                                                                                                                                                                <div class="form-section section-screening">
+                                                                                                                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Inventory Status</h3>
+                                                                                                                                                                                    <div class="form-row">
+                                                                                                                                                                                        <div class="form-group">
+                                                                                                                                                                                            <label><strong>Quantity on Hand:</strong></label>
+                                                                                                                                                                                            <p style="${isLowStock ? 'color: #e74c3c; font-weight: bold;' : ''}">
+                                                                                                                                                                                                ${data.quantity_on_hand || 0}
+                                                                                                                                                                                                ${isLowStock ? '<span style="color: #e74c3c;"> ⚠ Low Stock</span>' : ''}
+                                                                                                                                                                                            </p>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                        <div class="form-group">
+                                                                                                                                                                                            <label><strong>Reorder Level:</strong></label>
+                                                                                                                                                                                            <p>${data.reorder_level || 'N/A'}</p>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                        <div class="form-group">
+                                                                                                                                                                                            <label><strong>Expiry Date:</strong></label>
+                                                                                                                                                                                            <p style="${isExpired ? 'color: #e74c3c; font-weight: bold;' : isNearExpiry ? 'color: #f39c12; font-weight: bold;' : ''}">
+                                                                                                                                                                                                ${expiryDate ? expiryDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}
+                                                                                                                                                                                                ${isExpired ? '<span style="color: #e74c3c;"> ⚠ Expired</span>' : ''}
+                                                                                                                                                                                                ${isNearExpiry ? '<span style="color: #f39c12;"> ⚠ Expiring Soon</span>' : ''}
+                                                                                                                                                                                            </p>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                    ${data.remarks ? `
+                                                                                                                                                                                    <div class="form-row">
+                                                                                                                                                                                        <div class="form-group full-width">
+                                                                                                                                                                                            <label><strong>Remarks:</strong></label>
+                                                                                                                                                                                            <p>${data.remarks}</p>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                    ` : ''}
+                                                                                                                                                                                </div>
 
-                                                                                                                <div class="form-section section-history">
-                                                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Record Information</h3>
-                                                                                                                    <div class="form-row">
-                                                                                                                        <div class="form-group">
-                                                                                                                            <label><strong>Date Added:</strong></label>
-                                                                                                                            <p>${data.created_at ? new Date(data.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}</p>
-                                                                                                                        </div>
-                                                                                                                        <div class="form-group">
-                                                                                                                            <label><strong>Last Updated:</strong></label>
-                                                                                                                            <p>${data.updated_at ? new Date(data.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}</p>
-                                                                                                                        </div>
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                            `;
+                                                                                                                                                                                <div class="form-section section-history">
+                                                                                                                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Record Information</h3>
+                                                                                                                                                                                    <div class="form-row">
+                                                                                                                                                                                        <div class="form-group">
+                                                                                                                                                                                            <label><strong>Date Added:</strong></label>
+                                                                                                                                                                                            <p>${data.created_at ? new Date(data.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}</p>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                        <div class="form-group">
+                                                                                                                                                                                            <label><strong>Last Updated:</strong></label>
+                                                                                                                                                                                            <p>${data.updated_at ? new Date(data.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}</p>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+                                                                                                                                                                            `;
                         } catch (error) {
                             modalBody.innerHTML = '<div style="text-align:center; padding: 2rem; color: red;"><p>Error loading medicine details.</p></div>';
                         }
@@ -423,33 +399,36 @@
                     });
                 });
 
-                // Search functionality
+                // Auto-submit filter form on input/change
+                const medicineForm = document.getElementById('medicineFilterForm');
                 const searchInput = document.getElementById('medicineSearch');
-                const tableRows = document.querySelectorAll('.data-table tbody tr');
+                const dosageFormFilter = document.getElementById('dosageFormFilter');
+                const stockStatusFilter = document.getElementById('stockStatusFilter');
+                const expiryStatusFilter = document.getElementById('expiryStatusFilter');
+                const clearMedicineBtn = document.getElementById('clearMedicineFilters');
 
-                searchInput.addEventListener('keyup', function () {
-                    const searchTerm = this.value.toLowerCase();
+                let searchTimeout;
 
-                    tableRows.forEach(row => {
-                        // Skip empty state row
-                        if (row.querySelector('td[colspan]')) {
-                            return;
-                        }
+                // Auto-submit on search input with debounce
+                searchInput.addEventListener('input', function () {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        medicineForm.submit();
+                    }, 500);
+                });
 
-                        const name = row.cells[0].textContent.toLowerCase();
-                        const genericName = row.cells[1].textContent.toLowerCase();
-                        const form = row.cells[2].textContent.toLowerCase();
-                        const strength = row.cells[3].textContent.toLowerCase();
+                // Auto-submit on filter change
+                dosageFormFilter.addEventListener('change', () => medicineForm.submit());
+                stockStatusFilter.addEventListener('change', () => medicineForm.submit());
+                expiryStatusFilter.addEventListener('change', () => medicineForm.submit());
 
-                        if (name.includes(searchTerm) ||
-                            genericName.includes(searchTerm) ||
-                            form.includes(searchTerm) ||
-                            strength.includes(searchTerm)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
+                // Clear all filters
+                clearMedicineBtn.addEventListener('click', function () {
+                    searchInput.value = '';
+                    dosageFormFilter.value = '';
+                    stockStatusFilter.value = '';
+                    expiryStatusFilter.value = '';
+                    medicineForm.submit();
                 });
             });
         </script>

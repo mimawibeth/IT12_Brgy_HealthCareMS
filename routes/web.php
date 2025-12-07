@@ -160,6 +160,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/{id}/assessments', [PatientController::class, 'storeAssessments'])->name('assessments.store');
     });
 
+    // API Routes for patient search
+    Route::get('/api/patients/search', [PatientController::class, 'search'])->name('api.patients.search');
+
+    // ====================
     // ====================
     // HEALTH PROGRAMS ROUTES
     // ====================

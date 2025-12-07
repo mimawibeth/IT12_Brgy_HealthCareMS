@@ -8,9 +8,37 @@ use Illuminate\Http\Request;
 
 class FamilyPlanningRecordController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $records = FamilyPlanningRecord::orderByDesc('created_at')->paginate(10);
+        $query = FamilyPlanningRecord::query();
+
+        // Search by client name or FP number
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('client_name', 'like', "%{$search}%")
+                    ->orWhere('record_no', 'like', "%{$search}%")
+                    ->orWhere('id', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by client type
+        if ($request->filled('client_type')) {
+            $query->where('client_type', $request->input('client_type'));
+        }
+
+        // Filter by reason
+        if ($request->filled('reason')) {
+            $reason = $request->input('reason');
+            $query->whereJsonContains('reason', $reason);
+        }
+
+        // Filter by date
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->input('date'));
+        }
+
+        $records = $query->orderByDesc('created_at')->paginate(10);
 
         return view('health-programs.family-planning', compact('records'));
     }

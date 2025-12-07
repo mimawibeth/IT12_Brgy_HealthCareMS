@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Immunization')
-@section('page-title', 'New Immunization')
+@section('page-title', 'Immunization Records')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/patients.css') }}">
@@ -10,28 +10,38 @@
 @section('content')
     <div class="page-content">
 
-        <div class="filters" id="newNipFilters">
-            <div class="search-box">
-                <input type="text" class="search-input" id="newNipSearch" placeholder="Search child name or record ID">
-                <button class="btn btn-search" type="button"><i class="bi bi-search"></i> Search</button>
-                <button class="btn btn-primary" id="openNewNipForm" style="margin-left: 10px;">
-                    <i class="bi bi-plus-circle"></i> Add New Record
-                </button>
-            </div>
-            <div class="filter-options">
-                <select class="filter-select">
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+            <form method="GET" id="nipFilterForm" class="filters"
+                style="flex: 1; display: flex; gap: 12px; align-items: center;">
+                <input type="text" name="search" id="newNipSearch" placeholder="Search child name or record ID"
+                    class="search-input" style="flex: 1; min-width: 300px;">
+
+                <select name="age_group" id="ageGroupFilter" class="filter-select">
                     <option value="">Age Group</option>
                     <option value="0-3">0-3 months</option>
                     <option value="4-6">4-6 months</option>
                     <option value="7-12">7-12 months</option>
                 </select>
-                <select class="filter-select">
+
+                <select name="status" id="statusFilter" class="filter-select">
                     <option value="">Visit Status</option>
                     <option value="due">Due</option>
                     <option value="complete">Complete</option>
                 </select>
-                <input type="date" class="filter-select" />
-            </div>
+
+                <input type="date" name="date" id="dateFilter" class="filter-select" />
+
+                <button type="button" id="clearNipFilters" class="btn btn-secondary"
+                    style="padding: 10px 15px; font-size: 14px;">
+                    <i class="bi bi-x-circle"></i> Clear
+                </button>
+
+                <button type="button" class="btn btn-primary" id="openNewNipForm"
+                    style="padding: 10px 15px; font-size: 14px; white-space: nowrap;">
+                    <i class="bi bi-plus-circle"></i> Add New Record
+                </button>
+            </form>
         </div>
 
         <div class="table-container" id="newNipTablePanel">
@@ -82,6 +92,42 @@
             </table>
         </div>
 
+        @php
+            $showPagination = !empty($records) && method_exists($records, 'hasPages') && $records->hasPages();
+        @endphp
+        @if($showPagination)
+            <div class="pagination" id="nipPagination">
+                @if($records->onFirstPage())
+                    <button class="btn-page" disabled>« Previous</button>
+                @else
+                    <a class="btn-page" href="{{ $records->appends(request()->query())->previousPageUrl() }}">« Previous</a>
+                @endif
+
+                @php
+                    $start = max(1, $records->currentPage() - 2);
+                    $end = min($records->lastPage(), $records->currentPage() + 2);
+                @endphp
+
+                @for ($page = $start; $page <= $end; $page++)
+                    @if ($page === $records->currentPage())
+                        <span class="btn-page active">{{ $page }}</span>
+                    @else
+                        <a class="btn-page" href="{{ $records->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                    @endif
+                @endfor
+
+                <span class="page-info">
+                    Page {{ $records->currentPage() }} of {{ $records->lastPage() }} ({{ $records->total() }} total records)
+                </span>
+
+                @if($records->hasMorePages())
+                    <a class="btn-page" href="{{ $records->appends(request()->query())->nextPageUrl() }}">Next »</a>
+                @else
+                    <button class="btn-page" disabled>Next »</button>
+                @endif
+            </div>
+        @endif
+
     </div>
 
     <div class="modal" id="nipViewModal" style="display:none;">
@@ -126,180 +172,180 @@
                             }
                             const data = await response.json();
 
-                        modalBody.innerHTML = `
-                                <div class="form-section section-patient-info">
-                                    <h3 class="section-header"><span class="section-indicator"></span>Child Information</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>Record #:</strong></label>
-                                            <p>${data.record_no || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Child Name:</strong></label>
-                                            <p>${data.child_name || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Date of Birth:</strong></label>
-                                            <p>${data.dob || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>Sex:</strong></label>
-                                            <p>${data.sex_baby || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Birth Weight:</strong></label>
-                                            <p>${data.birth_weight || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Birth Length:</strong></label>
-                                            <p>${data.birth_length || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>Birth Order:</strong></label>
-                                            <p>${data.birth_order || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Delivery Type:</strong></label>
-                                            <p>${data.delivery_type || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Place of Delivery:</strong></label>
-                                            <p>${data.place_delivery || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-section section-history">
-                                    <h3 class="section-header"><span class="section-indicator"></span>Family Information</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>Mother's Name:</strong></label>
-                                            <p>${data.mother_name || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Father's Name:</strong></label>
-                                            <p>${data.father_name || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Contact:</strong></label>
-                                            <p>${data.contact || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>Address:</strong></label>
-                                            <p>${data.address || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Attended By:</strong></label>
-                                            <p>${data.attended_by || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-section section-screening">
-                                    <h3 class="section-header"><span class="section-indicator"></span>Initial Immunization & Screening</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>TT Status (Mother):</strong></label>
-                                            <p>${data.tt_status_mother || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Vitamin K:</strong></label>
-                                            <p>${data.vit_k || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>BCG:</strong></label>
-                                            <p>${data.bcg || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>Hepa B (24h):</strong></label>
-                                            <p>${data.hepa_b_24h || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Initiated Breastfeeding:</strong></label>
-                                            <p>${data.initiated_breastfeeding || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Newborn Screening Date:</strong></label>
-                                            <p>${data.newborn_screening_date || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>Newborn Screening Result:</strong></label>
-                                            <p>${data.newborn_screening_result || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Hearing Test Screened:</strong></label>
-                                            <p>${data.hearing_test_screened || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>NHTS/4Ps ID:</strong></label>
-                                            <p>${data.nhts_4ps_id || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>PHIC ID:</strong></label>
-                                            <p>${data.phic_id || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                ${data.visits && data.visits.length > 0 ? `
-                                <div class="form-section section-assessment">
-                                    <h3 class="section-header"><span class="section-indicator"></span>Immunization Visits (${data.visits.length})</h3>
-                                    ${data.visits.map((visit, idx) => `
-                                        <div class="visit-box" style="margin-bottom: 1rem; border: 1px solid #ddd; padding: 1rem; border-radius: 4px;">
-                                            <h4 style="margin-bottom: 0.5rem;">Visit ${idx + 1} - ${visit.visit_date || 'N/A'}</h4>
+                            modalBody.innerHTML = `
+                                        <div class="form-section section-patient-info">
+                                            <h3 class="section-header"><span class="section-indicator"></span>Child Information</h3>
                                             <div class="form-row">
                                                 <div class="form-group">
-                                                    <label><strong>Age (months):</strong></label>
-                                                    <p>${visit.age_months || 'N/A'}</p>
+                                                    <label><strong>Record #:</strong></label>
+                                                    <p>${data.record_no || 'N/A'}</p>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label><strong>Weight:</strong></label>
-                                                    <p>${visit.weight || 'N/A'}</p>
+                                                    <label><strong>Child Name:</strong></label>
+                                                    <p>${data.child_name || 'N/A'}</p>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label><strong>Length:</strong></label>
-                                                    <p>${visit.length || 'N/A'}</p>
+                                                    <label><strong>Date of Birth:</strong></label>
+                                                    <p>${data.dob || 'N/A'}</p>
                                                 </div>
                                             </div>
                                             <div class="form-row">
                                                 <div class="form-group">
-                                                    <label><strong>Status:</strong></label>
-                                                    <p>${visit.status || 'N/A'}</p>
+                                                    <label><strong>Sex:</strong></label>
+                                                    <p>${data.sex_baby || 'N/A'}</p>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label><strong>Vaccine:</strong></label>
-                                                    <p>${visit.vaccine || 'N/A'}</p>
+                                                    <label><strong>Birth Weight:</strong></label>
+                                                    <p>${data.birth_weight || 'N/A'}</p>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label><strong>Breastfeeding:</strong></label>
-                                                    <p>${visit.breastfeeding || 'N/A'}</p>
+                                                    <label><strong>Birth Length:</strong></label>
+                                                    <p>${data.birth_length || 'N/A'}</p>
                                                 </div>
                                             </div>
-                                            ${visit.temperature ? `
                                             <div class="form-row">
                                                 <div class="form-group">
-                                                    <label><strong>Temperature:</strong></label>
-                                                    <p>${visit.temperature}</p>
+                                                    <label><strong>Birth Order:</strong></label>
+                                                    <p>${data.birth_order || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Delivery Type:</strong></label>
+                                                    <p>${data.delivery_type || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Place of Delivery:</strong></label>
+                                                    <p>${data.place_delivery || 'N/A'}</p>
                                                 </div>
                                             </div>
-                                            ` : ''}
                                         </div>
-                                    `).join('')}
-                                </div>
-                                ` : ''}
-                            `;
+
+                                        <div class="form-section section-history">
+                                            <h3 class="section-header"><span class="section-indicator"></span>Family Information</h3>
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label><strong>Mother's Name:</strong></label>
+                                                    <p>${data.mother_name || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Father's Name:</strong></label>
+                                                    <p>${data.father_name || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Contact:</strong></label>
+                                                    <p>${data.contact || 'N/A'}</p>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label><strong>Address:</strong></label>
+                                                    <p>${data.address || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Attended By:</strong></label>
+                                                    <p>${data.attended_by || 'N/A'}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-section section-screening">
+                                            <h3 class="section-header"><span class="section-indicator"></span>Initial Immunization & Screening</h3>
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label><strong>TT Status (Mother):</strong></label>
+                                                    <p>${data.tt_status_mother || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Vitamin K:</strong></label>
+                                                    <p>${data.vit_k || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>BCG:</strong></label>
+                                                    <p>${data.bcg || 'N/A'}</p>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label><strong>Hepa B (24h):</strong></label>
+                                                    <p>${data.hepa_b_24h || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Initiated Breastfeeding:</strong></label>
+                                                    <p>${data.initiated_breastfeeding || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Newborn Screening Date:</strong></label>
+                                                    <p>${data.newborn_screening_date || 'N/A'}</p>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label><strong>Newborn Screening Result:</strong></label>
+                                                    <p>${data.newborn_screening_result || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Hearing Test Screened:</strong></label>
+                                                    <p>${data.hearing_test_screened || 'N/A'}</p>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label><strong>NHTS/4Ps ID:</strong></label>
+                                                    <p>${data.nhts_4ps_id || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>PHIC ID:</strong></label>
+                                                    <p>${data.phic_id || 'N/A'}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        ${data.visits && data.visits.length > 0 ? `
+                                        <div class="form-section section-assessment">
+                                            <h3 class="section-header"><span class="section-indicator"></span>Immunization Visits (${data.visits.length})</h3>
+                                            ${data.visits.map((visit, idx) => `
+                                                <div class="visit-box" style="margin-bottom: 1rem; border: 1px solid #ddd; padding: 1rem; border-radius: 4px;">
+                                                    <h4 style="margin-bottom: 0.5rem;">Visit ${idx + 1} - ${visit.visit_date || 'N/A'}</h4>
+                                                    <div class="form-row">
+                                                        <div class="form-group">
+                                                            <label><strong>Age (months):</strong></label>
+                                                            <p>${visit.age_months || 'N/A'}</p>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label><strong>Weight:</strong></label>
+                                                            <p>${visit.weight || 'N/A'}</p>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label><strong>Length:</strong></label>
+                                                            <p>${visit.length || 'N/A'}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row">
+                                                        <div class="form-group">
+                                                            <label><strong>Status:</strong></label>
+                                                            <p>${visit.status || 'N/A'}</p>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label><strong>Vaccine:</strong></label>
+                                                            <p>${visit.vaccine || 'N/A'}</p>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label><strong>Breastfeeding:</strong></label>
+                                                            <p>${visit.breastfeeding || 'N/A'}</p>
+                                                        </div>
+                                                    </div>
+                                                    ${visit.temperature ? `
+                                                    <div class="form-row">
+                                                        <div class="form-group">
+                                                            <label><strong>Temperature:</strong></label>
+                                                            <p>${visit.temperature}</p>
+                                                        </div>
+                                                    </div>
+                                                    ` : ''}
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                        ` : ''}
+                                    `;
                         } catch (error) {
                             console.error('Error loading record:', error);
                             modalBody.innerHTML = '<div style="text-align:center; padding: 2rem; color: red;"><p>Error loading record details.</p></div>';
@@ -313,6 +359,38 @@
                         modal.style.display = 'none';
                     }
                 });
+            });
+
+            // Auto-submit filter form on input/change
+            const nipForm = document.getElementById('nipFilterForm');
+            const nipSearch = document.getElementById('newNipSearch');
+            const ageGroupFilter = document.getElementById('ageGroupFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const dateFilter = document.getElementById('dateFilter');
+            const clearNipBtn = document.getElementById('clearNipFilters');
+
+            let searchTimeout;
+
+            // Auto-submit on search input with debounce
+            nipSearch.addEventListener('input', function () {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    nipForm.submit();
+                }, 500);
+            });
+
+            // Auto-submit on filter change
+            ageGroupFilter.addEventListener('change', () => nipForm.submit());
+            statusFilter.addEventListener('change', () => nipForm.submit());
+            dateFilter.addEventListener('change', () => nipForm.submit());
+
+            // Clear all filters
+            clearNipBtn.addEventListener('click', function () {
+                nipSearch.value = '';
+                ageGroupFilter.value = '';
+                statusFilter.value = '';
+                dateFilter.value = '';
+                nipForm.submit();
             });
         </script>
     @endpush

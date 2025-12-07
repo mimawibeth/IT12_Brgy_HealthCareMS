@@ -9,9 +9,43 @@ use Illuminate\Http\Request;
 
 class PrenatalRecordController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $records = PrenatalRecord::orderByDesc('created_at')->paginate(10);
+        $query = PrenatalRecord::query();
+
+        // Search by mother name or record number
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('mother_name', 'like', "%{$search}%")
+                    ->orWhere('record_no', 'like', "%{$search}%")
+                    ->orWhere('id', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by purok
+        if ($request->filled('purok')) {
+            $query->where('purok', $request->input('purok'));
+        }
+
+        // Filter by LMP status
+        if ($request->filled('lmp_status')) {
+            $status = $request->input('lmp_status');
+            if ($status === 'recent') {
+                $query->whereNotNull('lmp')
+                    ->where('lmp', '>=', now()->subWeeks(4));
+            } elseif ($status === 'follow-up') {
+                $query->whereNotNull('lmp')
+                    ->where('lmp', '<', now()->subWeeks(4));
+            }
+        }
+
+        // Filter by date
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->input('date'));
+        }
+
+        $records = $query->orderByDesc('created_at')->paginate(10);
 
         return view('health-programs.prenatal', compact('records'));
     }

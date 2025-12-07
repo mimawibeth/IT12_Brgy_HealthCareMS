@@ -8,9 +8,54 @@ use Illuminate\Http\Request;
 
 class NewNipRecordController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $records = NipRecord::with('visits')->orderByDesc('created_at')->paginate(10);
+        $query = NipRecord::with('visits');
+
+        // Search by child name or record number
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('child_name', 'like', "%{$search}%")
+                    ->orWhere('record_no', 'like', "%{$search}%")
+                    ->orWhere('id', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by age group (based on DOB)
+        if ($request->filled('age_group')) {
+            $ageGroup = $request->input('age_group');
+            $now = now();
+
+            if ($ageGroup === '0-3') {
+                $query->whereNotNull('dob')
+                    ->where('dob', '>=', $now->copy()->subMonths(3))
+                    ->where('dob', '<=', $now);
+            } elseif ($ageGroup === '4-6') {
+                $query->whereNotNull('dob')
+                    ->where('dob', '>=', $now->copy()->subMonths(6))
+                    ->where('dob', '<', $now->copy()->subMonths(3));
+            } elseif ($ageGroup === '7-12') {
+                $query->whereNotNull('dob')
+                    ->where('dob', '>=', $now->copy()->subMonths(12))
+                    ->where('dob', '<', $now->copy()->subMonths(6));
+            }
+        }
+
+        // Filter by status (check latest visit status)
+        if ($request->filled('status')) {
+            $status = $request->input('status');
+            $query->whereHas('visits', function ($q) use ($status) {
+                $q->where('status', $status);
+            });
+        }
+
+        // Filter by date
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->input('date'));
+        }
+
+        $records = $query->orderByDesc('created_at')->paginate(10);
 
         return view('health-programs.newnip', compact('records'));
     }
@@ -54,9 +99,11 @@ class NewNipRecordController extends Controller
     protected function syncVisits(NipRecord $record, array $visits): void
     {
         foreach ($visits as $visit) {
-            if (empty(array_filter($visit, function ($value) {
-                return $value !== null && $value !== '';
-            }))) {
+            if (
+                empty(array_filter($visit, function ($value) {
+                    return $value !== null && $value !== '';
+                }))
+            ) {
                 continue;
             }
 
@@ -161,9 +208,11 @@ class NewNipRecordController extends Controller
                 return $key !== 'id';
             }, ARRAY_FILTER_USE_KEY);
 
-            if (empty(array_filter($visitData, function ($value) {
-                return $value !== null && $value !== '';
-            }))) {
+            if (
+                empty(array_filter($visitData, function ($value) {
+                    return $value !== null && $value !== '';
+                }))
+            ) {
                 continue;
             }
 

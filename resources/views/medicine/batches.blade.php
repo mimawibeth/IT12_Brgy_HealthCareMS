@@ -10,47 +10,46 @@
 
 @section('content')
     <div class="page-content">
-        <div class="content-header"></div>
+        <!-- Search and Filter Section -->
+        <form method="GET" action="{{ route('medicine.batches.index') }}" class="filters">
+            <div class="filter-options"
+                style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 1rem;">
+                <select name="medicine_id" class="filter-select" onchange="this.form.submit()"
+                    style="flex: 1; min-width: 300px;">
+                    <option value="">All Medicines</option>
+                    @foreach($medicines as $medicine)
+                        <option value="{{ $medicine->id }}" @selected(request('medicine_id') == $medicine->id)>
+                            {{ $medicine->name }}
+                        </option>
+                    @endforeach
+                </select>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-            <form method="GET" action="{{ route('medicine.batches.index') }}"
-                style="display: flex; gap: 0.75rem; align-items: center; flex: 1; max-width: 480px;">
-                <div class="form-group" style="flex: 1;">
-                    <select name="medicine_id" class="form-control" onchange="this.form.submit()">
-                        <option value="">All Medicines</option>
-                        @foreach($medicines as $medicine)
-                            <option value="{{ $medicine->id }}" @selected(request('medicine_id') == $medicine->id)>
-                                {{ $medicine->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                @if(request('medicine_id'))
-                    <a href="{{ route('medicine.batches.index') }}" class="btn btn-secondary">Clear</a>
+                <select name="filter" class="filter-select" onchange="this.form.submit()">
+                    <option value="">All Batches</option>
+                    <option value="expiring" {{ request('filter') === 'expiring' ? 'selected' : '' }}>Expiring Soon</option>
+                    <option value="expired" {{ request('filter') === 'expired' ? 'selected' : '' }}>Expired</option>
+                </select>
+
+                @if(request('medicine_id') || request('filter'))
+                    <a href="{{ route('medicine.batches.index') }}" class="btn btn-secondary"
+                        style="padding: 10px 15px !important; font-size: 14px; font-weight: normal;">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </a>
                 @endif
-            </form>
 
-            <div class="header-actions" style="display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end;">
-                <div style="display: flex; gap: 0.5rem;">
-                    <button type="button" class="btn btn-primary" id="openAddBatchModal">
+                <div style="margin-left: auto; display: flex; gap: 12px;">
+                    <button type="button" class="btn btn-primary" id="openAddBatchModal"
+                        style="padding: 10px 15px !important; font-size: 14px; font-weight: normal; white-space: nowrap;">
                         <i class="bi bi-plus-circle"></i> Add Batch
                     </button>
-                    <button type="button" class="btn btn-teal" id="openDispenseFromBatchesModal">
+
+                    <button type="button" class="btn btn-teal" id="openDispenseFromBatchesModal"
+                        style="padding: 10px 15px !important; font-size: 14px; font-weight: normal; white-space: nowrap;">
                         <i class="bi bi-prescription2"></i> Dispense Medicine
                     </button>
                 </div>
-
-                <div style="display: flex; gap: 0.5rem;">
-                    <a href="{{ route('medicine.batches.index', array_filter(['medicine_id' => request('medicine_id')])) }}"
-                        class="btn {{ request('filter') ? 'btn-secondary' : 'btn-primary' }}">All</a>
-                    <a href="{{ route('medicine.batches.index', array_filter(['medicine_id' => request('medicine_id'), 'filter' => 'expiring'])) }}"
-                        class="btn {{ request('filter') === 'expiring' ? 'btn-primary' : 'btn-secondary' }}">Expiring
-                        Soon</a>
-                    <a href="{{ route('medicine.batches.index', array_filter(['medicine_id' => request('medicine_id'), 'filter' => 'expired'])) }}"
-                        class="btn {{ request('filter') === 'expired' ? 'btn-primary' : 'btn-secondary' }}">Expired</a>
-                </div>
             </div>
-        </div>
+        </form>
 
         @forelse($batches as $medicineId => $medicineBatches)
             @php
@@ -59,31 +58,32 @@
             @endphp
 
             <div class="table-container" style="margin-bottom: 2rem;">
-                <div class="card">
-                    <div
-                        style="padding: 1rem 1.5rem; background: linear-gradient(135deg, #2f6d7e 0%, #1f4d5c 100%); color: white; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 600;">
-                                {{ $medicine->name ?? 'Unknown Medicine' }}</h3>
-                            <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem; opacity: 0.9;">Total Available:
-                                {{ $totalQuantity }} units across {{ $medicineBatches->count() }} batch(es)</p>
-                        </div>
-                        <button type="button" class="btn btn-teal btn-sm dispense-batch-btn"
-                            data-medicine-id="{{ $medicineId }}" data-medicine-name="{{ $medicine->name ?? '' }}"
-                            style="background: white; color: #2f6d7e;">
-                            <i class="bi bi-prescription2"></i> Dispense
-                        </button>
+                <div
+                    style="padding: 1rem 1.5rem; background: linear-gradient(135deg, #2f6d7e 0%, #1f4d5c 100%); color: white; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.1rem; font-weight: 600;">
+                            {{ $medicine->name ?? 'Unknown Medicine' }}
+                        </h3>
+                        <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem; opacity: 0.9;">Total Available:
+                            {{ $totalQuantity }} units across {{ $medicineBatches->count() }} batch(es)
+                        </p>
                     </div>
+                    <button type="button" class="btn btn-teal btn-sm dispense-batch-btn" data-medicine-id="{{ $medicineId }}"
+                        data-medicine-name="{{ $medicine->name ?? '' }}"
+                        style="background: white; color: #2f6d7e; padding: 8px 12px !important; font-size: 14px; font-weight: normal;">
+                        <i class="bi bi-prescription2"></i> Dispense
+                    </button>
+                </div>
 
-                    <table class="data-table">
+                <div style="overflow-x: auto;">
+                    <table class="data-table" style="min-width: 800px;">
                         <thead>
                             <tr>
                                 <th>Batch Code</th>
                                 <th>Quantity on Hand</th>
                                 <th>Expiry Date</th>
                                 <th>Date Received</th>
-                                <th>Supplier</th>
-                                <th>Unit Price</th>
+                                <th>From</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -94,13 +94,6 @@
                                     <td>{{ optional($batch->expiry_date)->format('M d, Y') }}</td>
                                     <td>{{ optional($batch->date_received)->format('M d, Y') }}</td>
                                     <td>{{ $batch->supplier ?? 'N/A' }}</td>
-                                    <td>
-                                        @if(!is_null($batch->unit_price))
-                                            ₱{{ number_format($batch->unit_price, 2) }}
-                                        @else
-                                            N/A
-                                        @endif
-                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -109,21 +102,20 @@
             </div>
         @empty
             <div class="table-container">
-                <div class="card">
-                    <table class="data-table">
+                <div style="overflow-x: auto;">
+                    <table class="data-table" style="min-width: 800px;">
                         <thead>
                             <tr>
                                 <th>Batch Code</th>
                                 <th>Quantity on Hand</th>
                                 <th>Expiry Date</th>
                                 <th>Date Received</th>
-                                <th>Supplier</th>
-                                <th>Unit Price</th>
+                                <th>From</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="6" style="text-align:center; padding: 40px; color: #7f8c8d;">
+                                <td colspan="5" style="text-align:center; padding: 40px; color: #7f8c8d;">
                                     <i class="bi bi-inbox"
                                         style="font-size: 48px; display: block; margin-bottom: 10px; opacity: 0.5;"></i>
                                     No medicine batches found.
@@ -152,16 +144,10 @@
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="add_batch_medicine_search">Search Medicine</label>
-                                    <input type="text" id="add_batch_medicine_search" class="form-control"
-                                        placeholder="Type to search medicine">
-                                </div>
-
-                                <div class="form-group">
                                     <label for="add_batch_medicine_id">Medicine <span
                                             class="required-asterisk">*</span></label>
                                     <select id="add_batch_medicine_id" name="medicine_id" class="form-control" required>
-                                        <option value="">-- Select Medicine --</option>
+                                        <option value="">-- Select or search medicine --</option>
                                         @foreach($medicines as $medicine)
                                             <option value="{{ $medicine->id }}"
                                                 @selected(request('medicine_id') == $medicine->id)>
@@ -170,13 +156,11 @@
                                         @endforeach
                                     </select>
                                 </div>
-                            </div>
 
-                            <div class="form-row">
                                 <div class="form-group">
                                     <label for="batch_code">Batch Code</label>
                                     <input type="text" id="batch_code" name="batch_code" class="form-control"
-                                        value="{{ old('batch_code') }}">
+                                        value="{{ old('batch_code') }}" readonly style="background-color: #f0f0f0;">
                                 </div>
 
                                 <div class="form-group">
@@ -200,19 +184,11 @@
                                     <input type="date" id="date_received" name="date_received" class="form-control"
                                         value="{{ old('date_received') }}" required>
                                 </div>
-                            </div>
 
-                            <div class="form-row">
                                 <div class="form-group">
-                                    <label for="supplier">Supplier</label>
+                                    <label for="supplier">From</label>
                                     <input type="text" id="supplier" name="supplier" class="form-control"
-                                        value="{{ old('supplier') }}">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="unit_price">Unit Price</label>
-                                    <input type="number" id="unit_price" name="unit_price" class="form-control" min="0"
-                                        step="0.01" value="{{ old('unit_price') }}">
+                                        value="{{ old('supplier') }}" placeholder="DOH, LGU, Donation, etc.">
                                 </div>
                             </div>
                         </div>
@@ -243,16 +219,10 @@
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="dispense_medicine_search">Search Medicine</label>
-                                    <input type="text" id="dispense_medicine_search" class="form-control"
-                                        placeholder="Type to search medicine">
-                                </div>
-
-                                <div class="form-group">
                                     <label for="dispense_medicine_id">Medicine <span
                                             class="required-asterisk">*</span></label>
                                     <select id="dispense_medicine_id" name="medicine_id" class="form-control" required>
-                                        <option value="">-- Select Medicine --</option>
+                                        <option value="">-- Select or search medicine --</option>
                                         @foreach($medicines as $medicine)
                                             <option value="{{ $medicine->id }}">
                                                 {{ $medicine->name }}
@@ -276,16 +246,20 @@
                             </h3>
 
                             <div class="form-row">
-                                <div class="form-group">
+                                <div class="form-group" style="position: relative;">
                                     <label for="dispense_dispensed_to">Dispensed To (Patient Name / ID)</label>
                                     <input type="text" id="dispense_dispensed_to" name="dispensed_to" class="form-control"
-                                        value="{{ old('dispensed_to') }}" placeholder="Enter patient name or ID">
+                                        value="{{ old('dispensed_to') }}" placeholder="Search patient name or ID"
+                                        autocomplete="off">
+                                    <div id="patient_search_results"
+                                        style="position: absolute; background: white; border: 1px solid #ddd; border-radius: 4px; max-height: 200px; overflow-y: auto; width: 100%; z-index: 1000; display: none; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                    </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="dispense_reference_no">Reference No. (ITR / Program)</label>
+                                    <label for="dispense_reference_no">Reference No.</label>
                                     <input type="text" id="dispense_reference_no" name="reference_no" class="form-control"
-                                        value="{{ old('reference_no') }}" placeholder="Enter reference number">
+                                        value="{{ old('reference_no') }}" readonly style="background-color: #f0f0f0;">
                                 </div>
 
                                 <div class="form-group">
@@ -339,6 +313,7 @@
 
                 if (openAddBatchBtn && addBatchModal) {
                     openAddBatchBtn.addEventListener('click', function () {
+                        generateBatchCode();
                         openModal('addBatchModal');
                     });
                 }
@@ -350,6 +325,7 @@
                         if (filterMedicineId && select) {
                             select.value = filterMedicineId;
                         }
+                        generateReferenceNumber();
                         openModal('dispenseFromBatchesModal');
                     });
                 }
@@ -361,6 +337,7 @@
                         if (select && medicineId) {
                             select.value = medicineId;
                         }
+                        generateReferenceNumber();
                         openModal('dispenseFromBatchesModal');
                     });
                 });
@@ -389,29 +366,118 @@
                     }
                 });
 
-                function attachSearch(inputId, selectId) {
-                    const input = document.getElementById(inputId);
+                // Make select searchable with Select2-like functionality
+                function makeSelectSearchable(selectId) {
                     const select = document.getElementById(selectId);
+                    if (!select) return;
 
-                    if (!input || !select) {
-                        return;
-                    }
+                    // Add search functionality
+                    select.addEventListener('click', function () {
+                        this.size = Math.min(this.options.length, 10);
+                    });
 
-                    input.addEventListener('keyup', function () {
-                        const term = this.value.toLowerCase();
-                        Array.from(select.options).forEach(option => {
-                            if (!option.value) {
-                                return;
+                    select.addEventListener('blur', function () {
+                        this.size = 1;
+                    });
+
+                    select.addEventListener('keyup', function (e) {
+                        const searchTerm = e.key;
+                        if (searchTerm.length === 1) {
+                            const options = Array.from(this.options);
+                            const match = options.find(opt =>
+                                opt.text.toLowerCase().startsWith(searchTerm.toLowerCase())
+                            );
+                            if (match) {
+                                this.value = match.value;
                             }
-
-                            const text = option.text.toLowerCase();
-                            option.style.display = text.includes(term) ? '' : 'none';
-                        });
+                        }
                     });
                 }
 
-                attachSearch('add_batch_medicine_search', 'add_batch_medicine_id');
-                attachSearch('dispense_medicine_search', 'dispense_medicine_id');
+                makeSelectSearchable('add_batch_medicine_id');
+                makeSelectSearchable('dispense_medicine_id');
+
+                // Generate batch code
+                function generateBatchCode() {
+                    const now = new Date();
+                    const year = now.getFullYear();
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const random = Math.random().toString(36).substring(2, 5).toUpperCase();
+                    const batchCode = `B-${year}${month}-${random}`;
+                    document.getElementById('batch_code').value = batchCode;
+                }
+
+                // Generate reference number
+                function generateReferenceNumber() {
+                    const now = new Date();
+                    const year = now.getFullYear();
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const random = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
+                    const refNo = `DISP-${year}${month}${day}-${random}`;
+                    document.getElementById('dispense_reference_no').value = refNo;
+                }
+
+                // Patient search functionality
+                const patientSearchInput = document.getElementById('dispense_dispensed_to');
+                const patientSearchResults = document.getElementById('patient_search_results');
+                let patientSearchTimeout;
+
+                if (patientSearchInput && patientSearchResults) {
+                    patientSearchInput.addEventListener('input', function () {
+                        clearTimeout(patientSearchTimeout);
+                        const query = this.value.trim();
+
+                        if (query.length < 2) {
+                            patientSearchResults.style.display = 'none';
+                            return;
+                        }
+
+                        patientSearchTimeout = setTimeout(async () => {
+                            try {
+                                const response = await fetch(`/api/patients/search?q=${encodeURIComponent(query)}`);
+                                const patients = await response.json();
+
+                                if (patients.length > 0) {
+                                    patientSearchResults.innerHTML = patients.map(patient => `
+                                                <div class="patient-result-item" data-name="${patient.full_name}" data-id="${patient.patient_id}" 
+                                                    style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee;">
+                                                    <strong>${patient.full_name}</strong> <span style="color: #666;">(${patient.patient_id})</span>
+                                                </div>
+                                            `).join('');
+                                    patientSearchResults.style.display = 'block';
+
+                                    // Add click handlers to results
+                                    document.querySelectorAll('.patient-result-item').forEach(item => {
+                                        item.addEventListener('mouseenter', function () {
+                                            this.style.backgroundColor = '#f0f0f0';
+                                        });
+                                        item.addEventListener('mouseleave', function () {
+                                            this.style.backgroundColor = 'white';
+                                        });
+                                        item.addEventListener('click', function () {
+                                            patientSearchInput.value = this.dataset.name + ' (' + this.dataset.id + ')';
+                                            patientSearchResults.style.display = 'none';
+                                        });
+                                    });
+                                } else {
+                                    patientSearchResults.innerHTML = '<div style="padding: 8px 12px; color: #666;">No patients found</div>';
+                                    patientSearchResults.style.display = 'block';
+                                }
+                            } catch (error) {
+                                console.error('Patient search error:', error);
+                                patientSearchResults.style.display = 'none';
+                            }
+                        }, 300);
+                    });
+
+                    // Close search results when clicking outside
+                    document.addEventListener('click', function (e) {
+                        if (!patientSearchInput.contains(e.target) && !patientSearchResults.contains(e.target)) {
+                            patientSearchResults.style.display = 'none';
+                        }
+                    });
+                }
             });
         </script>
     @endpush

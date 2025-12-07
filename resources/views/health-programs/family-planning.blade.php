@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Family Planning')
-@section('page-title', 'Family Planning Client Assessment')
+@section('page-title', 'Family Planning Records')
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('css/patients.css') }}">
@@ -10,31 +10,42 @@
 @section('content')
     <div class="page-content">
 
-        <div class="filters" id="fpFilters">
-            <div class="search-box">
-                <input type="text" class="search-input" placeholder="Search client name or FP number">
-                <button class="btn btn-search" type="button"><i class="bi bi-search"></i> Search</button>
-                <button class="btn btn-primary" id="openFpForm" style="margin-left: 10px;">
-                    <i class="bi bi-plus-circle"></i> Add New Record
-                </button>
-                <button class="btn btn-secondary" id="backToFpList" style="display:none; margin-left: 10px;">
-                    <i class="bi bi-arrow-left"></i> Back to Records
-                </button>
-            </div>
-            <div class="filter-options">
-                <select class="filter-select">
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+            <form method="GET" id="fpFilterForm" class="filters"
+                style="flex: 1; display: flex; gap: 12px; align-items: center;">
+                <input type="text" name="search" id="fpSearch" placeholder="Search client name or FP number"
+                    class="search-input" style="flex: 1; min-width: 300px;">
+
+                <select name="client_type" id="clientTypeFilter" class="filter-select">
                     <option value="">Client Type</option>
                     <option value="new">New Acceptor</option>
                     <option value="current">Current User</option>
                 </select>
-                <select class="filter-select">
+
+                <select name="reason" id="reasonFilter" class="filter-select">
                     <option value="">Reason for FP</option>
                     <option value="spacing">Spacing</option>
                     <option value="limiting">Limiting</option>
                     <option value="medical">Medical Condition</option>
                 </select>
-                <input type="date" class="filter-select" />
-            </div>
+
+                <input type="date" name="date" id="fpDateFilter" class="filter-select" />
+
+                <button type="button" id="clearFpFilters" class="btn btn-secondary"
+                    style="padding: 10px 15px; font-size: 14px;">
+                    <i class="bi bi-x-circle"></i> Clear
+                </button>
+
+                <button type="button" class="btn btn-primary" id="openFpForm"
+                    style="padding: 10px 15px; font-size: 14px; white-space: nowrap;">
+                    <i class="bi bi-plus-circle"></i> Add New Record
+                </button>
+            </form>
+
+            <button class="btn btn-secondary" id="backToFpList" style="display:none; padding: 10px 15px; font-size: 14px;">
+                <i class="bi bi-arrow-left"></i> Back to Records
+            </button>
         </div>
 
         <div class="table-container" id="fpTablePanel">
@@ -94,7 +105,7 @@
                 @if($records->onFirstPage())
                     <button class="btn-page" disabled>« Previous</button>
                 @else
-                    <a class="btn-page" href="{{ $records->previousPageUrl() }}">« Previous</a>
+                    <a class="btn-page" href="{{ $records->appends(request()->query())->previousPageUrl() }}">« Previous</a>
                 @endif
 
                 @php
@@ -106,7 +117,7 @@
                     @if ($page === $records->currentPage())
                         <span class="btn-page active">{{ $page }}</span>
                     @else
-                        <a class="btn-page" href="{{ $records->url($page) }}">{{ $page }}</a>
+                        <a class="btn-page" href="{{ $records->appends(request()->query())->url($page) }}">{{ $page }}</a>
                     @endif
                 @endfor
 
@@ -115,7 +126,7 @@
                 </span>
 
                 @if($records->hasMorePages())
-                    <a class="btn-page" href="{{ $records->nextPageUrl() }}">Next »</a>
+                    <a class="btn-page" href="{{ $records->appends(request()->query())->nextPageUrl() }}">Next »</a>
                 @else
                     <button class="btn-page" disabled>Next »</button>
                 @endif
@@ -399,323 +410,352 @@
                     </div>
             </div>
             </form>
-        </div>
 
-        <!-- Wizard Navigation Buttons -->
-        <div class="wizard-buttons">
-            <button type="button" class="btn btn-cancel" id="fpCancelBtn">Cancel</button>
-            <div style="display: flex; gap: 10px;">
-                <button type="button" class="btn btn-prev" id="fpPrevBtn" onclick="changeFpStep(-1)">← Previous</button>
-                <button type="button" class="btn btn-next" id="fpNextBtn" onclick="changeFpStep(1)">Next →</button>
-                <button type="submit" class="btn btn-submit" id="fpSubmitBtn" form="fpForm" style="display: none;">Save
-                    Record</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="fpViewModal" style="display:none;">
-        <div class="modal-content modal-large">
-            <div class="modal-header">
-                <h3>Family Planning Record Details</h3>
-                <span class="close-modal" id="closeFpModal">&times;</span>
-            </div>
-            <div class="modal-body" id="fpModalBody">
-                <div class="loading-spinner" style="text-align:center; padding: 2rem;">
-                    <p>Loading...</p>
+            <!-- Wizard Navigation Buttons -->
+            <div class="wizard-buttons">
+                <button type="button" class="btn btn-cancel" id="fpCancelBtn">Cancel</button>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" class="btn btn-prev" id="fpPrevBtn" onclick="changeFpStep(-1)">← Previous</button>
+                    <button type="button" class="btn btn-next" id="fpNextBtn" onclick="changeFpStep(1)">Next →</button>
+                    <button type="submit" class="btn btn-submit" id="fpSubmitBtn" form="fpForm" style="display: none;">Save
+                        Record</button>
                 </div>
             </div>
         </div>
-    </div>
 
-    @push('scripts')
-        <script>
-            // Multi-step wizard functionality for Family Planning
-            let currentFpStep = 1;
-            const totalFpSteps = 5;
+        <div class="modal" id="fpViewModal" style="display:none;">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h3>Family Planning Record Details</h3>
+                    <span class="close-modal" id="closeFpModal">&times;</span>
+                </div>
+                <div class="modal-body" id="fpModalBody">
+                    <div class="loading-spinner" style="text-align:center; padding: 2rem;">
+                        <p>Loading...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            function changeFpStep(direction) {
-                const newStep = currentFpStep + direction;
+        @push('scripts')
+            <script>
+                // Multi-step wizard functionality for Family Planning
+                let currentFpStep = 1;
+                const totalFpSteps = 5;
 
-                if (newStep < 1 || newStep > totalFpSteps) return;
+                function changeFpStep(direction) {
+                    const newStep = currentFpStep + direction;
 
-                // Hide current step
-                document.querySelector(`#fpFormPanel .step-content[data-step="${currentFpStep}"]`).classList.remove('active');
-                document.querySelector(`#fpFormPanel .step[data-step="${currentFpStep}"]`).classList.remove('active');
+                    if (newStep < 1 || newStep > totalFpSteps) return;
 
-                // Show next step
-                currentFpStep = newStep;
-                document.querySelector(`#fpFormPanel .step-content[data-step="${currentFpStep}"]`).classList.add('active');
-                document.querySelector(`#fpFormPanel .step[data-step="${currentFpStep}"]`).classList.add('active');
+                    // Hide current step
+                    document.querySelector(`#fpFormPanel .step-content[data-step="${currentFpStep}"]`).classList.remove('active');
+                    document.querySelector(`#fpFormPanel .step[data-step="${currentFpStep}"]`).classList.remove('active');
 
-                // Mark previous steps as completed
-                document.querySelectorAll('#fpFormPanel .step').forEach(step => {
-                    const stepNum = parseInt(step.getAttribute('data-step'));
-                    if (stepNum < currentFpStep) {
-                        step.classList.add('completed');
-                    } else {
-                        step.classList.remove('completed');
-                    }
-                });
+                    // Show next step
+                    currentFpStep = newStep;
+                    document.querySelector(`#fpFormPanel .step-content[data-step="${currentFpStep}"]`).classList.add('active');
+                    document.querySelector(`#fpFormPanel .step[data-step="${currentFpStep}"]`).classList.add('active');
 
-                // Update button visibility
-                updateFpButtons();
-
-                // Scroll to top of form
-                document.querySelector('#fpFormPanel .wizard-content').scrollTop = 0;
-            }
-
-            function updateFpButtons() {
-                const prevBtn = document.getElementById('fpPrevBtn');
-                const nextBtn = document.getElementById('fpNextBtn');
-                const submitBtn = document.getElementById('fpSubmitBtn');
-
-                // Show/hide previous button
-                prevBtn.style.display = currentFpStep === 1 ? 'none' : 'block';
-                prevBtn.disabled = currentFpStep === 1;
-
-                // Show next button on steps 1-4, hide on step 5
-                nextBtn.style.display = currentFpStep === totalFpSteps ? 'none' : 'block';
-                nextBtn.disabled = currentFpStep === totalFpSteps;
-
-                // Show submit button only on step 5
-                submitBtn.style.display = currentFpStep === totalFpSteps ? 'block' : 'none';
-            }
-
-            document.addEventListener('DOMContentLoaded', function () {
-                const formPanel = document.getElementById('fpFormPanel');
-                const tablePanel = document.getElementById('fpTablePanel');
-                const filters = document.getElementById('fpFilters');
-                const openBtn = document.getElementById('openFpForm');
-                const backBtn = document.getElementById('backToFpList');
-                const cancelBtn = document.getElementById('fpCancelBtn');
-                const form = document.getElementById('fpForm');
-                const alertBox = document.getElementById('fp-alert');
-                const modal = document.getElementById('fpViewModal');
-                const closeModal = document.getElementById('closeFpModal');
-
-                const pagination = document.getElementById('fpPagination');
-
-                const toggleForm = (show) => {
-                    formPanel.style.display = show ? 'block' : 'none';
-                    tablePanel.style.display = show ? 'none' : 'block';
-                    filters.style.display = show ? 'none' : 'flex';
-                    openBtn.style.display = show ? 'none' : 'inline-flex';
-                    backBtn.style.display = show ? 'inline-flex' : 'none';
-                    if (pagination) pagination.style.display = show ? 'none' : 'flex';
-
-                    if (!show) {
-                        alertBox.style.display = 'none';
-                        form.reset();
-                        // Reset wizard to step 1
-                        currentFpStep = 1;
-                        document.querySelectorAll('#fpFormPanel .step-content').forEach(content => content.classList.remove('active'));
-                        document.querySelectorAll('#fpFormPanel .step').forEach(step => {
-                            step.classList.remove('active', 'completed');
-                        });
-                        document.querySelector('#fpFormPanel .step-content[data-step="1"]').classList.add('active');
-                        document.querySelector('#fpFormPanel .step[data-step="1"]').classList.add('active');
-                        updateFpButtons();
-                    } else {
-                        updateFpButtons();
-                    }
-                };
-
-                openBtn.addEventListener('click', () => toggleForm(true));
-                if (backBtn) backBtn.addEventListener('click', () => toggleForm(false));
-                if (cancelBtn) cancelBtn.addEventListener('click', () => toggleForm(false));
-
-                // Make wizard steps clickable (to go back to previous steps)
-                document.querySelectorAll('#fpFormPanel .step').forEach(step => {
-                    step.addEventListener('click', function () {
-                        const stepNum = parseInt(this.getAttribute('data-step'));
+                    // Mark previous steps as completed
+                    document.querySelectorAll('#fpFormPanel .step').forEach(step => {
+                        const stepNum = parseInt(step.getAttribute('data-step'));
                         if (stepNum < currentFpStep) {
-                            while (currentFpStep > stepNum) {
-                                changeFpStep(-1);
-                            }
-                        }
-                    });
-                });
-
-                // View button functionality
-                document.querySelectorAll('.view-fp').forEach(button => {
-                    button.addEventListener('click', async function () {
-                        const recordId = this.getAttribute('data-record');
-                        const recordDbId = this.getAttribute('data-id');
-
-                        modal.style.display = 'flex';
-                        const modalBody = document.getElementById('fpModalBody');
-                        modalBody.innerHTML = '<div style="text-align:center; padding: 2rem;"><p>Loading...</p></div>';
-
-                        try {
-                            const response = await fetch(`/health-programs/family-planning/${recordDbId}`);
-                            const data = await response.json();
-
-                            const reasonArray = Array.isArray(data.reason) ? data.reason : JSON.parse(data.reason || '[]');
-                            const medHistory = Array.isArray(data.medical_history) ? data.medical_history : JSON.parse(data.medical_history || '[]');
-                            const stiRisk = Array.isArray(data.sti_risk) ? data.sti_risk : JSON.parse(data.sti_risk || '[]');
-                            const vawRisk = Array.isArray(data.vaw_risk) ? data.vaw_risk : JSON.parse(data.vaw_risk || '[]');
-
-                            modalBody.innerHTML = `
-                                                                        <div class="form-section section-patient-info">
-                                                                            <h3 class="section-header"><span class="section-indicator"></span>Client Information</h3>
-                                                                            <div class="form-row">
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Record #:</strong></label>
-                                                                                    <p>${data.record_no || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Client Name:</strong></label>
-                                                                                    <p>${data.client_name || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Age:</strong></label>
-                                                                                    <p>${data.age || 'N/A'}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-row">
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Address:</strong></label>
-                                                                                    <p>${data.address || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Contact:</strong></label>
-                                                                                    <p>${data.contact || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Occupation:</strong></label>
-                                                                                    <p>${data.occupation || 'N/A'}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-row">
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Client Type:</strong></label>
-                                                                                    <p>${data.client_type ? data.client_type.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Reason for FP:</strong></label>
-                                                                                    <p>${reasonArray.length ? reasonArray.join(', ') : 'N/A'}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="form-section section-history">
-                                                                            <h3 class="section-header"><span class="section-indicator"></span>Spouse & Family</h3>
-                                                                            <div class="form-row">
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Spouse Name:</strong></label>
-                                                                                    <p>${data.spouse_name || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Spouse Age:</strong></label>
-                                                                                    <p>${data.spouse_age || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Number of Children:</strong></label>
-                                                                                    <p>${data.children_count || 'N/A'}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        <div class="form-section section-screening">
-                                                                            <h3 class="section-header"><span class="section-indicator"></span>Medical History & Examination</h3>
-                                                                            <div class="form-row">
-                                                                                <div class="form-group">
-                                                                                    <label><strong>G (Gravida):</strong></label>
-                                                                                    <p>${data.gravida ?? 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>P (Para):</strong></label>
-                                                                                    <p>${data.para ?? 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Last Period:</strong></label>
-                                                                                    <p>${data.last_period || 'N/A'}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="form-row">
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Blood Pressure:</strong></label>
-                                                                                    <p>${data.bp || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Weight:</strong></label>
-                                                                                    <p>${data.weight || 'N/A'} kg</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Height:</strong></label>
-                                                                                    <p>${data.height || 'N/A'} cm</p>
-                                                                                </div>
-                                                                            </div>
-                                                                            ${medHistory.length ? `
-                                                                            <div class="form-row">
-                                                                                <div class="form-group full-width">
-                                                                                    <label><strong>Medical History:</strong></label>
-                                                                                    <p>${medHistory.join(', ')}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                            ` : ''}
-                                                                            ${data.exam_findings ? `
-                                                                            <div class="form-row">
-                                                                                <div class="form-group full-width">
-                                                                                    <label><strong>Examination Findings:</strong></label>
-                                                                                    <p>${data.exam_findings}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                            ` : ''}
-                                                                        </div>
-
-                                                                        <div class="form-section section-patient-info">
-                                                                            <h3 class="section-header"><span class="section-indicator"></span>Consent & Counseling</h3>
-                                                                            <div class="form-row">
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Counseled By:</strong></label>
-                                                                                    <p>${data.counseled_by || 'N/A'}</p>
-                                                                                </div>
-                                                                                <div class="form-group">
-                                                                                    <label><strong>Consent Date:</strong></label>
-                                                                                    <p>${data.consent_date || 'N/A'}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    `;
-                        } catch (error) {
-                            modalBody.innerHTML = '<div style="text-align:center; padding: 2rem; color: red;"><p>Error loading record details.</p></div>';
-                        }
-                    });
-                });
-
-                closeModal.addEventListener('click', () => modal.style.display = 'none');
-                window.addEventListener('click', (event) => {
-                    if (event.target === modal) {
-                        modal.style.display = 'none';
-                    }
-                });
-
-                form.addEventListener('submit', function (e) {
-                    e.preventDefault();
-                    const requiredEls = form.querySelectorAll('[required]');
-                    let valid = true;
-                    requiredEls.forEach(function (el) {
-                        const err = form.querySelector('.error-message[data-for="' + el.id + '"]');
-                        if (!el.value) {
-                            valid = false;
-                            if (err) err.textContent = 'This field is required.';
+                            step.classList.add('completed');
                         } else {
-                            if (err) err.textContent = '';
+                            step.classList.remove('completed');
                         }
                     });
 
-                    if (!valid) {
-                        alertBox.className = 'alert alert-error';
-                        alertBox.style.display = 'block';
-                        alertBox.textContent = 'Please fix validation errors before saving.';
-                        return;
-                    }
+                    // Update button visibility
+                    updateFpButtons();
 
-                    alertBox.style.display = 'none';
-                    form.submit();
+                    // Scroll to top of form
+                    document.querySelector('#fpFormPanel .wizard-content').scrollTop = 0;
+                }
+
+                function updateFpButtons() {
+                    const prevBtn = document.getElementById('fpPrevBtn');
+                    const nextBtn = document.getElementById('fpNextBtn');
+                    const submitBtn = document.getElementById('fpSubmitBtn');
+
+                    // Show/hide previous button
+                    prevBtn.style.display = currentFpStep === 1 ? 'none' : 'block';
+                    prevBtn.disabled = currentFpStep === 1;
+
+                    // Show next button on steps 1-4, hide on step 5
+                    nextBtn.style.display = currentFpStep === totalFpSteps ? 'none' : 'block';
+                    nextBtn.disabled = currentFpStep === totalFpSteps;
+
+                    // Show submit button only on step 5
+                    submitBtn.style.display = currentFpStep === totalFpSteps ? 'block' : 'none';
+                }
+
+                document.addEventListener('DOMContentLoaded', function () {
+                    const formPanel = document.getElementById('fpFormPanel');
+                    const tablePanel = document.getElementById('fpTablePanel');
+                    const filterWrapper = document.querySelector('.page-content > div:first-child'); // The filter wrapper div
+                    const openBtn = document.getElementById('openFpForm');
+                    const backBtn = document.getElementById('backToFpList');
+                    const cancelBtn = document.getElementById('fpCancelBtn');
+                    const form = document.getElementById('fpForm');
+                    const alertBox = document.getElementById('fp-alert');
+                    const modal = document.getElementById('fpViewModal');
+                    const closeModal = document.getElementById('closeFpModal');
+
+                    const pagination = document.getElementById('fpPagination');
+
+                    const toggleForm = (show) => {
+                        formPanel.style.display = show ? 'block' : 'none';
+                        tablePanel.style.display = show ? 'none' : 'block';
+                        if (filterWrapper) filterWrapper.style.display = show ? 'none' : 'flex';
+                        if (pagination) pagination.style.display = show ? 'none' : 'flex';
+
+                        if (!show) {
+                            alertBox.style.display = 'none';
+                            form.reset();
+                            // Reset wizard to step 1
+                            currentFpStep = 1;
+                            document.querySelectorAll('#fpFormPanel .step-content').forEach(content => content.classList.remove('active'));
+                            document.querySelectorAll('#fpFormPanel .step').forEach(step => {
+                                step.classList.remove('active', 'completed');
+                            });
+                            document.querySelector('#fpFormPanel .step-content[data-step="1"]').classList.add('active');
+                            document.querySelector('#fpFormPanel .step[data-step="1"]').classList.add('active');
+                            updateFpButtons();
+                        } else {
+                            updateFpButtons();
+                        }
+                    };
+
+                    openBtn.addEventListener('click', () => toggleForm(true));
+                    if (backBtn) backBtn.addEventListener('click', () => toggleForm(false));
+                    if (cancelBtn) cancelBtn.addEventListener('click', () => toggleForm(false));
+
+                    // Make wizard steps clickable (to go back to previous steps)
+                    document.querySelectorAll('#fpFormPanel .step').forEach(step => {
+                        step.addEventListener('click', function () {
+                            const stepNum = parseInt(this.getAttribute('data-step'));
+                            if (stepNum < currentFpStep) {
+                                while (currentFpStep > stepNum) {
+                                    changeFpStep(-1);
+                                }
+                            }
+                        });
+                    });
+
+                    // View button functionality
+                    document.querySelectorAll('.view-fp').forEach(button => {
+                        button.addEventListener('click', async function () {
+                            const recordId = this.getAttribute('data-record');
+                            const recordDbId = this.getAttribute('data-id');
+
+                            modal.style.display = 'flex';
+                            const modalBody = document.getElementById('fpModalBody');
+                            modalBody.innerHTML = '<div style="text-align:center; padding: 2rem;"><p>Loading...</p></div>';
+
+                            try {
+                                const response = await fetch(`/health-programs/family-planning/${recordDbId}`);
+                                const data = await response.json();
+
+                                const reasonArray = Array.isArray(data.reason) ? data.reason : JSON.parse(data.reason || '[]');
+                                const medHistory = Array.isArray(data.medical_history) ? data.medical_history : JSON.parse(data.medical_history || '[]');
+                                const stiRisk = Array.isArray(data.sti_risk) ? data.sti_risk : JSON.parse(data.sti_risk || '[]');
+                                const vawRisk = Array.isArray(data.vaw_risk) ? data.vaw_risk : JSON.parse(data.vaw_risk || '[]');
+
+                                modalBody.innerHTML = `
+                                                                                <div class="form-section section-patient-info">
+                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Client Information</h3>
+                                                                                    <div class="form-row">
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Record #:</strong></label>
+                                                                                            <p>${data.record_no || 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Client Name:</strong></label>
+                                                                                            <p>${data.client_name || 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Age:</strong></label>
+                                                                                            <p>${data.age || 'N/A'}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="form-row">
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Address:</strong></label>
+                                                                                            <p>${data.address || 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Contact:</strong></label>
+                                                                                            <p>${data.contact || 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Occupation:</strong></label>
+                                                                                            <p>${data.occupation || 'N/A'}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="form-row">
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Client Type:</strong></label>
+                                                                                            <p>${data.client_type ? data.client_type.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Reason for FP:</strong></label>
+                                                                                            <p>${reasonArray.length ? reasonArray.join(', ') : 'N/A'}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="form-section section-history">
+                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Spouse & Family</h3>
+                                                                                    <div class="form-row">
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Spouse Name:</strong></label>
+                                                                                            <p>${data.spouse_name || 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Spouse Age:</strong></label>
+                                                                                            <p>${data.spouse_age || 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Number of Children:</strong></label>
+                                                                                            <p>${data.children_count || 'N/A'}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="form-section section-screening">
+                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Medical History & Examination</h3>
+                                                                                    <div class="form-row">
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>G (Gravida):</strong></label>
+                                                                                            <p>${data.gravida ?? 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>P (Para):</strong></label>
+                                                                                            <p>${data.para ?? 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Last Period:</strong></label>
+                                                                                            <p>${data.last_period || 'N/A'}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="form-row">
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Blood Pressure:</strong></label>
+                                                                                            <p>${data.bp || 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Weight:</strong></label>
+                                                                                            <p>${data.weight || 'N/A'} kg</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Height:</strong></label>
+                                                                                            <p>${data.height || 'N/A'} cm</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    ${medHistory.length ? `
+                                                                                    <div class="form-row">
+                                                                                        <div class="form-group full-width">
+                                                                                            <label><strong>Medical History:</strong></label>
+                                                                                            <p>${medHistory.join(', ')}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    ` : ''}
+                                                                                    ${data.exam_findings ? `
+                                                                                    <div class="form-row">
+                                                                                        <div class="form-group full-width">
+                                                                                            <label><strong>Examination Findings:</strong></label>
+                                                                                            <p>${data.exam_findings}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    ` : ''}
+                                                                                </div>
+
+                                                                                <div class="form-section section-patient-info">
+                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Consent & Counseling</h3>
+                                                                                    <div class="form-row">
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Counseled By:</strong></label>
+                                                                                            <p>${data.counseled_by || 'N/A'}</p>
+                                                                                        </div>
+                                                                                        <div class="form-group">
+                                                                                            <label><strong>Consent Date:</strong></label>
+                                                                                            <p>${data.consent_date || 'N/A'}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            `;
+                            } catch (error) {
+                                modalBody.innerHTML = '<div style="text-align:center; padding: 2rem; color: red;"><p>Error loading record details.</p></div>';
+                            }
+                        });
+                    });
+
+                    closeModal.addEventListener('click', () => modal.style.display = 'none');
+                    window.addEventListener('click', (event) => {
+                        if (event.target === modal) {
+                            modal.style.display = 'none';
+                        }
+                    });
+
+                    form.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        const requiredEls = form.querySelectorAll('[required]');
+                        let valid = true;
+                        requiredEls.forEach(function (el) {
+                            const err = form.querySelector('.error-message[data-for="' + el.id + '"]');
+                            if (!el.value) {
+                                valid = false;
+                                if (err) err.textContent = 'This field is required.';
+                            } else {
+                                if (err) err.textContent = '';
+                            }
+                        });
+
+                        if (!valid) {
+                            alertBox.className = 'alert alert-error';
+                            alertBox.style.display = 'block';
+                            alertBox.textContent = 'Please fix validation errors before saving.';
+                            return;
+                        }
+
+                        alertBox.style.display = 'none';
+                        form.submit();
+                    });
+
+                    // Auto-submit filter form on input/change
+                    const fpForm = document.getElementById('fpFilterForm');
+                    const fpSearch = document.getElementById('fpSearch');
+                    const clientTypeFilter = document.getElementById('clientTypeFilter');
+                    const reasonFilter = document.getElementById('reasonFilter');
+                    const fpDateFilter = document.getElementById('fpDateFilter');
+                    const clearFpBtn = document.getElementById('clearFpFilters');
+
+                    let fpSearchTimeout;
+
+                    // Auto-submit on search input with debounce
+                    fpSearch.addEventListener('input', function () {
+                        clearTimeout(fpSearchTimeout);
+                        fpSearchTimeout = setTimeout(() => {
+                            fpForm.submit();
+                        }, 500);
+                    });
+
+                    // Auto-submit on filter change
+                    clientTypeFilter.addEventListener('change', () => fpForm.submit());
+                    reasonFilter.addEventListener('change', () => fpForm.submit());
+                    fpDateFilter.addEventListener('change', () => fpForm.submit());
+
+                    // Clear all filters
+                    clearFpBtn.addEventListener('click', function () {
+                        fpSearch.value = '';
+                        clientTypeFilter.value = '';
+                        reasonFilter.value = '';
+                        fpDateFilter.value = '';
+                        fpForm.submit();
+                    });
                 });
-            });
-        </script>
-    @endpush
+            </script>
+        @endpush
 @endsection

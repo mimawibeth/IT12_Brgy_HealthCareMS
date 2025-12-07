@@ -12,11 +12,64 @@ use Illuminate\Support\Facades\DB;
 
 class MedicineController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $medicines = Medicine::with('batches')
-            ->orderBy('name')
-            ->paginate(10);
+        $query = Medicine::with('batches');
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('generic_name', 'like', "%{$search}%");
+            });
+        }
+
+        // Dosage form filter
+        if ($request->filled('dosage_form')) {
+            $query->where('dosage_form', $request->input('dosage_form'));
+        }
+
+        // Stock status filter
+        if ($request->filled('stock_status')) {
+            $status = $request->input('stock_status');
+            if ($status === 'low') {
+                $query->whereRaw('quantity_on_hand <= reorder_level AND reorder_level > 0');
+            } elseif ($status === 'out') {
+                $query->where('quantity_on_hand', 0);
+            } elseif ($status === 'normal') {
+                $query->whereRaw('quantity_on_hand > reorder_level');
+            }
+        }
+
+        // Expiry status filter
+        if ($request->filled('expiry_status')) {
+            $status = $request->input('expiry_status');
+            $now = now();
+
+            if ($status === 'expired') {
+                $query->whereHas('batches', function ($q) use ($now) {
+                    $q->where('quantity_on_hand', '>', 0)
+                        ->where('expiry_date', '<', $now);
+                });
+            } elseif ($status === 'expiring_soon') {
+                $query->whereHas('batches', function ($q) use ($now) {
+                    $q->where('quantity_on_hand', '>', 0)
+                        ->where('expiry_date', '>=', $now)
+                        ->where('expiry_date', '<=', $now->copy()->addDays(30));
+                });
+            } elseif ($status === 'valid') {
+                $query->whereHas('batches', function ($q) use ($now) {
+                    $q->where('quantity_on_hand', '>', 0)
+                        ->where(function ($subQ) use ($now) {
+                            $subQ->whereNull('expiry_date')
+                                ->orWhere('expiry_date', '>', $now->copy()->addDays(30));
+                        });
+                });
+            }
+        }
+
+        $medicines = $query->orderBy('name')->paginate(10)->appends($request->query());
 
         // Calculate statistics based on batches
         $allMedicines = Medicine::with('batches')->get();

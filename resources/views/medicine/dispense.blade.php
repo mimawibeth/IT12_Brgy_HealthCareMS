@@ -11,58 +11,42 @@
 
 @section('content')
     <div class="page-content">
-        <div class="content-header"></div>
+        <!-- Search and Filter Section -->
+        <form method="GET" action="{{ route('medicine.dispense') }}" class="filters">
+            <div class="filter-options" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                <input type="text" name="dispensed_to" placeholder="Search by patient name or ID..." class="search-input"
+                    value="{{ request('dispensed_to') }}" style="flex: 1; min-width: 300px;">
 
-        <div style="margin: 1.5rem 0;">
-            <form method="GET" action="{{ route('medicine.dispense') }}" class="patient-form" style="padding: 1rem;">
-                <div class="form-section section-patient-info">
-                    <h3 class="section-header">
-                        <span class="section-indicator"></span>Filter Dispense History
-                    </h3>
+                <select name="medicine_id" class="filter-select">
+                    <option value="">All Medicines</option>
+                    @foreach($medicines as $medicine)
+                        <option value="{{ $medicine->id }}" @selected(request('medicine_id') == $medicine->id)>
+                            {{ $medicine->name }}
+                        </option>
+                    @endforeach
+                </select>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="filter_medicine_id">Medicine</label>
-                            <select id="filter_medicine_id" name="medicine_id" class="form-control">
-                                <option value="">All Medicines</option>
-                                @foreach($medicines as $medicine)
-                                    <option value="{{ $medicine->id }}" @selected(request('medicine_id') == $medicine->id)>
-                                        {{ $medicine->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                <input type="date" name="from_date" class="filter-select" placeholder="From Date"
+                    value="{{ request('from_date') }}" title="From Date">
 
-                        <div class="form-group">
-                            <label for="from_date">From Date</label>
-                            <input type="date" id="from_date" name="from_date" class="form-control"
-                                value="{{ request('from_date') }}">
-                        </div>
+                <input type="date" name="to_date" class="filter-select" placeholder="To Date"
+                    value="{{ request('to_date') }}" title="To Date">
 
-                        <div class="form-group">
-                            <label for="to_date">To Date</label>
-                            <input type="date" id="to_date" name="to_date" class="form-control"
-                                value="{{ request('to_date') }}">
-                        </div>
+                <button type="submit" class="btn btn-primary" style="padding: 10px 15px !important; font-size: 14px; font-weight: normal;">
+                    <i class="bi bi-search"></i> Filter
+                </button>
 
-                        <div class="form-group">
-                            <label for="filter_dispensed_to">Dispensed To</label>
-                            <input type="text" id="filter_dispensed_to" name="dispensed_to" class="form-control"
-                                value="{{ request('dispensed_to') }}" placeholder="Patient name or ID">
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">Apply Filters</button>
-                        <a href="{{ route('medicine.dispense') }}" class="btn btn-secondary">Clear</a>
-                    </div>
-                </div>
-            </form>
-        </div>
+                @if(request()->hasAny(['medicine_id', 'from_date', 'to_date', 'dispensed_to']))
+                    <a href="{{ route('medicine.dispense') }}" class="btn btn-secondary" style="padding: 10px 15px !important; font-size: 14px; font-weight: normal;">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </a>
+                @endif
+            </div>
+        </form>
 
         <div class="table-container">
-
-            <table class="data-table">
+            <div style="overflow-x: auto;">
+                <table class="data-table" style="min-width: 800px;">
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -95,6 +79,7 @@
                     @endforelse
                 </tbody>
             </table>
+            </div>
         </div>
 
         @php

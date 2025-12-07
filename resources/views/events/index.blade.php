@@ -20,7 +20,8 @@
         <div class="events-header" style="display: flex; justify-content: flex-end; margin-bottom: 1.5rem;">
             @if($canManage)
                 <div class="events-header-actions">
-                    <a href="{{ route('events.create') }}" class="btn btn-primary btn-add-event">
+                    <a href="{{ route('events.create') }}" class="btn btn-primary btn-add-event"
+                        style="padding: 10px 15px !important; font-size: 14px; font-weight: normal;">
                         <i class="bi bi-plus-circle"></i> Add New Event
                     </a>
                 </div>

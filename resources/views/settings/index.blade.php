@@ -5,9 +5,15 @@
 @section('page-title', 'Settings')
 
 @section('content')
-    <div class="page-content">
+    <div class="page-content" style="max-width: 900px; margin: 0 auto;">
         <form method="POST" action="{{ route('settings.update') }}" class="patient-form">
             @csrf
+
+            <style>
+                .required {
+                    color: red;
+                }
+            </style>
 
             {{-- Account Settings --}}
             <div class="card" style="margin-bottom: 20px;">

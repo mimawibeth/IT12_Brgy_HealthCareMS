@@ -33,13 +33,14 @@
                     <option value="senior" {{ request('age_group') === 'senior' ? 'selected' : '' }}>Senior (60+)</option>
                 </select>
 
-                <button type="button" id="clearFiltersBtn" class="btn btn-secondary">
+                <button type="button" id="clearFiltersBtn" class="btn btn-secondary"
+                    style="padding: 10px 15px !important; font-size: 14px; font-weight: normal; line-height: normal;">
                     <i class="bi bi-x-circle"></i> Clear
                 </button>
 
                 <a href="{{ route('patients.create') }}" class="btn btn-primary"
-                    style="padding: 6px 12px; font-size: 13px; white-space: nowrap;">
-                    <i class="bi bi-person-plus"></i> Add New Patient
+                    style="padding: 10px 15px !important; font-size: 14px; white-space: nowrap; font-weight: normal; line-height: normal; display: inline-flex; align-items: center;">
+                    <i class="bi bi-person-plus"></i>    Add New Patient
                 </a>
             </form>
         </div>

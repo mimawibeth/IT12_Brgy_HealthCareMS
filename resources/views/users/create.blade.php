@@ -9,7 +9,7 @@
 @endpush
 
 @section('content')
-    <div class="page-content">
+    <div class="page-content" style="max-width: 1000px; margin: 0 auto;">
 
         <!-- Form Container -->
         <div class="form-container compact-form">
