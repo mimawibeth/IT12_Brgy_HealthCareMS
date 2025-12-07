@@ -11,72 +11,23 @@
 
 @section('content')
     <div class="page-content">
-        <!-- Summary Stats -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon-wrapper"
-                    style="background: #dbeafe; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <i class="bi bi-activity" style="font-size: 18px; color: #3b82f6;"></i>
-                </div>
-                <div class="stat-text">
-                    <h3 class="stat-title">Total Activities Today</h3>
-                    <p class="stat-number">{{ $stats['totalToday'] ?? 0 }}</p>
-                    <span class="stat-trend">System Activities</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon-wrapper"
-                    style="background: #d1f4e0; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <i class="bi bi-check-circle-fill" style="font-size: 18px; color: #10b981;"></i>
-                </div>
-                <div class="stat-text">
-                    <h3 class="stat-title">Successful Actions</h3>
-                    <p class="stat-number">{{ $stats['successToday'] ?? 0 }}</p>
-                    <span class="stat-trend">Completed</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon-wrapper"
-                    style="background: #fee2e2; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <i class="bi bi-x-circle-fill" style="font-size: 18px; color: #ef4444;"></i>
-                </div>
-                <div class="stat-text">
-                    <h3 class="stat-title">Failed Attempts</h3>
-                    <p class="stat-number">{{ $stats['failedToday'] ?? 0 }}</p>
-                    <span class="stat-trend">Errors</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon-wrapper"
-                    style="background: #ede9fe; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <i class="bi bi-people-fill" style="font-size: 18px; color: #8b5cf6;"></i>
-                </div>
-                <div class="stat-text">
-                    <h3 class="stat-title">Active Users</h3>
-                    <p class="stat-number">{{ $stats['activeUsersToday'] ?? 0 }}</p>
-                    <span class="stat-trend">Today</span>
-                </div>
-            </div>
-        </div>
-
         <!-- Filter Section -->
         <div class="filters">
             <form id="logs-filters-form" method="GET" action="{{ route('logs.audit') }}">
-                <div class="search-box">
+                <div class="filter-options" style="display: flex; gap: 12px; align-items: center; flex-wrap: nowrap;">
                     <input type="text" name="search" placeholder="Search logs by description, module, or IP address..."
-                        class="search-input" value="{{ request('search') }}">
-                    <button class="btn btn-primary" type="button" onclick="applyFilters()">
-                        <i class="bi bi-search"></i> Search
-                    </button>
-                    <button class="btn btn-secondary" type="button" onclick="exportLogs()">
-                        <i class="bi bi-download"></i> Export Logs
-                    </button>
-                </div>
-                <div class="filter-options">
-                    <input type="date" name="date_from" class="filter-select" value="{{ request('date_from') }}">
-                    <input type="date" name="date_to" class="filter-select" value="{{ request('date_to') }}">
+                        class="search-input" value="{{ request('search') }}" style="flex: 1; min-width: 300px;" onchange="this.form.submit()">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 12px; color: #6c757d;">From</span>
+                        <input type="date" name="date_from" class="filter-select" value="{{ request('date_from') }}" onchange="this.form.submit()">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 12px; color: #6c757d;">To</span>
+                        <input type="date" name="date_to" class="filter-select" value="{{ request('date_to') }}" onchange="this.form.submit()">
+                    </div>
                     <button class="btn btn-secondary" type="button" onclick="clearFilters()">
-                        Clear Filters
+                        <i class="bi bi-x-circle"></i>
+                        Clear
                     </button>
                 </div>
             </form>
@@ -143,13 +94,10 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <div class="user-info">
-                                        <span class="user-name">{{ $user->name ?? 'System' }}</span>
-                                        <span class="user-badge {{ $roleBadgeClass }}">{{ $roleLabel }}</span>
-                                    </div>
+                                    <span class="user-name">{{ $user->name ?? 'System' }}</span>
                                 </td>
                                 <td>
-                                    <span class="action-badge {{ $actionClass }}">{{ ucfirst($log->action ?? 'other') }}</span>
+                                    {{ ucfirst($log->action ?? 'other') }}
                                 </td>
                                 <td>{{ $log->module ?? '—' }}</td>
                                 <td style="max-width: 300px;" title="{{ $log->description ?? '—' }}">
@@ -163,8 +111,7 @@
                                     <code style="font-size: 12px; color: #555;">{{ $log->ip_address ?? '—' }}</code>
                                 </td>
                                 <td>
-                                    <span
-                                        class="status-badge {{ $statusClass }}">{{ ucfirst($log->status ?? 'unknown') }}</span>
+                                    <span class="status-pill {{ $statusClass }}">{{ ucfirst($log->status ?? 'unknown') }}</span>
                                 </td>
                             </tr>
                         @empty
@@ -217,19 +164,8 @@
 
 @push('scripts')
     <script>
-        function applyFilters() {
-            const form = document.getElementById('logs-filters-form');
-            if (form) {
-                form.submit();
-            }
-        }
-
         function clearFilters() {
             window.location.href = '{{ route('logs.audit') }}';
-        }
-
-        function exportLogs() {
-            alert('Export functionality will be implemented with backend');
         }
     </script>
 @endpush

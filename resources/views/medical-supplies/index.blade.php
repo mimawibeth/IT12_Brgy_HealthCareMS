@@ -13,7 +13,7 @@
         <!-- Search and Filter Section -->
         <form method="GET" action="{{ route('medical-supplies.index') }}" class="filters">
             <div class="filter-options"
-                style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
                 <input type="text" name="search" placeholder="Search supplies..." class="search-input"
                     value="{{ request('search') }}" style="flex: 1; min-width: 300px;">
 
@@ -26,20 +26,10 @@
                     @endforeach
                 </select>
 
-                <button type="submit" class="btn btn-primary"
-                    style="padding: 10px 15px !important; font-size: 14px; font-weight: normal;">
-                    <i class="bi bi-search"></i> Filter
-                </button>
-
-                @if(request()->hasAny(['search', 'category']))
-                    <a href="{{ route('medical-supplies.index') }}" class="btn btn-secondary"
-                        style="padding: 10px 15px !important; font-size: 14px; font-weight: normal;">
-                        <i class="bi bi-x-circle"></i> Clear
-                    </a>
-                @endif
+                
 
                 <button type="button" class="btn btn-primary" id="openAddSupplyModal"
-                    style="padding: 10px 15px !important; font-size: 14px; font-weight: normal; margin-left: auto; white-space: nowrap;">
+                    style="padding: 9px 15px !important; font-size: 14px; font-weight: normal; margin-left: auto; white-space: nowrap; height: 38px; line-height: 1; display: inline-flex !important; align-items: center; gap: 6px;">
                     <i class="bi bi-plus-circle"></i> Add New Item
                 </button>
             </div>
@@ -562,6 +552,22 @@
                         openModal('dispenseSupplyModal');
                     });
                 });
+
+                // Auto-submit filter form
+                const filterForm = document.querySelector('.filters');
+                const searchInput = document.querySelector('input[name="search"]');
+                const categorySelect = document.querySelector('select[name="category"]');
+                
+                let searchTimeout;
+                
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        filterForm.submit();
+                    }, 500);
+                });
+                
+                categorySelect.addEventListener('change', () => filterForm.submit());
             });
         </script>
     @endpush

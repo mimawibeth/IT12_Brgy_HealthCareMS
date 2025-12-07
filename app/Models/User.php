@@ -53,4 +53,12 @@ class User extends Authenticatable
         'password' => 'hashed',
         'dark_mode' => 'boolean',
     ];
+
+    /**
+     * Get the audit logs for the user.
+     */
+    public function auditLogs()
+    {
+        return $this->hasMany(AuditLog::class, 'user_id');
+    }
 }

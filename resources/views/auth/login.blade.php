@@ -112,10 +112,7 @@
                     </div>
                 </div>
 
-                <!-- Forgot Password -->
-                <div class="form-options">
-                    <a href="#" class="forgot-password-link">Forgot password?</a>
-                </div>
+               
 
                 <!-- Login Button -->
                 <button type="submit" class="btn-login">

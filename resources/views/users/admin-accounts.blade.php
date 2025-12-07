@@ -37,22 +37,19 @@
             </div>
         </div>
 
-        <!-- Search Section -->
+        <!-- Filters Section -->
         <div class="filters">
-            <div class="search-box">
-                <input type="text" placeholder="Search admin accounts..." class="search-input">
-                <button class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap;">
+                <form method="GET" style="margin-bottom: 0;">
+                    <select name="status" class="filter-select">
+                        <option value="">All Status</option>
+                        <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                    </select>
+                </form>
                 <a href="{{ route('users.add-new') }}" class="btn btn-primary">
                     <i class="bi bi-person-plus"></i> Add New User
                 </a>
-            </div>
-
-            <div class="filter-options">
-                <select class="filter-select">
-                    <option value="">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
             </div>
         </div>
 
@@ -95,8 +92,12 @@
                                 <td>—</td>
                                 <td class="actions">
                                     <a href="javascript:void(0)" class="btn-action btn-view view-user"
-                                        data-id="{{ $admin->id }}">View</a>
-                                    <a href="{{ route('users.edit', $admin->id) }}" class="btn-action btn-edit">Edit</a>
+                                        data-id="{{ $admin->id }}">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                    <a href="{{ route('users.edit', $admin->id) }}" class="btn-action btn-edit">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
                                 </td>
                             </tr>
                         @empty
@@ -110,6 +111,8 @@
         </div>
 
     </div>
+
+    @include('users.partials.view-modal')
 
     <!-- Set Admin Modal -->
     <div id="setAdminModal" class="modal">
@@ -128,12 +131,12 @@
                         <label for="user_id">Select User *</label>
                         <select id="user_id" name="user_id" class="form-control" required>
                             <option value="">-- Select a User --</option>
-                            @foreach(\App\Models\User::whereNotIn('role', ['admin', 'super_admin'])->orderBy('name')->get() as $user)
+                            @foreach(\App\Models\User::whereNotIn('role', ['admin', 'super_admin'])->orderBy('first_name')->orderBy('last_name')->get() as $user)
                                 @php
-                                    $fullName = trim(($user->first_name ?? '') . ' ' . ($user->middle_name ? $user->middle_name . ' ' : '') . ($user->last_name ?? '')) ?: $user->name;
+                                    $fullName = trim(($user->first_name ?? '') . ' ' . ($user->middle_name ? $user->middle_name . ' ' : '') . ($user->last_name ?? '')) ?: ($user->name ?? 'N/A');
+                                    $roleLabel = $user->role === 'bhw' ? 'BHW' : ucfirst($user->role ?? 'User');
                                 @endphp
-                                <option value="{{ $user->id }}">{{ $user->username }} - {{ $fullName }}
-                                    ({{ strtoupper($user->role) }})</option>
+                                <option value="{{ $user->id }}">{{ $fullName }} ({{ $user->username }}) - {{ $roleLabel }}</option>
                             @endforeach
                         </select>
                         <small class="form-text">Only non-admin users are shown in this list</small>
@@ -164,6 +167,18 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filter auto-submit functionality
+            const filterForm = document.querySelector('.filters form');
+            const statusSelect = filterForm.querySelector('select[name="status"]');
+            
+            if (statusSelect) {
+                statusSelect.addEventListener('change', function() {
+                    filterForm.submit();
+                });
+            }
+        });
+
         function openSetAdminModal() {
             document.getElementById('setAdminModal').style.display = 'block';
         }

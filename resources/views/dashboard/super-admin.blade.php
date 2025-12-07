@@ -19,247 +19,105 @@
 
         <!-- Overview Cards: Display quick statistics -->
         <div class="stats-grid">
-            <!-- Total Registered Patients Card -->
+            <!-- Total System Users Card -->
             <div class="stat-card">
-                <div class="stat-icon-wrapper"
-                    style="background: #dbeafe; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <i class="bi bi-people-fill" style="font-size: 18px; color: #3b82f6;"></i>
+                <div class="stat-icon-wrapper bg-blue">
+                    <i class="bi bi-people-fill"></i>
                 </div>
                 <div class="stat-text">
-                    <h3 class="stat-title">Registered Patients</h3>
-                    <p class="stat-number">{{ number_format($registeredPatients ?? 0) }}</p>
-                    <span class="stat-trend">Total ITR Records</span>
+                    <h3 class="stat-title">Total System Users</h3>
+                    <p class="stat-number">{{ number_format($totalSystemUsers ?? 0) }}</p>
+                    <span class="stat-trend">+{{ number_format($newUsersThisMonth ?? 0) }} new this month</span>
                 </div>
             </div>
 
-            <!-- Active Health Programs Card -->
+            <!-- Total Patients Card -->
             <div class="stat-card">
-                <div class="stat-icon-wrapper"
-                    style="background: #d1f4e0; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <i class="bi bi-heart-pulse-fill" style="font-size: 18px; color: #10b981;"></i>
+                <div class="stat-icon-wrapper bg-green">
+                    <i class="bi bi-person-lines-fill"></i>
                 </div>
                 <div class="stat-text">
-                    <h3 class="stat-title">Health Programs</h3>
-                    <p class="stat-number">{{ number_format($healthPrograms ?? 0) }}</p>
-                    <span class="stat-trend">Active Participants</span>
+                    <h3 class="stat-title">Total Patients</h3>
+                    <p class="stat-number">{{ number_format($totalPatients ?? 0) }}</p>
+                    <span class="stat-trend">+{{ number_format($newPatientsThisMonth ?? 0) }} new this month</span>
                 </div>
             </div>
 
-            <!-- Monthly Services Card -->
+            <!-- Active vs Inactive Users Card -->
             <div class="stat-card">
-                <div class="stat-icon-wrapper"
-                    style="background: #ede9fe; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <i class="bi bi-clipboard2-pulse-fill" style="font-size: 18px; color: #8b5cf6;"></i>
+                <div class="stat-icon-wrapper bg-yellow">
+                    <i class="bi bi-check-circle-fill"></i>
                 </div>
                 <div class="stat-text">
-                    <h3 class="stat-title">Monthly Services</h3>
-                    <p class="stat-number">{{ number_format($monthlyServices ?? 0) }}</p>
-                    <span class="stat-trend">{{ $currentMonthName ?? 'Current Month' }}</span>
+                    <h3 class="stat-title">Active / Inactive Users</h3>
+                    <p class="stat-number">{{ number_format($activeUsers ?? 0) }} / {{ number_format($inactiveUsers ?? 0) }}</p>
+                    <span class="stat-trend">User Status Overview</span>
                 </div>
             </div>
 
-            <!-- Medicine Inventory Card -->
+            <!-- Total Health Programs Card -->
             <div class="stat-card">
-                <div class="stat-icon-wrapper"
-                    style="background: #fed7aa; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <i class="bi bi-capsule-pill" style="font-size: 18px; color: #f59e0b;"></i>
+                <div class="stat-icon-wrapper bg-pink">
+                    <i class="bi bi-heart-pulse-fill"></i>
                 </div>
                 <div class="stat-text">
-                    <h3 class="stat-title">Medicine Stock</h3>
-                    <p class="stat-number">{{ number_format($totalMedicineStock ?? 0) }}</p>
-                    <span class="stat-trend">Available Items</span>
+                    <h3 class="stat-title">Total Health Program Records</h3>
+                    <p class="stat-number">{{ number_format($totalHealthPrograms ?? 0) }}</p>
+                    <span class="stat-trend">Prenatal: {{ $totalPrenatalRecords ?? 0 }} | FP: {{ $totalFPRecords ?? 0 }} | NIP: {{ $totalNIPRecords ?? 0 }}</span>
                 </div>
             </div>
         </div>
 
-        <!-- Health Programs Overview Section -->
-        <div class="program-summary">
-            <div class="section-header-inline">
-                <h2>Health Programs Overview</h2>
-                <p>Quick access to health program records and statistics</p>
-            </div>
-
-            <div class="program-cards">
-                <!-- Prenatal Care Services -->
-                <div class="program-card">
-                    <div class="program-icon">
-                        <i class="bi bi-heart-pulse"></i>
-                    </div>
-                    <div class="program-content">
-                        <h3>Prenatal Care Services</h3>
-                        <p class="program-count">{{ $prenatalTotal ?? 0 }} Registered Pregnant Women</p>
-                        <a href="{{ route('health-programs.prenatal-view') }}" class="btn-link">
-                            View Records <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Family Planning Services -->
-                <div class="program-card">
-                    <div class="program-icon">
-                        <i class="bi bi-people-fill"></i>
-                    </div>
-                    <div class="program-content">
-                        <h3>Family Planning Services</h3>
-                        <p class="program-count">{{ $familyPlanningTotal ?? 0 }} Active FP Clients</p>
-                        <a href="{{ route('health-programs.family-planning-view') }}" class="btn-link">
-                            View Records <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Immunization Program (NIP) -->
-                <div class="program-card">
-                    <div class="program-icon">
-                        <i class="bi bi-shield-check"></i>
-                    </div>
-                    <div class="program-content">
-                        <h3>Immunization Program</h3>
-                        <p class="program-count">{{ $nipTotal ?? 0 }} Children Enrolled</p>
-                        <a href="{{ route('health-programs.new-nip-view') }}" class="btn-link">
-                            View Records <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Statistical Analysis Section -->
+        <!-- Charts Section -->
         <div class="charts-section">
             <div class="section-header-inline">
-                <h2>Statistical Analysis</h2>
-                <p>Visual insights into health center performance and trends</p>
+                <h2>Health Programs Analytics</h2>
+                <p>Visual insights into health program records and trends</p>
             </div>
 
             <div class="charts-grid">
-                <!-- Monthly Services Trend -->
-                <div class="chart-card" onclick="window.location.href='{{ route('reports.monthly') }}'">
+                <!-- Patient Registration Trend -->
+                <div class="chart-card">
                     <div class="chart-header">
-                        <h3><i class="bi bi-graph-up"></i> Monthly Services Trend</h3>
+                        <h3><i class="bi bi-graph-up"></i> Patient Registration Trend</h3>
                         <span class="chart-badge">Last 6 Months</span>
                     </div>
                     <div class="chart-placeholder">
-                        <canvas id="consultationsChart"></canvas>
+                        <canvas id="userTrendChart"></canvas>
                     </div>
-                    <p class="chart-footer">Click to view detailed monthly reports</p>
                 </div>
 
-                <!-- Program Distribution -->
-                <div class="chart-card" onclick="window.location.href='{{ route('reports.monthly') }}'">
+                <!-- Health Programs Distribution -->
+                <div class="chart-card">
                     <div class="chart-header">
-                        <h3><i class="bi bi-pie-chart"></i> Program Distribution</h3>
-                        <span class="chart-badge">{{ $currentMonthName ?? 'Current' }}</span>
+                        <h3><i class="bi bi-pie-chart"></i> Health Programs</h3>
+                        <span class="chart-badge">Total Records</span>
                     </div>
                     <div class="chart-placeholder">
-                        <canvas id="programsChart"></canvas>
+                        <canvas id="activityTypeChart"></canvas>
                     </div>
-                    <p class="chart-footer">Click to view program statistics</p>
                 </div>
 
-                <!-- Medicine Dispensing -->
-                <div class="chart-card" onclick="window.location.href='{{ route('reports.monthly') }}'">
+                <!-- Monthly Health Records -->
+                <div class="chart-card">
                     <div class="chart-header">
-                        <h3><i class="bi bi-bar-chart-line"></i> Medicine Dispensing</h3>
-                        <span class="chart-badge">Weekly</span>
+                        <h3><i class="bi bi-bar-chart-line"></i> Monthly Records</h3>
+                        <span class="chart-badge">This Week</span>
                     </div>
                     <div class="chart-placeholder">
-                        <canvas id="medicineChart"></canvas>
+                        <canvas id="weekActivityChart"></canvas>
                     </div>
-                    <p class="chart-footer">Click to view inventory reports</p>
                 </div>
             </div>
         </div>
 
-        <!-- Two Column Layout: Stats and Activities -->
+        <!-- System Oversight Section -->
         <div class="dashboard-grid">
-            <!-- Left Column: Monthly Statistics -->
-            <div class="monthly-stats">
-                <div class="section-header-inline">
-                    <h2>Monthly Service Summary</h2>
-                    <p>Compare current month with previous month performance</p>
-                </div>
-
-                <div class="stats-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Service Category</th>
-                                <th>{{ $currentMonthName ?? 'Current' }}</th>
-                                <th>Previous Month</th>
-                                <th>Variance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><strong>Prenatal Care Consultations</strong></td>
-                                <td>{{ $summary['prenatal']['current'] ?? 0 }}</td>
-                                <td>{{ $summary['prenatal']['previous'] ?? 0 }}</td>
-                                @php
-                                    $prenatalVar = $summary['prenatal']['variance'] ?? 0;
-                                @endphp
-                                <td class="{{ $prenatalVar >= 0 ? 'positive' : 'negative' }}">
-                                    <i class="bi bi-{{ $prenatalVar >= 0 ? 'arrow-up' : 'arrow-down' }}"></i>
-                                    {{ $prenatalVar >= 0 ? '+' : '' }}{{ $prenatalVar }}%
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Family Planning Services</strong></td>
-                                <td>{{ $summary['fp']['current'] ?? 0 }}</td>
-                                <td>{{ $summary['fp']['previous'] ?? 0 }}</td>
-                                @php
-                                    $fpVar = $summary['fp']['variance'] ?? 0;
-                                @endphp
-                                <td class="{{ $fpVar >= 0 ? 'positive' : 'negative' }}">
-                                    <i class="bi bi-{{ $fpVar >= 0 ? 'arrow-up' : 'arrow-down' }}"></i>
-                                    {{ $fpVar >= 0 ? '+' : '' }}{{ $fpVar }}%
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Immunizations Administered</strong></td>
-                                <td>{{ $summary['nip']['current'] ?? 0 }}</td>
-                                <td>{{ $summary['nip']['previous'] ?? 0 }}</td>
-                                @php
-                                    $nipVar = $summary['nip']['variance'] ?? 0;
-                                @endphp
-                                <td class="{{ $nipVar >= 0 ? 'positive' : 'negative' }}">
-                                    <i class="bi bi-{{ $nipVar >= 0 ? 'arrow-up' : 'arrow-down' }}"></i>
-                                    {{ $nipVar >= 0 ? '+' : '' }}{{ $nipVar }}%
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Medicine Items Dispensed</strong></td>
-                                <td>{{ $summary['medicine']['current'] ?? 0 }}</td>
-                                <td>{{ $summary['medicine']['previous'] ?? 0 }}</td>
-                                @php
-                                    $medVar = $summary['medicine']['variance'] ?? 0;
-                                @endphp
-                                <td class="{{ $medVar >= 0 ? 'positive' : 'negative' }}">
-                                    <i class="bi bi-{{ $medVar >= 0 ? 'arrow-up' : 'arrow-down' }}"></i>
-                                    {{ $medVar >= 0 ? '+' : '' }}{{ $medVar }}%
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>New Patient Registrations</strong></td>
-                                <td>{{ $summary['patients']['current'] ?? 0 }}</td>
-                                <td>{{ $summary['patients']['previous'] ?? 0 }}</td>
-                                @php
-                                    $patVar = $summary['patients']['variance'] ?? 0;
-                                @endphp
-                                <td class="{{ $patVar >= 0 ? 'positive' : 'negative' }}">
-                                    <i class="bi bi-{{ $patVar >= 0 ? 'arrow-up' : 'arrow-down' }}"></i>
-                                    {{ $patVar >= 0 ? '+' : '' }}{{ $patVar }}%
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Right Column: Recent System Activities -->
+            <!-- Recent System Activities -->
             <div class="recent-activities">
                 <div class="section-header-inline">
                     <h2>Recent System Activities</h2>
-                    <p>Latest actions and updates in the system</p>
+                    <p>Latest 20 actions and updates in the system</p>
                 </div>
 
                 <div class="activity-list">
@@ -327,23 +185,24 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Monthly Services Trend Chart
-        const servicesLabels = @json($monthLabels ?? []);
-        const servicesData = @json($servicesSeries ?? []);
+        // Patient Registration Trend Chart
+        const userTrendLabels = @json($userTrendLabels ?? []);
+        const userTrendData = @json($userTrendData ?? []);
 
-        const ctx1 = document.getElementById('consultationsChart');
-        if (ctx1) {
-            new Chart(ctx1.getContext('2d'), {
+        const userChart = document.getElementById('userTrendChart');
+        if (userChart) {
+            new Chart(userChart.getContext('2d'), {
                 type: 'line',
                 data: {
-                    labels: servicesLabels,
+                    labels: userTrendLabels,
                     datasets: [{
-                        label: 'Health Services Provided',
-                        data: servicesData,
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        label: 'New Patients',
+                        data: userTrendData,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
                         tension: 0.4,
-                        fill: true
+                        fill: true,
+                        borderWidth: 2
                     }]
                 },
                 options: {
@@ -353,9 +212,7 @@
                         legend: { display: false },
                         tooltip: {
                             backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            padding: 12,
-                            titleFont: { size: 14 },
-                            bodyFont: { size: 13 }
+                            padding: 12
                         }
                     },
                     scales: {
@@ -366,16 +223,19 @@
         }
 
         // Health Programs Distribution Chart
-        const programData = @json(array_values($programDistribution ?? []));
-        const ctx2 = document.getElementById('programsChart');
-        if (ctx2) {
-            new Chart(ctx2.getContext('2d'), {
+        const activityTypes = @json($activityTypes ?? []);
+        const activityLabels = Object.keys(activityTypes);
+        const activityData = Object.values(activityTypes);
+
+        const activityChart = document.getElementById('activityTypeChart');
+        if (activityChart) {
+            new Chart(activityChart.getContext('2d'), {
                 type: 'doughnut',
                 data: {
-                    labels: ['Prenatal Care', 'Family Planning', 'Immunization (NIP)'],
+                    labels: activityLabels,
                     datasets: [{
-                        data: programData,
-                        backgroundColor: ['#e74c3c', '#9b59b6', '#2ecc71'],
+                        data: activityData,
+                        backgroundColor: ['#ef4444', '#8b5cf6', '#10b981'],
                         borderWidth: 3,
                         borderColor: '#fff'
                     }]
@@ -396,19 +256,20 @@
             });
         }
 
-        // Medicine Dispensing Chart
-        const weekLabels = @json($weeksLabels ?? []);
-        const weekData = @json($weeksData ?? []);
-        const ctx3 = document.getElementById('medicineChart');
-        if (ctx3) {
-            new Chart(ctx3.getContext('2d'), {
+        // Weekly Health Records Bar Chart
+        const weekLabels = @json($weekLabels ?? []);
+        const weekActivityData = @json($weekActivityData ?? []);
+
+        const weekChart = document.getElementById('weekActivityChart');
+        if (weekChart) {
+            new Chart(weekChart.getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels: weekLabels,
                     datasets: [{
-                        label: 'Medicine Items Dispensed',
-                        data: weekData,
-                        backgroundColor: '#3498db',
+                        label: 'Health Records',
+                        data: weekActivityData,
+                        backgroundColor: '#3b82f6',
                         borderRadius: 6
                     }]
                 },

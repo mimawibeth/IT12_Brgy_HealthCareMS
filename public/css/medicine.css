@@ -202,8 +202,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 18px 20px;
-    background: linear-gradient(135deg, #2c5aa0 0%, #1e3c72 100%);
-    border-bottom: 3px solid #1e3c72;
+    background: #ffffff;
+    border-bottom: 2px solid #e9ecef;
     flex-shrink: 0;
 }
 
@@ -211,23 +211,25 @@
     margin: 0;
     font-size: 18px;
     font-weight: 700;
-    color: #fff;
+    color: #2c3e50;
 }
 
 .close-modal {
     cursor: pointer;
     font-size: 26px;
     line-height: 1;
-    color: #fff;
+    color: #7f8c8d;
     padding: 4px 10px;
     border-radius: 4px;
     transition: all 0.2s ease;
-    opacity: 0.9;
+    margin-left: auto;
 }
 
 .close-modal:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.15);
+    color: #2c3e50;
+    background: rgba(0, 0, 0, 0.05);
+    transform: rotate(90deg);
+}
     opacity: 1;
 }
 

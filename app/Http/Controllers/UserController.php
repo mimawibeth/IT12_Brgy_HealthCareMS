@@ -12,7 +12,36 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $users = User::orderBy('name')->paginate(10);
+        $query = User::query();
+
+        // Hide super_admin accounts from admin users
+        if (auth()->user()->role === 'admin') {
+            $query->where('role', '!=', 'super_admin');
+        }
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('username', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%")
+                  ->orWhere('name', 'like', "%{$search}%");
+            });
+        }
+
+        // Role filter
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $users = $query->orderBy('name')->paginate(10);
 
         return view('users.all-users', compact('users'));
     }
@@ -72,13 +101,20 @@ class UserController extends Controller
         return redirect()->route('users.all-users')->with('success', 'User account created successfully');
     }
 
-    public function adminAccounts()
+    public function adminAccounts(Request $request)
     {
         if ((auth()->user()->role ?? null) !== 'super_admin') {
             abort(403);
         }
 
-        $admins = User::whereIn('role', ['super_admin', 'admin'])->orderBy('name')->get();
+        $query = User::whereIn('role', ['super_admin', 'admin']);
+
+        // Status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $admins = $query->orderBy('name')->get();
 
         return view('users.admin-accounts', compact('admins'));
     }
@@ -138,7 +174,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::with('role')->findOrFail($id);
+        $user = User::findOrFail($id);
 
         return response()->json($user);
     }

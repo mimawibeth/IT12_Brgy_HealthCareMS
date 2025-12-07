@@ -193,7 +193,7 @@
                         <a href="{{ route('medicine.batches.index') }}"
                             class="nav-item {{ request()->routeIs('medicine.batches.*') ? 'active' : '' }}">
                             <i class="bi bi-box-seam icon"></i>
-                            <span>Medicine Batches</span>
+                            <span>Medicine Stock</span>
                         </a>
                         <a href="{{ route('medicine.dispense') }}"
                             class="nav-item {{ request()->routeIs('medicine.dispense') ? 'active' : '' }}">
@@ -290,14 +290,6 @@
             <header class="top-bar">
                 <h1 class="page-title">@yield('page-title', 'Dashboard')</h1>
                 <div class="user-info">
-                    @if(in_array(auth()->user()->role ?? '', ['super_admin', 'admin']))
-                        <div class="notification-bell">
-                            <button class="bell-button" id="notificationBell">
-                                <i class="bi bi-bell"></i>
-                                <span class="notification-badge">3</span>
-                            </button>
-                        </div>
-                    @endif
                     <div class="user-details">
                         <div class="user-role">
                             <i class="bi bi-shield-lock"></i>

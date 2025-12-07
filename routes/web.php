@@ -352,6 +352,12 @@ Route::middleware('auth')->group(function () {
         // Generate report (placeholder - can be extended later)
         Route::post('/generate', [ReportController::class, 'monthly'])->name('generate');
 
+        // Export PDF
+        Route::get('/export-pdf', [ReportController::class, 'exportPdf'])->name('export.pdf');
+
+        // Print view
+        Route::get('/print', [ReportController::class, 'print'])->name('print');
+
         // Export and print remain UI-only for now
         Route::get('/export', function () {
             if ((auth()->user()->role ?? null) === 'bhw') {

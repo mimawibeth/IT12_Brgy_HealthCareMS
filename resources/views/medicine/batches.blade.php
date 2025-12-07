@@ -30,21 +30,19 @@
                     <option value="expired" {{ request('filter') === 'expired' ? 'selected' : '' }}>Expired</option>
                 </select>
 
-                @if(request('medicine_id') || request('filter'))
-                    <a href="{{ route('medicine.batches.index') }}" class="btn btn-secondary"
-                        style="padding: 10px 15px !important; font-size: 14px; font-weight: normal;">
-                        <i class="bi bi-x-circle"></i> Clear
-                    </a>
-                @endif
+                <a href="{{ route('medicine.batches.index') }}" class="btn btn-secondary"
+                    style="padding: 9px 15px !important; font-size: 14px; font-weight: normal; display: inline-flex !important; align-items: center; gap: 6px; height: 38px; line-height: 1;">
+                    <i class="bi bi-x-circle"></i> Clear
+                </a>
 
                 <div style="margin-left: auto; display: flex; gap: 12px;">
                     <button type="button" class="btn btn-primary" id="openAddBatchModal"
-                        style="padding: 10px 15px !important; font-size: 14px; font-weight: normal; white-space: nowrap;">
+                        style="padding: 9px 15px !important; font-size: 14px; font-weight: normal; white-space: nowrap; height: 38px; line-height: 1; display: inline-flex !important; align-items: center; gap: 6px;">
                         <i class="bi bi-plus-circle"></i> Add Batch
                     </button>
 
                     <button type="button" class="btn btn-teal" id="openDispenseFromBatchesModal"
-                        style="padding: 10px 15px !important; font-size: 14px; font-weight: normal; white-space: nowrap;">
+                        style="padding: 9px 15px !important; font-size: 14px; font-weight: normal; white-space: nowrap; height: 38px; line-height: 1; display: inline-flex !important; align-items: center; gap: 6px;">
                         <i class="bi bi-prescription2"></i> Dispense Medicine
                     </button>
                 </div>

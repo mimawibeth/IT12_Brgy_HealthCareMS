@@ -12,12 +12,12 @@
 @section('content')
     <div class="page-content">
         <!-- Search and Filter Section -->
-        <form method="GET" action="{{ route('medicine.dispense') }}" class="filters">
+        <form method="GET" action="{{ route('medicine.dispense') }}" class="filters" id="dispenseFilterForm">
             <div class="filter-options" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
-                <input type="text" name="dispensed_to" placeholder="Search by patient name or ID..." class="search-input"
-                    value="{{ request('dispensed_to') }}" style="flex: 1; min-width: 300px;">
+                <input type="text" name="dispensed_to" id="dispensedToSearch" placeholder="Search by medicine..." class="search-input"
+                    value="{{ request('dispensed_to') }}" style="flex: 1; min-width: 250px;">
 
-                <select name="medicine_id" class="filter-select">
+                <select name="medicine_id" id="medicineFilter" class="filter-select">
                     <option value="">All Medicines</option>
                     @foreach($medicines as $medicine)
                         <option value="{{ $medicine->id }}" @selected(request('medicine_id') == $medicine->id)>
@@ -26,23 +26,51 @@
                     @endforeach
                 </select>
 
-                <input type="date" name="from_date" class="filter-select" placeholder="From Date"
-                    value="{{ request('from_date') }}" title="From Date">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <label style="font-size: 12px; color: #6c757d; margin: 0; font-weight: 500; white-space: nowrap;">From</label>
+                    <input type="date" name="from_date" id="fromDateFilter" class="filter-select"
+                        value="{{ request('from_date') }}" style="margin: 0; max-width: 160px;">
+                </div>
 
-                <input type="date" name="to_date" class="filter-select" placeholder="To Date"
-                    value="{{ request('to_date') }}" title="To Date">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <label style="font-size: 12px; color: #6c757d; margin: 0; font-weight: 500; white-space: nowrap;">To</label>
+                    <input type="date" name="to_date" id="toDateFilter" class="filter-select"
+                        value="{{ request('to_date') }}" style="margin: 0; max-width: 160px;">
+                </div>
 
-                <button type="submit" class="btn btn-primary" style="padding: 10px 15px !important; font-size: 14px; font-weight: normal;">
-                    <i class="bi bi-search"></i> Filter
-                </button>
-
-                @if(request()->hasAny(['medicine_id', 'from_date', 'to_date', 'dispensed_to']))
-                    <a href="{{ route('medicine.dispense') }}" class="btn btn-secondary" style="padding: 10px 15px !important; font-size: 14px; font-weight: normal;">
-                        <i class="bi bi-x-circle"></i> Clear
-                    </a>
-                @endif
+                <a href="{{ route('medicine.dispense') }}" class="btn btn-secondary"
+                    style="padding: 9px 15px !important; font-size: 14px; font-weight: normal; display: inline-flex !important; align-items: center; gap: 6px; height: 38px; line-height: 1;">
+                    <i class="bi bi-x-circle"></i> Clear
+                </a>
             </div>
         </form>
+
+        @push('scripts')
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const form = document.getElementById('dispenseFilterForm');
+                    const searchInput = document.getElementById('dispensedToSearch');
+                    const medicineFilter = document.getElementById('medicineFilter');
+                    const fromDateFilter = document.getElementById('fromDateFilter');
+                    const toDateFilter = document.getElementById('toDateFilter');
+
+                    let searchTimeout;
+
+                    // Auto-submit on search input with debounce
+                    searchInput.addEventListener('input', function() {
+                        clearTimeout(searchTimeout);
+                        searchTimeout = setTimeout(() => {
+                            form.submit();
+                        }, 500);
+                    });
+
+                    // Auto-submit on filter changes
+                    medicineFilter.addEventListener('change', () => form.submit());
+                    fromDateFilter.addEventListener('change', () => form.submit());
+                    toDateFilter.addEventListener('change', () => form.submit());
+                });
+            </script>
+        @endpush
 
         <div class="table-container">
             <div style="overflow-x: auto;">

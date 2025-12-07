@@ -34,17 +34,10 @@
                     <option value="year" {{ request('date_range') === 'year' ? 'selected' : '' }}>This Year</option>
                 </select>
 
-                <button type="submit" class="btn btn-primary"
-                    style="padding: 10px 15px !important; font-size: 14px; font-weight: normal;">
-                    <i class="bi bi-search"></i> Filter
-                </button>
-
-                @if(request()->hasAny(['search', 'source', 'date_range']))
-                    <a href="{{ route('medical-supplies.history') }}" class="btn btn-secondary"
-                        style="padding: 10px 15px !important; font-size: 14px; font-weight: normal;">
-                        <i class="bi bi-x-circle"></i> Clear
-                    </a>
-                @endif
+                <a href="{{ route('medical-supplies.history') }}" class="btn btn-secondary"
+                    style="padding: 9px 15px !important; font-size: 14px; font-weight: normal; display: inline-flex !important; align-items: center; gap: 6px; height: 38px; line-height: 1;">
+                    <i class="bi bi-x-circle"></i> Clear
+                </a>
             </div>
         </form>
 
@@ -267,6 +260,24 @@
                     openModal('viewTransactionModal');
                 });
             });
+
+            // Auto-submit filter form
+            const filterForm = document.querySelector('.filters');
+            const searchInput = document.getElementById('searchHistory');
+            const sourceFilter = document.getElementById('sourceFilter');
+            const dateRangeFilter = document.getElementById('dateRangeFilter');
+            
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    filterForm.submit();
+                }, 500);
+            });
+            
+            sourceFilter.addEventListener('change', () => filterForm.submit());
+            dateRangeFilter.addEventListener('change', () => filterForm.submit());
         });
     </script>
 @endpush

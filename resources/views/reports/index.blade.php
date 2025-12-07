@@ -11,68 +11,6 @@
 
 @section('content')
     <div class="page-content">
-        <!-- Header -->
-        <div class="content-header">
-
-            <div class="header-actions">
-                <button class="btn btn-secondary" onclick="printReport()">
-                    <i class="bi bi-printer"></i> Print Report
-                </button>
-
-            </div>
-        </div>
-
-        <!-- Summary Statistics -->
-        <div class="stats-grid">
-            <div class="stat-card stat-card-primary">
-                <div class="stat-icon-wrapper"
-                    style="background: #dbeafe; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <i class="bi bi-people-fill" style="font-size: 18px; color: #3b82f6;"></i>
-                </div>
-                <div class="stat-text">
-                    <h3 class="stat-title">Total Patients</h3>
-                    <p class="stat-number">{{ number_format($totalPatients ?? 0) }}</p>
-                    <span class="stat-trend">{{ $selectedMonthLabel ?? '' }}</span>
-                </div>
-            </div>
-
-            <div class="stat-card stat-card-danger">
-                <div class="stat-icon-wrapper"
-                    style="background: #fee2e2; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <i class="bi bi-heart-pulse-fill" style="font-size: 18px; color: #ef4444;"></i>
-                </div>
-                <div class="stat-text">
-                    <h3 class="stat-title">Prenatal Consultations</h3>
-                    <p class="stat-number">{{ number_format($prenatalCount ?? 0) }}</p>
-                    <span class="stat-trend">{{ $selectedMonthLabel ?? '' }}</span>
-                </div>
-            </div>
-
-            <div class="stat-card stat-card-success">
-                <div class="stat-icon-wrapper"
-                    style="background: #d1f4e0; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <i class="bi bi-shield-fill-check" style="font-size: 18px; color: #10b981;"></i>
-                </div>
-                <div class="stat-text">
-                    <h3 class="stat-title">Immunizations Given</h3>
-                    <p class="stat-number">{{ number_format($nipCount ?? 0) }}</p>
-                    <span class="stat-trend">{{ $selectedMonthLabel ?? '' }}</span>
-                </div>
-            </div>
-
-            <div class="stat-card stat-card-info">
-                <div class="stat-icon-wrapper"
-                    style="background: #e0f2f1; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
-                    <i class="bi bi-people-fill" style="font-size: 18px; color: #0d9488;"></i>
-                </div>
-                <div class="stat-text">
-                    <h3 class="stat-title">Family Planning Clients</h3>
-                    <p class="stat-number">{{ number_format($fpCount ?? 0) }}</p>
-                    <span class="stat-trend">{{ $selectedMonthLabel ?? '' }}</span>
-                </div>
-            </div>
-        </div>
-
         <!-- Report Filter Section -->
         <div class="filters">
             <form id="report-filters-form" method="GET" action="{{ route('reports.monthly') }}">
@@ -98,17 +36,14 @@
                         <option value="immunization">Immunization</option>
                         <option value="medicine">Medicine Inventory</option>
                     </select>
-                    <button class="btn btn-primary" type="submit">
-                        <i class="bi bi-file-earmark-bar-graph"></i> Generate Report
+                    <button class="btn btn-primary" type="button" onclick="exportPDF()">
+                        <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                    </button>
+                    <button class="btn btn-secondary" type="button" onclick="printReport()">
+                        <i class="bi bi-printer"></i> Print Report
                     </button>
                 </div>
             </form>
-        </div>
-
-        <!-- Charts Section -->
-        <div class="charts-section-title">
-            <h2>Statistical Analysis & Trends</h2>
-            <p>Visual representation of health center data and performance metrics</p>
         </div>
 
         <div class="charts-grid">
@@ -154,34 +89,6 @@
                 </div>
             </div>
 
-            <!-- Service Completion Rate -->
-            <div class="chart-card" data-chart-id="completionChart" data-chart-title="Service Completion Rate"
-                data-chart-icon="bi-check-circle" data-chart-period="{{ $selectedMonthLabel ?? 'Current Month' }}"
-                data-chart-description="Completed vs Pending services">
-                <div class="chart-header">
-                    <h3><i class="bi bi-check-circle"></i> Service Completion Rate</h3>
-                    <span class="chart-period">{{ $selectedMonthLabel ?? 'Current Month' }}</span>
-                </div>
-                <div class="chart-placeholder">
-                    <canvas id="completionChart"></canvas>
-                    <p>Completed vs Pending services</p>
-                </div>
-            </div>
-
-            <!-- Top Health Programs -->
-            <div class="chart-card" data-chart-id="topProgramsChart" data-chart-title="Top Health Programs"
-                data-chart-icon="bi-bar-chart" data-chart-period="Cases Handled"
-                data-chart-description="Most active health programs this month">
-                <div class="chart-header">
-                    <h3><i class="bi bi-bar-chart"></i> Top Health Programs</h3>
-                    <span class="chart-period">Cases Handled</span>
-                </div>
-                <div class="chart-placeholder">
-                    <canvas id="topProgramsChart"></canvas>
-                    <p>Most active health programs this month</p>
-                </div>
-            </div>
-
             <!-- Gender Distribution -->
             <div class="chart-card" data-chart-id="genderChart" data-chart-title="Gender Distribution"
                 data-chart-icon="bi-gender-ambiguous" data-chart-period="Patient Statistics"
@@ -193,6 +100,34 @@
                 <div class="chart-placeholder">
                     <canvas id="genderChart"></canvas>
                     <p>Male vs Female patient breakdown</p>
+                </div>
+            </div>
+
+            <!-- Medicine Dispensing Trend -->
+            <div class="chart-card" data-chart-id="medicineDispenseChart" data-chart-title="Medicine Dispensing Trend"
+                data-chart-icon="bi-capsule" data-chart-period="Last 6 Months"
+                data-chart-description="Monthly medicine dispensing volume">
+                <div class="chart-header">
+                    <h3><i class="bi bi-capsule"></i> Medicine Dispensing Trend</h3>
+                    <span class="chart-period">Last 6 Months</span>
+                </div>
+                <div class="chart-placeholder">
+                    <canvas id="medicineDispenseChart"></canvas>
+                    <p>Monthly medicine dispensing volume</p>
+                </div>
+            </div>
+
+            <!-- Top Dispensed Medicines -->
+            <div class="chart-card" data-chart-id="topMedicinesChart" data-chart-title="Top Dispensed Medicines"
+                data-chart-icon="bi-bar-chart-fill" data-chart-period="{{ $selectedMonthLabel ?? 'Current Month' }}"
+                data-chart-description="Most frequently dispensed medicines">
+                <div class="chart-header">
+                    <h3><i class="bi bi-bar-chart-fill"></i> Top Dispensed Medicines</h3>
+                    <span class="chart-period">{{ $selectedMonthLabel ?? 'Current Month' }}</span>
+                </div>
+                <div class="chart-placeholder">
+                    <canvas id="topMedicinesChart"></canvas>
+                    <p>Most frequently dispensed medicines</p>
                 </div>
             </div>
         </div>
@@ -215,55 +150,46 @@
             </div>
         </div>
 
-        <!-- Detailed Statistics Table -->
+        <!-- Health Programs Monthly Summary -->
         <div class="report-section">
+            <h3 class="section-title">Health Programs Summary - {{ $selectedMonthLabel ?? 'Current Month' }}</h3>
             <div class="table-container">
                 <table class="report-table">
                     <thead>
                         <tr>
                             <th>Program/Service</th>
-                            <th>Total Cases</th>
-                            <th>New Cases</th>
-                            <th>Follow-ups</th>
-                            <th>Completed</th>
-                            <th>Pending</th>
+                            <th>Records This Month</th>
+                            <th>Total Records (All Time)</th>
+                            <th>Percentage of Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td><strong>Prenatal Care</strong></td>
-                            <td>{{ $prenatalCount ?? 0 }}</td>
-                            <td>—</td>
-                            <td>—</td>
-                            <td>—</td>
-                            <td>—</td>
+                            <td>{{ number_format($prenatalCount ?? 0) }}</td>
+                            <td>{{ number_format($totalPrenatalRecords ?? 0) }}</td>
+                            <td>{{ $totalHealthPrograms > 0 ? number_format(($totalPrenatalRecords / $totalHealthPrograms) * 100, 1) : 0 }}%</td>
                         </tr>
                         <tr>
                             <td><strong>Family Planning</strong></td>
-                            <td>{{ $fpCount ?? 0 }}</td>
-                            <td>—</td>
-                            <td>—</td>
-                            <td>—</td>
-                            <td>—</td>
+                            <td>{{ number_format($fpCount ?? 0) }}</td>
+                            <td>{{ number_format($totalFPRecords ?? 0) }}</td>
+                            <td>{{ $totalHealthPrograms > 0 ? number_format(($totalFPRecords / $totalHealthPrograms) * 100, 1) : 0 }}%</td>
                         </tr>
                         <tr>
                             <td><strong>Immunization (NIP)</strong></td>
-                            <td>{{ $nipCount ?? 0 }}</td>
-                            <td>—</td>
-                            <td>—</td>
-                            <td>{{ $nipCount ?? 0 }}</td>
-                            <td>0</td>
+                            <td>{{ number_format($nipCount ?? 0) }}</td>
+                            <td>{{ number_format($totalNIPRecords ?? 0) }}</td>
+                            <td>{{ $totalHealthPrograms > 0 ? number_format(($totalNIPRecords / $totalHealthPrograms) * 100, 1) : 0 }}%</td>
                         </tr>
                         @php
-                            $totalCases = ($prenatalCount ?? 0) + ($fpCount ?? 0) + ($nipCount ?? 0);
+                            $totalCasesThisMonth = ($prenatalCount ?? 0) + ($fpCount ?? 0) + ($nipCount ?? 0);
                         @endphp
                         <tr class="table-total">
                             <td><strong>TOTAL</strong></td>
-                            <td><strong>{{ $totalCases }}</strong></td>
-                            <td><strong>—</strong></td>
-                            <td><strong>—</strong></td>
-                            <td><strong>—</strong></td>
-                            <td><strong>—</strong></td>
+                            <td><strong>{{ number_format($totalCasesThisMonth) }}</strong></td>
+                            <td><strong>{{ number_format($totalHealthPrograms ?? 0) }}</strong></td>
+                            <td><strong>100%</strong></td>
                         </tr>
                     </tbody>
                 </table>
@@ -311,6 +237,49 @@
                             <td><strong>{{ $grandTotal }}</strong></td>
                             <td><strong>{{ $grandTotal > 0 ? '100%' : '0%' }}</strong></td>
                         </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Medicine Dispensing Summary -->
+        <div class="report-section">
+            <h3 class="section-title">Medicine Dispensing Summary - {{ $selectedMonthLabel ?? 'Current Month' }}</h3>
+            <div class="table-container">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Medicine Name</th>
+                            <th>Quantity Dispensed</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @php
+                            $totalQuantityDispensed = array_sum($topMedicineQuantities ?? []);
+                        @endphp
+                        @foreach(($topMedicineNames ?? []) as $i => $medicineName)
+                            @php
+                                $quantity = $topMedicineQuantities[$i] ?? 0;
+                                $percent = $totalQuantityDispensed > 0 ? round(($quantity / $totalQuantityDispensed) * 100, 1) : 0;
+                            @endphp
+                            <tr>
+                                <td><strong>{{ $medicineName }}</strong></td>
+                                <td>{{ number_format($quantity) }}</td>
+                                <td>{{ $percent }}%</td>
+                            </tr>
+                        @endforeach
+                        @if(empty($topMedicineNames))
+                            <tr>
+                                <td colspan="3" style="text-align: center;">No medicine dispensing records for this month</td>
+                            </tr>
+                        @else
+                            <tr class="table-total">
+                                <td><strong>TOTAL</strong></td>
+                                <td><strong>{{ number_format($totalDispensesThisMonth ?? 0) }}</strong></td>
+                                <td><strong>—</strong></td>
+                            </tr>
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -459,54 +428,6 @@
         }
 
 
-        // Initialize Service Completion Rate Chart
-        const completionCtx = document.getElementById('completionChart');
-        if (completionCtx) {
-            new Chart(completionCtx.getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Completed', 'Pending', 'Follow-ups'],
-                    datasets: [{
-                        data: @json($completionData ?? [0, 0, 0]),
-                        backgroundColor: [
-                            '#2ecc71',
-                            '#e74c3c',
-                            '#f39c12'
-                        ],
-                        borderColor: '#fff',
-                        borderWidth: 3
-                    }]
-                },
-                options: chartOptions
-            });
-        }
-
-        // Initialize Top Health Programs Chart
-        const topProgramsCtx = document.getElementById('topProgramsChart');
-        if (topProgramsCtx) {
-            new Chart(topProgramsCtx.getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: ['Deworming', 'Immunization', 'Prenatal Care', 'Family Planning', 'Nutrition'],
-                    datasets: [{
-                        label: 'Cases Handled',
-                        data: @json($topProgramsData ?? []),
-                        backgroundColor: ['#3498db', '#2ecc71', '#e74c3c', '#9b59b6', '#f39c12'],
-                        borderColor: ['#2980b9', '#27ae60', '#c0392b', '#8e44ad', '#d68910'],
-                        borderWidth: 1,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    ...chartOptions,
-                    indexAxis: 'y',
-                    scales: {
-                        x: { beginAtZero: true }
-                    }
-                }
-            });
-        }
-
         // Initialize Gender Distribution Chart
         const genderCtx = document.getElementById('genderChart');
         if (genderCtx) {
@@ -525,6 +446,61 @@
                     }]
                 },
                 options: chartOptions
+            });
+        }
+
+        // Initialize Medicine Dispensing Trend Chart
+        const medicineDispenseSeries = @json($medicineDispenseSeries ?? []);
+        const medicineDispenseCtx = document.getElementById('medicineDispenseChart');
+        if (medicineDispenseCtx) {
+            new Chart(medicineDispenseCtx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: monthLabels,
+                    datasets: [{
+                        label: 'Medicines Dispensed',
+                        data: medicineDispenseSeries,
+                        borderColor: '#9b59b6',
+                        backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // Initialize Top Dispensed Medicines Chart
+        const topMedicineNames = @json($topMedicineNames ?? []);
+        const topMedicineQuantities = @json($topMedicineQuantities ?? []);
+        const topMedicinesCtx = document.getElementById('topMedicinesChart');
+        if (topMedicinesCtx && topMedicineNames.length > 0) {
+            new Chart(topMedicinesCtx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: topMedicineNames,
+                    datasets: [{
+                        label: 'Quantity Dispensed',
+                        data: topMedicineQuantities,
+                        backgroundColor: ['#3498db', '#2ecc71', '#f39c12', '#e74c3c', '#9b59b6'],
+                        borderColor: ['#2980b9', '#27ae60', '#d68910', '#c0392b', '#8e44ad'],
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    indexAxis: 'y',
+                    scales: {
+                        x: { beginAtZero: true }
+                    }
+                }
             });
         }
 
@@ -725,12 +701,33 @@
         }
 
         // Report Functions
-        function exportReport() {
-            alert('Export functionality will be implemented with backend');
+        function exportPDF() {
+            // Get current filter values
+            const form = document.getElementById('report-filters-form');
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData);
+            
+            // Redirect to PDF export route with current filters
+            window.location.href = '{{ route('reports.export.pdf') }}?' + params.toString();
         }
 
         function printReport() {
-            window.print();
+            // Get current filter values
+            const form = document.getElementById('report-filters-form');
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData);
+            
+            // Open print view in new window
+            const printWindow = window.open('{{ route('reports.print') }}?' + params.toString(), '_blank');
+            
+            // Wait for the page to load, then trigger print
+            if (printWindow) {
+                printWindow.onload = function() {
+                    setTimeout(function() {
+                        printWindow.print();
+                    }, 500);
+                };
+            }
         }
     </script>
 @endpush

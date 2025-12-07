@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Patient;
+use App\Models\Assessment;
 use App\Models\FamilyPlanningRecord;
 use App\Models\PrenatalRecord;
 use App\Models\NipRecord;
 use App\Models\Medicine;
 use App\Models\MedicineBatch;
 use App\Models\MedicineDispense;
+use App\Models\MedicalSupply;
 use App\Models\AuditLog;
 use App\Models\User;
+use App\Models\Event;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -45,376 +48,314 @@ class DashboardController extends Controller
         $previousMonth = $months[$currentIndex - 1] ?? $months[$currentIndex];
         $currentMonthName = $currentMonth->format('F Y');
 
-        // System-wide statistics
-        $totalUsers = User::count();
+        // Super Admin - System Oversight Metrics
+        $totalSystemUsers = User::count();
         $activeUsers = User::where('status', 'active')->count();
-        $registeredPatients = Patient::count();
-        $healthPrograms = PrenatalRecord::count() + FamilyPlanningRecord::count() + NipRecord::count();
+        $inactiveUsers = User::where('status', 'inactive')->count();
+        $newUsersThisMonth = User::whereYear('created_at', $currentMonth->year)
+            ->whereMonth('created_at', $currentMonth->month)
+            ->count();
 
-        // User statistics by role
-        $userStats = [
-            'super_admin' => User::where('role', 'super_admin')->where('status', 'active')->count(),
-            'admin' => User::where('role', 'admin')->where('status', 'active')->count(),
-            'bhw' => User::where('role', 'bhw')->where('status', 'active')->count(),
+        // Patient and Health Program Stats
+        $totalPatients = Patient::count();
+        $newPatientsThisMonth = Patient::whereYear('dateRegistered', $currentMonth->year)
+            ->whereMonth('dateRegistered', $currentMonth->month)
+            ->count();
+        
+        $totalPrenatalRecords = PrenatalRecord::count();
+        $totalFPRecords = FamilyPlanningRecord::count();
+        $totalNIPRecords = NipRecord::count();
+        $totalHealthPrograms = $totalPrenatalRecords + $totalFPRecords + $totalNIPRecords;
+
+        // System-wide activities
+        $systemActivitiesThisMonth = AuditLog::whereYear('created_at', $currentMonth->year)
+            ->whereMonth('created_at', $currentMonth->month)
+            ->count();
+
+        // Critical actions logged
+        $criticalActions = AuditLog::whereIn('action', ['delete', 'update'])
+            ->whereYear('created_at', $currentMonth->year)
+            ->whereMonth('created_at', $currentMonth->month)
+            ->count();
+
+        // Reports status (assuming you have a reports table, adjust if needed)
+        $reportsGenerated = 0; // Placeholder - adjust based on your reports system
+        $reportsPending = 0; // Placeholder - adjust based on your reports system
+
+        // Upcoming events
+        $upcomingEvents = 0; // Placeholder - adjust based on your events system
+
+        // Recent audit logs for monitoring
+        $recentLogs = AuditLog::with('user')->orderByDesc('created_at')->limit(20)->get();
+
+        // Chart Data for Super Admin - Health Program Focused
+        // Patient Registration Trend (last 6 months)
+        $userTrendLabels = [];
+        $userTrendData = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = Carbon::now()->subMonths($i);
+            $userTrendLabels[] = $month->format('M');
+            $userTrendData[] = Patient::whereYear('dateRegistered', $month->year)
+                ->whereMonth('dateRegistered', $month->month)
+                ->count();
+        }
+
+        // Health Programs Distribution (pie chart)
+        $activityTypes = [
+            'Prenatal Care' => $totalPrenatalRecords,
+            'Family Planning' => $totalFPRecords,
+            'Immunization (NIP)' => $totalNIPRecords
         ];
 
-
-
-        // Health program statistics
-        $prenatalTotal = PrenatalRecord::count();
-        $familyPlanningTotal = FamilyPlanningRecord::count();
-        $nipTotal = NipRecord::count();
-
-        // Monthly trends
-        $prenatalSeries = [];
-        $fpSeries = [];
-        $nipSeries = [];
-        foreach ($months as $m) {
-            $prenatalSeries[] = PrenatalRecord::whereYear('created_at', $m->year)->whereMonth('created_at', $m->month)->count();
-            $fpSeries[] = FamilyPlanningRecord::whereYear('created_at', $m->year)->whereMonth('created_at', $m->month)->count();
-            $nipSeries[] = NipRecord::whereYear('created_at', $m->year)->whereMonth('created_at', $m->month)->count();
+        // Weekly Health Records Created (bar chart)
+        $weekLabels = [];
+        $weekActivityData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $day = Carbon::now()->subDays($i);
+            $weekLabels[] = $day->format('D');
+            $prenatalCount = PrenatalRecord::whereDate('created_at', $day->toDateString())->count();
+            $fpCount = FamilyPlanningRecord::whereDate('created_at', $day->toDateString())->count();
+            $nipCount = NipRecord::whereDate('created_at', $day->toDateString())->count();
+            $weekActivityData[] = $prenatalCount + $fpCount + $nipCount;
         }
-
-        $servicesSeries = [];
-        foreach (range(0, 5) as $i) {
-            $servicesSeries[$i] = ($prenatalSeries[$i] ?? 0) + ($fpSeries[$i] ?? 0) + ($nipSeries[$i] ?? 0);
-        }
-
-        $monthlyServices = $servicesSeries[$currentIndex] ?? 0;
-        $programDistribution = [
-            'prenatal' => $prenatalSeries[$currentIndex] ?? 0,
-            'fp' => $fpSeries[$currentIndex] ?? 0,
-            'nip' => $nipSeries[$currentIndex] ?? 0,
-        ];
-
-        // Monthly summary table values
-        $summary = [
-            'prenatal' => [
-                'current' => $prenatalSeries[$currentIndex] ?? 0,
-                'previous' => $prenatalSeries[$currentIndex - 1] ?? 0,
-            ],
-            'fp' => [
-                'current' => $fpSeries[$currentIndex] ?? 0,
-                'previous' => $fpSeries[$currentIndex - 1] ?? 0,
-            ],
-            'nip' => [
-                'current' => $nipSeries[$currentIndex] ?? 0,
-                'previous' => $nipSeries[$currentIndex - 1] ?? 0,
-            ],
-            'medicine' => [
-                'current' => MedicineDispense::whereYear('dispensed_at', $currentMonth->year)
-                    ->whereMonth('dispensed_at', $currentMonth->month)
-                    ->sum('quantity'),
-                'previous' => MedicineDispense::whereYear('dispensed_at', $previousMonth->year)
-                    ->whereMonth('dispensed_at', $previousMonth->month)
-                    ->sum('quantity'),
-            ],
-            'patients' => [
-                'current' => Patient::whereYear('dateRegistered', $currentMonth->year)
-                    ->whereMonth('dateRegistered', $currentMonth->month)
-                    ->count(),
-                'previous' => Patient::whereYear('dateRegistered', $previousMonth->year)
-                    ->whereMonth('dateRegistered', $previousMonth->month)
-                    ->count(),
-            ],
-        ];
-
-        foreach ($summary as &$row) {
-            $prev = max($row['previous'], 1);
-            $row['variance'] = round((($row['current'] - $row['previous']) / $prev) * 100, 1);
-        }
-
-        // Medicine dispensing by week (current month)
-        $weeksLabels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-        $weeksData = [0, 0, 0, 0];
-        $dispenses = MedicineDispense::whereYear('dispensed_at', $currentMonth->year)
-            ->whereMonth('dispensed_at', $currentMonth->month)
-            ->get();
-
-        foreach ($dispenses as $dispense) {
-            $day = optional($dispense->dispensed_at)->day ?? optional($dispense->created_at)->day ?? 1;
-            $index = (int) floor(($day - 1) / 7);
-            $index = max(0, min(3, $index));
-            $weeksData[$index] += $dispense->quantity;
-        }
-
-        // Medicine statistics
-        $totalMedicineStock = MedicineBatch::sum('quantity_on_hand');
-
-        // Recent audit logs
-        $recentLogs = AuditLog::with('user')->orderByDesc('created_at')->limit(5)->get();
-
-
 
         return view('dashboard.super-admin', compact(
-            'registeredPatients',
-            'healthPrograms',
-            'monthlyServices',
-            'prenatalTotal',
-            'familyPlanningTotal',
-            'nipTotal',
+            'totalSystemUsers',
+            'activeUsers',
+            'inactiveUsers',
+            'newUsersThisMonth',
+            'totalPatients',
+            'newPatientsThisMonth',
+            'totalPrenatalRecords',
+            'totalFPRecords',
+            'totalNIPRecords',
+            'totalHealthPrograms',
+            'systemActivitiesThisMonth',
+            'criticalActions',
+            'reportsGenerated',
+            'reportsPending',
+            'upcomingEvents',
             'currentMonthName',
-            'monthLabels',
-            'servicesSeries',
-            'programDistribution',
-            'weeksLabels',
-            'weeksData',
-            'summary',
-            'totalMedicineStock',
-            'recentLogs'
+            'recentLogs',
+            'userTrendLabels',
+            'userTrendData',
+            'activityTypes',
+            'weekLabels',
+            'weekActivityData'
         ));
     }
 
     private function adminDashboard()
     {
         $now = Carbon::now();
-        $months = collect();
-        for ($i = 5; $i >= 0; $i--) {
-            $months->push($now->copy()->subMonths($i));
-        }
-
-        $monthLabels = $months->map(fn(Carbon $d) => $d->format('M'));
-        $currentIndex = 5;
-        $currentMonth = $months[$currentIndex];
-        $previousMonth = $months[$currentIndex - 1] ?? $months[$currentIndex];
+        $currentMonth = $now;
         $currentMonthName = $currentMonth->format('F Y');
+        $today = $now->format('Y-m-d');
 
-        // System statistics
-        $registeredPatients = Patient::count();
-        $healthPrograms = PrenatalRecord::count() + FamilyPlanningRecord::count() + NipRecord::count();
+        // Admin - Daily Operations Metrics
+        // ITR Records (Assessments)
+        $startOfWeek = $now->copy()->startOfWeek();
+        $newITRThisWeek = Assessment::whereBetween('date', [$startOfWeek, $now])->count();
+        $totalITRRecords = Assessment::count();
+        $activePrenatalWomen = PrenatalRecord::count(); // All prenatal records
+        $activeFPUsers = FamilyPlanningRecord::count(); // All FP records
+        $childrenUnderNIP = NipRecord::count(); // All NIP records
 
-        // Health program statistics
-        $prenatalTotal = PrenatalRecord::count();
-        $familyPlanningTotal = FamilyPlanningRecord::count();
-        $nipTotal = NipRecord::count();
+        // Health Programs This Month
+        $prenatalThisMonth = PrenatalRecord::whereYear('created_at', $currentMonth->year)
+            ->whereMonth('created_at', $currentMonth->month)->count();
+        $fpThisMonth = FamilyPlanningRecord::whereYear('created_at', $currentMonth->year)
+            ->whereMonth('created_at', $currentMonth->month)->count();
+        $nipThisMonth = NipRecord::whereYear('created_at', $currentMonth->year)
+            ->whereMonth('created_at', $currentMonth->month)->count();
+        $totalProgramsThisMonth = $prenatalThisMonth + $fpThisMonth + $nipThisMonth;
+        $totalProgramsAll = $activePrenatalWomen + $activeFPUsers + $childrenUnderNIP;
 
-        // Monthly trends
-        $prenatalSeries = [];
-        $fpSeries = [];
-        $nipSeries = [];
-        foreach ($months as $m) {
-            $prenatalSeries[] = PrenatalRecord::whereYear('created_at', $m->year)->whereMonth('created_at', $m->month)->count();
-            $fpSeries[] = FamilyPlanningRecord::whereYear('created_at', $m->year)->whereMonth('created_at', $m->month)->count();
-            $nipSeries[] = NipRecord::whereYear('created_at', $m->year)->whereMonth('created_at', $m->month)->count();
-        }
+        // Missed schedules - Set to 0 since tables don't have next visit date columns
+        $missedPrenatalSchedules = 0;
+        $missedFPSchedules = 0;
+        $missedNIPSchedules = 0;
 
-        $servicesSeries = [];
-        foreach (range(0, 5) as $i) {
-            $servicesSeries[$i] = ($prenatalSeries[$i] ?? 0) + ($fpSeries[$i] ?? 0) + ($nipSeries[$i] ?? 0);
-        }
-
-        $monthlyServices = $servicesSeries[$currentIndex] ?? 0;
-        $programDistribution = [
-            'prenatal' => $prenatalSeries[$currentIndex] ?? 0,
-            'fp' => $fpSeries[$currentIndex] ?? 0,
-            'nip' => $nipSeries[$currentIndex] ?? 0,
-        ];
-
-        // Monthly summary
-        $summary = [
-            'prenatal' => [
-                'current' => $prenatalSeries[$currentIndex] ?? 0,
-                'previous' => $prenatalSeries[$currentIndex - 1] ?? 0,
-            ],
-            'fp' => [
-                'current' => $fpSeries[$currentIndex] ?? 0,
-                'previous' => $fpSeries[$currentIndex - 1] ?? 0,
-            ],
-            'nip' => [
-                'current' => $nipSeries[$currentIndex] ?? 0,
-                'previous' => $nipSeries[$currentIndex - 1] ?? 0,
-            ],
-            'medicine' => [
-                'current' => MedicineDispense::whereYear('dispensed_at', $currentMonth->year)
-                    ->whereMonth('dispensed_at', $currentMonth->month)
-                    ->sum('quantity'),
-                'previous' => MedicineDispense::whereYear('dispensed_at', $previousMonth->year)
-                    ->whereMonth('dispensed_at', $previousMonth->month)
-                    ->sum('quantity'),
-            ],
-            'patients' => [
-                'current' => Patient::whereYear('dateRegistered', $currentMonth->year)
-                    ->whereMonth('dateRegistered', $currentMonth->month)
-                    ->count(),
-                'previous' => Patient::whereYear('dateRegistered', $previousMonth->year)
-                    ->whereMonth('dateRegistered', $previousMonth->month)
-                    ->count(),
-            ],
-        ];
-
-        foreach ($summary as &$row) {
-            $prev = max($row['previous'], 1);
-            $row['variance'] = round((($row['current'] - $row['previous']) / $prev) * 100, 1);
-        }
-
-        // Medicine statistics
-        $totalMedicines = Medicine::count();
-        // Sum from MedicineBatch directly since quantity_on_hand is stored there
-        $totalMedicineStock = MedicineBatch::sum('quantity_on_hand');
-        // For low stock, we need to check each medicine's quantity_on_hand (calculated from batches)
+        // Inventory
+        $medicinesInStock = Medicine::whereHas('batches', function($q) {
+            $q->where('quantity_on_hand', '>', 0);
+        })->count();
+        
+        $medicalSuppliesInStock = MedicalSupply::where('quantity_on_hand', '>', 0)->count();
+        
         $allMedicines = Medicine::with('batches')->get();
         $lowStockMedicines = $allMedicines->filter(function ($medicine) {
-            return $medicine->reorder_level > 0 && $medicine->quantity_on_hand <= $medicine->reorder_level;
+            return $medicine->reorder_level > 0 && $medicine->quantity_on_hand > 0 && $medicine->quantity_on_hand <= $medicine->reorder_level;
         })->count();
 
-        // Medicine dispensing by week
-        $weeksLabels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-        $weeksData = [0, 0, 0, 0];
-        $dispenses = MedicineDispense::whereYear('dispensed_at', $currentMonth->year)
-            ->whereMonth('dispensed_at', $currentMonth->month)
+        $expiringMedicines = MedicineBatch::where('expiry_date', '<=', $now->copy()->addDays(30))
+            ->where('expiry_date', '>', $now)
+            ->where('quantity_on_hand', '>', 0)
+            ->count();
+
+        $suppliesInStock = 0; // Placeholder - adjust based on your supplies system
+
+        // BHW Performance
+        $mostActiveBHW = User::where('role', 'bhw')
+            ->withCount(['auditLogs' => function($q) use ($currentMonth) {
+                $q->whereYear('created_at', $currentMonth->year)
+                  ->whereMonth('created_at', $currentMonth->month);
+            }])
+            ->orderByDesc('audit_logs_count')
+            ->first();
+
+        $bhwProductivity = User::where('role', 'bhw')
+            ->where('status', 'active')
+            ->withCount(['auditLogs' => function($q) use ($currentMonth) {
+                $q->whereYear('created_at', $currentMonth->year)
+                  ->whereMonth('created_at', $currentMonth->month);
+            }])
             ->get();
 
-        foreach ($dispenses as $dispense) {
-            $day = optional($dispense->dispensed_at)->day ?? optional($dispense->created_at)->day ?? 1;
-            $index = (int) floor(($day - 1) / 7);
-            $index = max(0, min(3, $index));
-            $weeksData[$index] += $dispense->quantity;
+        // Reports Status
+        $prenatalReportStatus = 'pending'; // Adjust based on your reports system
+        $fpReportStatus = 'pending';
+        $nipReportStatus = 'pending';
+        $inventoryReportStatus = 'pending';
+
+        // Audit
+        $recentActivities = AuditLog::with('user')->orderByDesc('created_at')->limit(20)->get();
+
+        // Events - Fetch upcoming events this month
+        $eventsThisMonth = Event::whereYear('start_date', $currentMonth->year)
+            ->whereMonth('start_date', $currentMonth->month)
+            ->where('start_date', '>=', $now->toDateString())
+            ->orderBy('start_date', 'asc')
+            ->get();
+
+        // Chart Data for Admin
+        // Patient Registration Trend (last 6 months)
+        $patientTrendLabels = [];
+        $patientTrendData = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = Carbon::now()->subMonths($i);
+            $patientTrendLabels[] = $month->format('M');
+            $patientTrendData[] = Patient::whereYear('dateRegistered', $month->year)
+                ->whereMonth('dateRegistered', $month->month)
+                ->count();
         }
 
+        // Health Programs Distribution (doughnut chart)
+        $programDistribution = [
+            'prenatal' => PrenatalRecord::count(),
+            'fp' => FamilyPlanningRecord::count(),
+            'nip' => NipRecord::count()
+        ];
 
+        // Medicine Dispensing This Week (bar chart)
+        $medicineWeekLabels = [];
+        $medicineWeekData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $day = Carbon::now()->subDays($i);
+            $medicineWeekLabels[] = $day->format('D');
+            $medicineWeekData[] = MedicineDispense::whereDate('dispensed_at', $day->toDateString())
+                ->sum('quantity');
+        }
 
-        // Recent activities
-        $recentLogs = AuditLog::with('user')->orderByDesc('created_at')->limit(5)->get();
+        // Monthly Records Created (line chart)
+        $recordsLabels = [];
+        $prenatalRecords = [];
+        $fpRecords = [];
+        $nipRecords = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = Carbon::now()->subMonths($i);
+            $recordsLabels[] = $month->format('M');
+            $prenatalRecords[] = PrenatalRecord::whereYear('created_at', $month->year)
+                ->whereMonth('created_at', $month->month)
+                ->count();
+            $fpRecords[] = FamilyPlanningRecord::whereYear('created_at', $month->year)
+                ->whereMonth('created_at', $month->month)
+                ->count();
+            $nipRecords[] = NipRecord::whereYear('created_at', $month->year)
+                ->whereMonth('created_at', $month->month)
+                ->count();
+        }
 
         return view('dashboard.admin', compact(
-            'registeredPatients',
-            'healthPrograms',
-            'monthlyServices',
-            'prenatalTotal',
-            'familyPlanningTotal',
-            'nipTotal',
-            'currentMonthName',
-            'monthLabels',
-            'servicesSeries',
-            'programDistribution',
-            'weeksLabels',
-            'weeksData',
-            'summary',
-            'totalMedicines',
-            'totalMedicineStock',
+            'newITRThisWeek',
+            'totalITRRecords',
+            'activePrenatalWomen',
+            'activeFPUsers',
+            'childrenUnderNIP',
+            'prenatalThisMonth',
+            'fpThisMonth',
+            'nipThisMonth',
+            'totalProgramsThisMonth',
+            'totalProgramsAll',
+            'medicalSuppliesInStock',
+            'missedPrenatalSchedules',
+            'missedFPSchedules',
+            'missedNIPSchedules',
+            'medicinesInStock',
             'lowStockMedicines',
-            'recentLogs'
+            'expiringMedicines',
+            'suppliesInStock',
+            'mostActiveBHW',
+            'bhwProductivity',
+            'prenatalReportStatus',
+            'fpReportStatus',
+            'nipReportStatus',
+            'inventoryReportStatus',
+            'recentActivities',
+            'eventsThisMonth',
+            'currentMonthName',
+            'patientTrendLabels',
+            'patientTrendData',
+            'programDistribution',
+            'medicineWeekLabels',
+            'medicineWeekData',
+            'recordsLabels',
+            'prenatalRecords',
+            'fpRecords',
+            'nipRecords'
         ));
     }
 
     private function bhwDashboard()
     {
         $now = Carbon::now();
-        $months = collect();
-        for ($i = 5; $i >= 0; $i--) {
-            $months->push($now->copy()->subMonths($i));
-        }
-
-        $monthLabels = $months->map(fn(Carbon $d) => $d->format('M'));
-        $currentIndex = 5;
-        $currentMonth = $months[$currentIndex];
-        $previousMonth = $months[$currentIndex - 1] ?? $months[$currentIndex];
+        $currentMonth = $now;
         $currentMonthName = $currentMonth->format('F Y');
+        $today = $now->format('Y-m-d');
+        $bhwId = auth()->id();
+        $startOfWeek = $now->copy()->startOfWeek();
 
-        // System statistics
-        $registeredPatients = Patient::count();
-        $healthPrograms = PrenatalRecord::count() + FamilyPlanningRecord::count() + NipRecord::count();
+        // BHW - Weekly Stats
+        $patientsRegisteredWeekly = Patient::whereBetween('dateRegistered', [$startOfWeek, $now])->count();
+        $totalPatients = Patient::count();
 
-        // Health program statistics
-        $prenatalTotal = PrenatalRecord::count();
-        $familyPlanningTotal = FamilyPlanningRecord::count();
-        $nipTotal = NipRecord::count();
+        $prenatalRecordsWeekly = PrenatalRecord::whereBetween('created_at', [$startOfWeek, $now])->count();
+        $totalPrenatalRecords = PrenatalRecord::count();
 
-        // Monthly trends
-        $prenatalSeries = [];
-        $fpSeries = [];
-        $nipSeries = [];
-        foreach ($months as $m) {
-            $prenatalSeries[] = PrenatalRecord::whereYear('created_at', $m->year)->whereMonth('created_at', $m->month)->count();
-            $fpSeries[] = FamilyPlanningRecord::whereYear('created_at', $m->year)->whereMonth('created_at', $m->month)->count();
-            $nipSeries[] = NipRecord::whereYear('created_at', $m->year)->whereMonth('created_at', $m->month)->count();
-        }
+        $fpRecordsWeekly = FamilyPlanningRecord::whereBetween('created_at', [$startOfWeek, $now])->count();
+        $totalFPRecords = FamilyPlanningRecord::count();
 
-        $servicesSeries = [];
-        foreach (range(0, 5) as $i) {
-            $servicesSeries[$i] = ($prenatalSeries[$i] ?? 0) + ($fpSeries[$i] ?? 0) + ($nipSeries[$i] ?? 0);
-        }
+        $immunizationRecordsWeekly = NipRecord::whereBetween('created_at', [$startOfWeek, $now])->count();
+        $totalImmunizationRecords = NipRecord::count();
 
-        $monthlyServices = $servicesSeries[$currentIndex] ?? 0;
-        $programDistribution = [
-            'prenatal' => $prenatalSeries[$currentIndex] ?? 0,
-            'fp' => $fpSeries[$currentIndex] ?? 0,
-            'nip' => $nipSeries[$currentIndex] ?? 0,
-        ];
-
-        // Monthly summary
-        $summary = [
-            'prenatal' => [
-                'current' => $prenatalSeries[$currentIndex] ?? 0,
-                'previous' => $prenatalSeries[$currentIndex - 1] ?? 0,
-            ],
-            'fp' => [
-                'current' => $fpSeries[$currentIndex] ?? 0,
-                'previous' => $fpSeries[$currentIndex - 1] ?? 0,
-            ],
-            'nip' => [
-                'current' => $nipSeries[$currentIndex] ?? 0,
-                'previous' => $nipSeries[$currentIndex - 1] ?? 0,
-            ],
-            'medicine' => [
-                'current' => MedicineDispense::whereYear('dispensed_at', $currentMonth->year)
-                    ->whereMonth('dispensed_at', $currentMonth->month)
-                    ->sum('quantity'),
-                'previous' => MedicineDispense::whereYear('dispensed_at', $previousMonth->year)
-                    ->whereMonth('dispensed_at', $previousMonth->month)
-                    ->sum('quantity'),
-            ],
-            'patients' => [
-                'current' => Patient::whereYear('dateRegistered', $currentMonth->year)
-                    ->whereMonth('dateRegistered', $currentMonth->month)
-                    ->count(),
-                'previous' => Patient::whereYear('dateRegistered', $previousMonth->year)
-                    ->whereMonth('dateRegistered', $previousMonth->month)
-                    ->count(),
-            ],
-        ];
-
-        foreach ($summary as &$row) {
-            $prev = max($row['previous'], 1);
-            $row['variance'] = round((($row['current'] - $row['previous']) / $prev) * 100, 1);
-        }
-
-        // Medicine dispensing by week (current month)
-        $weeksLabels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-        $weeksData = [0, 0, 0, 0];
-        $dispenses = MedicineDispense::whereYear('dispensed_at', $currentMonth->year)
-            ->whereMonth('dispensed_at', $currentMonth->month)
+        // Events - Fetch upcoming events this month
+        $eventsThisMonth = Event::whereYear('start_date', $currentMonth->year)
+            ->whereMonth('start_date', $currentMonth->month)
+            ->where('start_date', '>=', $now->toDateString())
+            ->orderBy('start_date', 'asc')
             ->get();
 
-        foreach ($dispenses as $dispense) {
-            $day = optional($dispense->dispensed_at)->day ?? optional($dispense->created_at)->day ?? 1;
-            $index = (int) floor(($day - 1) / 7);
-            $index = max(0, min(3, $index));
-            $weeksData[$index] += $dispense->quantity;
-        }
-
-        // Medicine statistics
-        $totalMedicineStock = MedicineBatch::sum('quantity_on_hand');
-
-        // Recent audit logs
-        $recentLogs = AuditLog::with('user')->orderByDesc('created_at')->limit(5)->get();
-
         return view('dashboard.bhw', compact(
-            'registeredPatients',
-            'healthPrograms',
-            'monthlyServices',
-            'prenatalTotal',
-            'familyPlanningTotal',
-            'nipTotal',
-            'currentMonthName',
-            'monthLabels',
-            'servicesSeries',
-            'programDistribution',
-            'weeksLabels',
-            'weeksData',
-            'summary',
-            'totalMedicineStock',
-            'recentLogs'
+            'patientsRegisteredWeekly',
+            'totalPatients',
+            'prenatalRecordsWeekly',
+            'totalPrenatalRecords',
+            'fpRecordsWeekly',
+            'totalFPRecords',
+            'immunizationRecordsWeekly',
+            'totalImmunizationRecords',
+            'eventsThisMonth',
+            'currentMonthName'
         ));
     }
 }

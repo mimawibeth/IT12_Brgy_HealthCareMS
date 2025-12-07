@@ -85,7 +85,7 @@
                 </select>
 
                 <button type="button" class="btn btn-secondary" id="clearFiltersBtn"
-                    style="background-color: transparent; border: 1px solid #6c757d; color: #6c757d;">
+                    style="padding: 9px 15px !important; font-size: 14px; font-weight: normal; display: inline-flex !important; align-items: center; gap: 6px; height: 38px; line-height: 1;">
                     <i class="bi bi-x-circle"></i> Clear
                 </button>
             </div>

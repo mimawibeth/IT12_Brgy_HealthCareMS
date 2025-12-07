@@ -42,7 +42,9 @@
                         <td>{{ $rolesSummary['super_admin']['active'] ?? 0 }}</td>
                         <td>—</td>
                         <td class="actions">
-                            <a href="#" class="btn-action btn-view" onclick="viewRoleDetails('super_admin')">View</a>
+                            <a href="#" class="btn-action btn-view" onclick="viewRoleDetails('super_admin'); return false;">
+                                <i class="bi bi-eye"></i> View
+                            </a>
                         </td>
                     </tr>
 
@@ -54,7 +56,9 @@
                         <td>{{ $rolesSummary['admin']['active'] ?? 0 }}</td>
                         <td>—</td>
                         <td class="actions">
-                            <a href="#" class="btn-action btn-view" onclick="viewRoleDetails('admin')">View</a>
+                            <a href="#" class="btn-action btn-view" onclick="viewRoleDetails('admin'); return false;">
+                                <i class="bi bi-eye"></i> View
+                            </a>
                         </td>
                     </tr>
 
@@ -66,7 +70,9 @@
                         <td>{{ $rolesSummary['bhw']['active'] ?? 0 }}</td>
                         <td>—</td>
                         <td class="actions">
-                            <a href="#" class="btn-action btn-view" onclick="viewRoleDetails('bhw')">View</a>
+                            <a href="#" class="btn-action btn-view" onclick="viewRoleDetails('bhw'); return false;">
+                                <i class="bi bi-eye"></i> View
+                            </a>
                         </td>
                     </tr>
                     @foreach($roles as $role)
@@ -82,13 +88,17 @@
                             <td>0</td>
                             <td>{{ $role->created_at?->format('M d, Y') ?? '—' }}</td>
                             <td class="actions">
-                                <a href="#" class="btn-action btn-view" onclick="viewRoleDetails('{{ $role->slug }}')">View</a>
+                                <a href="#" class="btn-action btn-view" onclick="viewRoleDetails('{{ $role->slug }}'); return false;">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
                                 <form action="{{ route('users.roles.destroy', $role) }}" method="POST"
                                     style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn-action btn-delete"
-                                        onclick="return confirm('Delete this role? Users with this role (if any) may need to be reassigned.')">Delete</button>
+                                        onclick="return confirm('Delete this role? Users with this role (if any) may need to be reassigned.')">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -97,6 +107,19 @@
             </table>
         </div>
 
+    </div>
+
+    <!-- Role View Modal -->
+    <div class="modal" id="roleViewModal" style="display:none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Role Details</h3>
+                <span class="close-modal" onclick="document.getElementById('roleViewModal').style.display='none'">&times;</span>
+            </div>
+            <div class="modal-body" id="roleModalBody">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
     </div>
 
     <!-- Add Role Modal -->
@@ -243,9 +266,101 @@
             }
         }
 
-        // View role details (placeholder for future implementation)
+        // View role details - Open modal with role information
         function viewRoleDetails(roleType) {
-            alert('Role details: ' + roleType.replace('_', ' ').toUpperCase());
+            const modal = document.getElementById('roleViewModal');
+            const modalBody = document.getElementById('roleModalBody');
+            
+            const roleData = {
+                'super_admin': {
+                    name: 'Super Administrator',
+                    badge: 'Super Admin',
+                    badgeClass: 'badge-super-admin',
+                    description: 'Full system access with all administrative privileges',
+                    permissions: [
+                        'Manage all users and roles',
+                        'Access system settings',
+                        'View and manage all patient records',
+                        'Generate and export all reports',
+                        'Manage health programs',
+                        'Manage medicine inventory',
+                        'View audit logs',
+                        'System configuration'
+                    ]
+                },
+                'admin': {
+                    name: 'Administrator',
+                    badge: 'Admin',
+                    badgeClass: 'badge-admin',
+                    description: 'Management-level access for daily operations',
+                    permissions: [
+                        'View and manage patient records',
+                        'Generate and export reports',
+                        'Manage health programs',
+                        'Manage medicine inventory',
+                        'View system analytics',
+                        'Dispense medicines'
+                    ]
+                },
+                'bhw': {
+                    name: 'Barangay Health Worker',
+                    badge: 'BHW',
+                    badgeClass: 'badge-bhw',
+                    description: 'Field worker with patient care and program implementation access',
+                    permissions: [
+                        'Add and update patient records',
+                        'Record health program visits',
+                        'View patient history',
+                        'Dispense medicines',
+                        'Generate basic reports'
+                    ]
+                }
+            };
+            
+            const role = roleData[roleType] || {
+                name: roleType.replace('_', ' ').toUpperCase(),
+                badge: roleType.replace('_', ' '),
+                badgeClass: 'badge-custom',
+                description: 'Custom role',
+                permissions: ['Custom permissions defined']
+            };
+            
+            let permissionsHtml = role.permissions.map(p => `<li>${p}</li>`).join('');
+            
+            modalBody.innerHTML = `
+                <div class="form-section">
+                    <h3 class="section-header"><span class="section-indicator"></span>Role Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><strong>Role Name:</strong></label>
+                            <p>${role.name}</p>
+                        </div>
+                        <div class="form-group">
+                            <label><strong>Badge Display:</strong></label>
+                            <p><span class="badge ${role.badgeClass}">${role.badge}</span></p>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><strong>Description:</strong></label>
+                            <p>${role.description}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="section-header"><span class="section-indicator"></span>Permissions & Access</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <ul style="margin-left: 20px; line-height: 1.8;">
+                                ${permissionsHtml}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
         }
 
         // Edit role (for custom roles)

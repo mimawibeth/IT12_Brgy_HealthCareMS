@@ -12,29 +12,31 @@
 @section('content')
     <div class="page-content">
         <!-- Search and Filter Section -->
-        <div class="filters">
-            <div class="search-box">
-                <input type="text" placeholder="Search users by name, username, email..." class="search-input">
-                <button class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
-                <a href="{{ route('users.add-new') }}" class="btn btn-primary">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .3rem; flex-wrap: wrap;">
+            <form method="GET" class="filters" style="flex: 1; display: flex; gap: 12px; align-items: center;">
+                <input type="text" name="search" placeholder="Search users by name, username, email..." class="search-input" style="flex: 1; min-width: 300px;" value="{{ request('search') }}">
+
+                <select name="role" class="filter-select">
+                    <option value="">All Roles</option>
+                    <option value="super_admin" {{ request('role') === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
+                    <option value="admin" {{ request('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="bhw" {{ request('role') === 'bhw' ? 'selected' : '' }}>Barangay Health Worker</option>
+                </select>
+
+                <select name="status" class="filter-select">
+                    <option value="">All Status</option>
+                    <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
+                    <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                </select>
+
+                <button type="button" class="btn btn-secondary" id="clearFiltersBtn" style="padding: 10px 15px; font-size: 14px; white-space: nowrap; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <i class="bi bi-x-circle"></i> Clear
+                </button>
+
+                <a href="{{ route('users.add-new') }}" class="btn btn-primary" style="padding: 10px 15px; font-size: 14px; white-space: nowrap;">
                     <i class="bi bi-person-plus"></i> Add New User
                 </a>
-            </div>
-
-            <div class="filter-options">
-                <select class="filter-select">
-                    <option value="">All Roles</option>
-                    <option value="super_admin">Super Admin</option>
-                    <option value="admin">Admin</option>
-                    <option value="bhw">Barangay Health Worker</option>
-                </select>
-
-                <select class="filter-select">
-                    <option value="">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-            </div>
+            </form>
         </div>
 
         <!-- Users Table -->
@@ -48,7 +50,6 @@
                         <th>Role</th>
                         <th>Status</th>
                         <th>Created Date</th>
-                        <th>Last Login</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -76,22 +77,27 @@
                                 @endif
                             </td>
                             <td>{{ optional($user->created_at)->format('M d, Y') ?? 'N/A' }}</td>
-                            <td>—</td>
                             <td class="actions">
                                 <a href="javascript:void(0)" class="btn-action btn-view view-user"
-                                    data-id="{{ $user->id }}">View</a>
-                                <a href="{{ route('users.edit', $user->id) }}" class="btn-action btn-edit">Edit</a>
+                                    data-id="{{ $user->id }}">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                                <a href="{{ route('users.edit', $user->id) }}" class="btn-action btn-edit">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </a>
                                 @if(in_array(auth()->user()->role ?? null, ['super_admin', 'admin']))
                                     @if($user->role !== 'super_admin' || auth()->user()->role === 'super_admin')
                                         <a href="javascript:void(0)" class="btn-action btn-reset-password" data-id="{{ $user->id }}"
-                                            data-name="{{ $user->name }}" style="background: #f39c12; color: white;">Reset Password</a>
+                                            data-name="{{ $user->name }}" onclick="openResetPasswordModal(this); return false;">
+                                            <i class="bi bi-key"></i> Reset Password
+                                        </a>
                                     @endif
                                 @endif
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" style="text-align:center;">No users found.</td>
+                            <td colspan="7" style="text-align:center;">No users found.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -171,6 +177,40 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Filter auto-submit functionality
+            const filterForm = document.querySelector('.filters');
+            const searchInput = filterForm.querySelector('input[name="search"]');
+            const roleSelect = filterForm.querySelector('select[name="role"]');
+            const statusSelect = filterForm.querySelector('select[name="status"]');
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+
+            // Auto-submit on search input (with debounce)
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function() {
+                    filterForm.submit();
+                }, 500);
+            });
+
+            // Auto-submit on select change
+            roleSelect.addEventListener('change', function() {
+                filterForm.submit();
+            });
+
+            statusSelect.addEventListener('change', function() {
+                filterForm.submit();
+            });
+
+            // Clear filters functionality
+            clearFiltersBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                roleSelect.value = '';
+                statusSelect.value = '';
+                // Redirect to the page without any query parameters
+                window.location.href = window.location.pathname;
+            });
+
             const resetPasswordModal = document.getElementById('resetPasswordModal');
             const resetPasswordForm = document.getElementById('resetPasswordForm');
             const resetUserName = document.getElementById('reset_user_name');
@@ -190,17 +230,19 @@
             }
 
             // Reset password button click
-            document.querySelectorAll('.btn-reset-password').forEach(button => {
-                button.addEventListener('click', function () {
-                    const userId = this.dataset.id;
-                    const userName = this.dataset.name;
-
-                    resetUserName.textContent = userName;
-                    resetPasswordForm.action = `/users/${userId}/reset-password`;
-
-                    openModal('resetPasswordModal');
-                });
+            document.querySelectorAll('.btn-delete[data-name]').forEach(button => {
+                // Handler is inline in the button
             });
+            
+            window.openResetPasswordModal = function(button) {
+                const userId = button.getAttribute('data-id');
+                const userName = button.getAttribute('data-name');
+
+                resetUserName.textContent = userName;
+                resetPasswordForm.action = `/users/${userId}/reset-password`;
+
+                openModal('resetPasswordModal');
+            };
 
             // Close modal handlers
             document.querySelectorAll('.close-modal[data-close-modal]').forEach(span => {
