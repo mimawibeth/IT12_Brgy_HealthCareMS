@@ -40,7 +40,7 @@
 
                 <a href="{{ route('patients.create') }}" class="btn btn-primary"
                     style="padding: 10px 15px !important; font-size: 14px; white-space: nowrap; font-weight: normal; line-height: normal; display: inline-flex; align-items: center;">
-                    <i class="bi bi-person-plus"></i>    Add New Patient
+                    <i class="bi bi-person-plus"></i> Add New Patient
                 </a>
             </form>
         </div>
@@ -81,6 +81,12 @@
                                 <a href="{{ route('patients.edit', $patient->PatientID) }}" class="btn-action btn-edit">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>
+                                @if(auth()->user()->role === 'super_admin')
+                                    <a href="javascript:void(0)" class="btn-action btn-delete"
+                                        onclick="openDeleteModal({{ $patient->PatientID }}, '{{ $patient->name }}')">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                     @empty
@@ -272,6 +278,44 @@
             </div>
         </div>
 
+        <!-- Delete Patient Modal (Super Admin Only) -->
+        @if(auth()->user()->role === 'super_admin')
+            <div class="modal" id="deletePatientModal" style="display:none;">
+                <div class="modal-content" style="max-width: 500px;">
+                    <div class="modal-header" style="background: #dc2626; color: white;">
+                        <h3 style="margin: 0;"><i class="bi bi-exclamation-triangle-fill"></i> Delete Patient</h3>
+                        <span class="close-modal" onclick="closeDeleteModal()"
+                            style="color: white; cursor: pointer; font-size: 28px;">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <p style="margin-bottom: 20px;">Are you sure you want to permanently delete the patient record for
+                            <strong id="deletePatientName"></strong>?</p>
+
+                        <div
+                            style="background: #fee2e2; padding: 15px; border-radius: 4px; border-left: 4px solid #dc2626; margin-bottom: 20px;">
+                            <p style="margin: 0 0 10px 0; color: #991b1b;"><strong><i class="bi bi-exclamation-triangle"
+                                        style="color: #dc2626;"></i> WARNING:</strong> This action cannot be undone!</p>
+                            <p style="margin: 0; color: #991b1b; font-size: 13px;">All patient data including assessments,
+                                medical history, and related records will be permanently deleted.</p>
+                        </div>
+
+                        <form method="POST" id="deletePatientForm" action="">
+                            @csrf
+                            @method('DELETE')
+                            <input type="hidden" id="deletePatientId" name="patient_id">
+                            <div class="form-actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+                                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                                <button type="submit" class="btn btn-primary" style="background: #dc2626;"
+                                    onclick="this.form.action='/patients/' + document.getElementById('deletePatientId').value">
+                                    <i class="bi bi-trash"></i> Delete Patient
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endif
+
     </div>
 
     <script>
@@ -384,6 +428,24 @@
                     closePatientViewModal();
                 }
             });
+        });
+
+        // Delete Modal Functions
+        function openDeleteModal(patientId, patientName) {
+            document.getElementById('deletePatientId').value = patientId;
+            document.getElementById('deletePatientName').textContent = patientName;
+            document.getElementById('deletePatientModal').style.display = 'flex';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deletePatientModal').style.display = 'none';
+        }
+
+        window.addEventListener('click', function (event) {
+            const deleteModal = document.getElementById('deletePatientModal');
+            if (event.target === deleteModal) {
+                closeDeleteModal();
+            }
         });
     </script>
 @endsection

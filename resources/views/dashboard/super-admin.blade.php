@@ -50,7 +50,8 @@
                 </div>
                 <div class="stat-text">
                     <h3 class="stat-title">Active / Inactive Users</h3>
-                    <p class="stat-number">{{ number_format($activeUsers ?? 0) }} / {{ number_format($inactiveUsers ?? 0) }}</p>
+                    <p class="stat-number">{{ number_format($activeUsers ?? 0) }} / {{ number_format($inactiveUsers ?? 0) }}
+                    </p>
                     <span class="stat-trend">User Status Overview</span>
                 </div>
             </div>
@@ -63,7 +64,8 @@
                 <div class="stat-text">
                     <h3 class="stat-title">Total Health Program Records</h3>
                     <p class="stat-number">{{ number_format($totalHealthPrograms ?? 0) }}</p>
-                    <span class="stat-trend">Prenatal: {{ $totalPrenatalRecords ?? 0 }} | FP: {{ $totalFPRecords ?? 0 }} | NIP: {{ $totalNIPRecords ?? 0 }}</span>
+                    <span class="stat-trend">Prenatal: {{ $totalPrenatalRecords ?? 0 }} | FP: {{ $totalFPRecords ?? 0 }} |
+                        NIP: {{ $totalNIPRecords ?? 0 }}</span>
                 </div>
             </div>
         </div>
@@ -77,7 +79,7 @@
 
             <div class="charts-grid">
                 <!-- Patient Registration Trend -->
-                <div class="chart-card">
+                <div class="chart-card clickable-chart" onclick="openChartModal('patientTrendModal')">
                     <div class="chart-header">
                         <h3><i class="bi bi-graph-up"></i> Patient Registration Trend</h3>
                         <span class="chart-badge">Last 6 Months</span>
@@ -88,7 +90,7 @@
                 </div>
 
                 <!-- Health Programs Distribution -->
-                <div class="chart-card">
+                <div class="chart-card clickable-chart" onclick="openChartModal('healthProgramsModal')">
                     <div class="chart-header">
                         <h3><i class="bi bi-pie-chart"></i> Health Programs</h3>
                         <span class="chart-badge">Total Records</span>
@@ -99,13 +101,119 @@
                 </div>
 
                 <!-- Monthly Health Records -->
-                <div class="chart-card">
+                <div class="chart-card clickable-chart" onclick="openChartModal('monthlyRecordsModal')">
                     <div class="chart-header">
                         <h3><i class="bi bi-bar-chart-line"></i> Monthly Records</h3>
                         <span class="chart-badge">This Week</span>
                     </div>
                     <div class="chart-placeholder">
                         <canvas id="weekActivityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Popup Modals -->
+        <!-- Patient Trend Chart Modal -->
+        <div class="modal" id="patientTrendModal" style="display:none;">
+            <div class="modal-content chart-modal-content">
+                <div class="chart-modal-header">
+                    <h3><i class="bi bi-graph-up"></i> Patient Registration Trend - Last 6 Months</h3>
+                    <span class="close-modal" onclick="closeChartModal('patientTrendModal')">&times;</span>
+                </div>
+                <div class="chart-modal-body">
+                    <div class="chart-modal-canvas">
+                        <canvas id="userTrendChartModal"></canvas>
+                    </div>
+                    <div class="modal-stats">
+                        <div class="modal-stat-item">
+                            <span class="modal-stat-label">Total Patients</span>
+                            <span class="modal-stat-value">{{ array_sum($userTrendData ?? []) }}</span>
+                        </div>
+                        <div class="modal-stat-item">
+                            <span class="modal-stat-label">Average/Month</span>
+                            <span
+                                class="modal-stat-value">{{ count($userTrendData ?? []) > 0 ? round(array_sum($userTrendData ?? []) / count($userTrendData ?? []), 1) : 0 }}</span>
+                        </div>
+                        <div class="modal-stat-item">
+                            <span class="modal-stat-label">Highest Month</span>
+                            <span
+                                class="modal-stat-value">{{ count($userTrendData ?? []) > 0 ? max($userTrendData ?? []) : 0 }}</span>
+                        </div>
+                        <div class="modal-stat-item">
+                            <span class="modal-stat-label">Lowest Month</span>
+                            <span
+                                class="modal-stat-value">{{ count($userTrendData ?? []) > 0 ? min($userTrendData ?? []) : 0 }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Programs Chart Modal -->
+        <div class="modal" id="healthProgramsModal" style="display:none;">
+            <div class="modal-content chart-modal-content">
+                <div class="chart-modal-header">
+                    <h3><i class="bi bi-pie-chart"></i> Health Programs Distribution</h3>
+                    <span class="close-modal" onclick="closeChartModal('healthProgramsModal')">&times;</span>
+                </div>
+                <div class="chart-modal-body">
+                    <div class="chart-modal-canvas">
+                        <canvas id="activityTypeChartModal"></canvas>
+                    </div>
+                    <div class="modal-stats">
+                        <div class="modal-stat-item">
+                            <span class="modal-stat-label">Prenatal Care</span>
+                            <span class="modal-stat-value">{{ $totalPrenatalRecords ?? 0 }}</span>
+                        </div>
+                        <div class="modal-stat-item">
+                            <span class="modal-stat-label">Family Planning</span>
+                            <span class="modal-stat-value">{{ $totalFPRecords ?? 0 }}</span>
+                        </div>
+                        <div class="modal-stat-item">
+                            <span class="modal-stat-label">NIP (Immunization)</span>
+                            <span class="modal-stat-value">{{ $totalNIPRecords ?? 0 }}</span>
+                        </div>
+                        <div class="modal-stat-item">
+                            <span class="modal-stat-label">Total Records</span>
+                            <span class="modal-stat-value">{{ $totalHealthPrograms ?? 0 }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Records Chart Modal -->
+        <div class="modal" id="monthlyRecordsModal" style="display:none;">
+            <div class="modal-content chart-modal-content">
+                <div class="chart-modal-header">
+                    <h3><i class="bi bi-bar-chart-line"></i> Weekly Health Records</h3>
+                    <span class="close-modal" onclick="closeChartModal('monthlyRecordsModal')">&times;</span>
+                </div>
+                <div class="chart-modal-body">
+                    <div class="chart-modal-canvas">
+                        <canvas id="weekActivityChartModal"></canvas>
+                    </div>
+                    <div class="modal-stats">
+                        <div class="modal-stat-item">
+                            <span class="modal-stat-label">Total This Week</span>
+                            <span class="modal-stat-value">{{ array_sum($weekActivityData ?? []) }}</span>
+                        </div>
+                        <div class="modal-stat-item">
+                            <span class="modal-stat-label">Daily Average</span>
+                            <span
+                                class="modal-stat-value">{{ count($weekActivityData ?? []) > 0 ? round(array_sum($weekActivityData ?? []) / count($weekActivityData ?? []), 1) : 0 }}</span>
+                        </div>
+                        <div class="modal-stat-item">
+                            <span class="modal-stat-label">Busiest Day</span>
+                            <span
+                                class="modal-stat-value">{{ count($weekActivityData ?? []) > 0 ? max($weekActivityData ?? []) : 0 }}</span>
+                        </div>
+                        <div class="modal-stat-item">
+                            <span class="modal-stat-label">Lowest Day</span>
+                            <span
+                                class="modal-stat-value">{{ count($weekActivityData ?? []) > 0 ? min($weekActivityData ?? []) : 0 }}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -289,5 +397,239 @@
                 }
             });
         }
+
+        // Chart Modal Functions
+        let modalCharts = {};
+
+        function openChartModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+
+                // Initialize the chart in the modal
+                setTimeout(() => {
+                    if (modalId === 'patientTrendModal') {
+                        initModalChart('userTrendChartModal', 'line');
+                    } else if (modalId === 'healthProgramsModal') {
+                        initModalChart('activityTypeChartModal', 'doughnut');
+                    } else if (modalId === 'monthlyRecordsModal') {
+                        initModalChart('weekActivityChartModal', 'bar');
+                    }
+                }, 100);
+            }
+        }
+
+        function closeChartModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+
+                // Destroy the modal chart to free memory
+                const chartId = modal.querySelector('canvas').id;
+                if (modalCharts[chartId]) {
+                    modalCharts[chartId].destroy();
+                    delete modalCharts[chartId];
+                }
+            }
+        }
+
+        function initModalChart(canvasId, type) {
+            // Destroy existing chart if any
+            if (modalCharts[canvasId]) {
+                modalCharts[canvasId].destroy();
+            }
+
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+
+            if (type === 'line') {
+                // Patient Trend Line Chart
+                modalCharts[canvasId] = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: @json($userTrendLabels ?? []),
+                        datasets: [{
+                            label: 'New Patients',
+                            data: @json($userTrendData ?? []),
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            pointBackgroundColor: '#3b82f6',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    font: { size: 14, weight: 'bold' },
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12,
+                                titleFont: { size: 14, weight: 'bold' },
+                                bodyFont: { size: 13 }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { font: { size: 12 } },
+                                grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                            },
+                            x: {
+                                ticks: { font: { size: 12 } },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            } else if (type === 'doughnut') {
+                // Health Programs Doughnut Chart
+                const activityData = @json($activityTypes ?? []);
+                modalCharts[canvasId] = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(activityData),
+                        datasets: [{
+                            data: Object.values(activityData),
+                            backgroundColor: ['#ef4444', '#8b5cf6', '#10b981'],
+                            borderWidth: 3,
+                            borderColor: '#fff',
+                            hoverOffset: 15
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: {
+                                    font: { size: 14 },
+                                    padding: 20,
+                                    usePointStyle: true,
+                                    pointStyle: 'circle'
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12,
+                                titleFont: { size: 14, weight: 'bold' },
+                                bodyFont: { size: 13 },
+                                callbacks: {
+                                    label: function (context) {
+                                        const label = context.label || '';
+                                        const value = context.parsed || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return `${label}: ${value} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else if (type === 'bar') {
+                // Weekly Records Bar Chart
+                modalCharts[canvasId] = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: @json($weekLabels ?? []),
+                        datasets: [{
+                            label: 'Health Records',
+                            data: @json($weekActivityData ?? []),
+                            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                            borderColor: '#10b981',
+                            borderWidth: 2,
+                            borderRadius: 8,
+                            hoverBackgroundColor: '#10b981'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    font: { size: 14, weight: 'bold' },
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                padding: 12,
+                                titleFont: { size: 14, weight: 'bold' },
+                                bodyFont: { size: 13 }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { font: { size: 12 } },
+                                grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                            },
+                            x: {
+                                ticks: { font: { size: 12 } },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function closeChartModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Add hover effect to clickable charts
+        document.addEventListener('DOMContentLoaded', function () {
+            const clickableCharts = document.querySelectorAll('.clickable-chart');
+            clickableCharts.forEach(chart => {
+                chart.style.cursor = 'pointer';
+                chart.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+
+                chart.addEventListener('mouseenter', function () {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 8px 16px rgba(0,0,0,0.15)';
+                });
+
+                chart.addEventListener('mouseleave', function () {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '';
+                });
+            });
+        });
     </script>
 @endpush

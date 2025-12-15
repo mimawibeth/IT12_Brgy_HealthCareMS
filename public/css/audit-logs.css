@@ -36,7 +36,7 @@
 
 /* Filters Section */
 .filters {
-    background-color: #fff;
+    background-color: white;
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -507,7 +507,7 @@
 
 /* Table Enhancements */
 .data-table td code {
-    background-color: #f5f5f5;
+    background-color: white;
     padding: 4px 8px;
     border-radius: 4px;
     font-family: 'Courier New', monospace;
@@ -534,7 +534,7 @@
     align-items: center;
     gap: 10px;
     padding: 20px;
-    background-color: #fff;
+    background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     margin-top: 20px;

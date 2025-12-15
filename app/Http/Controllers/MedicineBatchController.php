@@ -26,7 +26,31 @@ class MedicineBatchController extends Controller
             $query->whereDate('expiry_date', '<', now());
         }
 
-        $batches = $query->get()->groupBy('medicine_id');
+        $allBatches = $query->get()->groupBy('medicine_id');
+
+        // Convert grouped collection to flat array for pagination
+        $batchesArray = [];
+        foreach ($allBatches as $medicineId => $medicineBatches) {
+            $batchesArray[] = [
+                'medicine_id' => $medicineId,
+                'batches' => $medicineBatches
+            ];
+        }
+
+        // Paginate the grouped batches
+        $perPage = 10;
+        $currentPage = $request->input('page', 1);
+        $offset = ($currentPage - 1) * $perPage;
+
+        $paginatedItems = array_slice($batchesArray, $offset, $perPage);
+
+        $batches = new \Illuminate\Pagination\LengthAwarePaginator(
+            $paginatedItems,
+            count($batchesArray),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
 
         if ($request->wantsJson()) {
             return response()->json($batches);

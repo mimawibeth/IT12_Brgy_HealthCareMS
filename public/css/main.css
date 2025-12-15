@@ -15,7 +15,7 @@ body {
     font-size: 14px;
     line-height: 1.6;
     color: #2d3748;
-    background-color: #f7fafc;
+    background-color: white;
 }
 
 .app-container {
@@ -36,7 +36,7 @@ body {
         radial-gradient(circle at 15% 25%, rgba(255, 255, 255, 0.12) 0%, transparent 45%),
         radial-gradient(circle at 85% 75%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 50% 90%, rgba(0, 0, 0, 0.05) 0%, transparent 40%);
-    color: white;
+    color: whitesmoke;
     height: 100vh;
     position: fixed;
     left: 0;
@@ -68,7 +68,7 @@ body {
 .sidebar-header h2 {
     font-size: 20px;
     margin-bottom: 5px;
-    color: white;
+    color: whitesmoke;
     font-weight: 600;
 }
 
@@ -114,12 +114,12 @@ body {
 
 .nav-item:hover {
     background: rgba(255, 255, 255, 0.15);
-    color: white;
+    color: whitesmoke;
 }
 
 .nav-item.active {
     background: rgba(255, 255, 255, 0.25);
-    color: white;
+    color: whitesmoke;
     font-weight: 500;
 }
 
@@ -153,12 +153,12 @@ body {
 
 .nav-dropdown-toggle:hover {
     background: rgba(255, 255, 255, 0.15);
-    color: white;
+    color: whitesmoke;
 }
 
 .nav-dropdown.open .nav-dropdown-toggle {
     background: rgba(255, 255, 255, 0.2);
-    color: white;
+    color: whitesmoke;
     font-weight: 500;
 }
 
@@ -201,13 +201,13 @@ body {
 }
 
 .nav-dropdown-menu .nav-item:hover {
-    color: white;
+    color: whitesmoke;
     background: rgba(255, 255, 255, 0.15);
 }
 
 .nav-dropdown-menu .nav-item.active {
     background: rgba(255, 255, 255, 0.25);
-    color: white;
+    color: whitesmoke;
     font-weight: 500;
 }
 
@@ -230,7 +230,7 @@ body {
 
 .logout-btn:hover {
     background: rgba(254, 178, 178, 0.2) !important;
-    color: white !important;
+    color: whitesmoke !important;
 }
 
 .logout-btn .icon {
@@ -324,6 +324,7 @@ body {
 /* === CONTENT WRAPPER === */
 .content-wrapper {
     padding: 25px 30px;
+    background-color: white;
 }
 
 /* ==============================================
@@ -376,7 +377,7 @@ body {
 
 .btn-primary {
     background: #4a90a4;
-    color: white;
+    color: whitesmoke;
 }
 
 .btn-primary:hover {
@@ -387,7 +388,7 @@ body {
 
 .btn-secondary {
     background-color: #a0aec0;
-    color: white;
+    color: whitesmoke;
 }
 
 .btn-secondary:hover {
@@ -396,7 +397,7 @@ body {
 
 .btn-teal {
     background-color: #14b8a6;
-    color: white;
+    color: whitesmoke;
 }
 
 .btn-teal:hover {
@@ -407,7 +408,7 @@ body {
 
 .btn-success {
     background-color: #4a90a4;
-    color: white;
+    color: whitesmoke;
 }
 
 .btn-success:hover {
@@ -416,7 +417,7 @@ body {
 
 .btn-danger {
     background-color: #e53e3e;
-    color: white;
+    color: whitesmoke;
 }
 
 .btn-danger:hover {
@@ -450,6 +451,7 @@ body {
     border: 1.5px solid #e2e8f0;
     border-radius: 8px;
     font-size: 14px;
+    background-color: #ffffff;
     transition: all 0.2s ease;
     color: #2d3748;
 }
@@ -544,12 +546,12 @@ body.dark-mode .nav-item {
 
 body.dark-mode .nav-item:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: white;
+    color: whitesmoke;
 }
 
 body.dark-mode .nav-item.active {
     background: rgba(255, 255, 255, 0.15);
-    color: white;
+    color: whitesmoke;
 }
 
 body.dark-mode .nav-dropdown-toggle {
@@ -558,12 +560,12 @@ body.dark-mode .nav-dropdown-toggle {
 
 body.dark-mode .nav-dropdown-toggle:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: white;
+    color: whitesmoke;
 }
 
 body.dark-mode .nav-dropdown.open .nav-dropdown-toggle {
     background: rgba(255, 255, 255, 0.15);
-    color: white;
+    color: whitesmoke;
 }
 
 body.dark-mode .nav-dropdown-menu {

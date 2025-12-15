@@ -259,4 +259,21 @@ class NewNipRecordController extends Controller
             ->route('health-programs.new-nip-view')
             ->with('success', 'NIP record updated successfully.');
     }
+
+    public function destroy($id)
+    {
+        // Only super_admin can delete NIP records
+        if (auth()->user()->role !== 'super_admin') {
+            return back()->with('error', 'Only Super Admin can delete NIP records');
+        }
+
+        $record = NipRecord::findOrFail($id);
+        $recordName = $record->child_name;
+
+        $record->visits()->delete();
+        $record->delete();
+
+        return redirect()->route('health-programs.new-nip-view')
+            ->with('success', 'NIP record deleted successfully');
+    }
 }

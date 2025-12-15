@@ -11,7 +11,8 @@
     <div class="page-content">
         <div class="form-container">
             @if(isset($record))
-                <h2 class="form-title">Editing Immunization Record #{{ $record->record_no ?? ('NIP-' . str_pad($record->id, 3, '0', STR_PAD_LEFT)) }}</h2>
+                <h2 class="form-title">Editing Immunization Record
+                    #{{ $record->record_no ?? ('NIP-' . str_pad($record->id, 3, '0', STR_PAD_LEFT)) }}</h2>
 
                 <div class="form-section section-patient-info">
                     <h3 class="section-header"><span class="section-indicator"></span>Child Summary</h3>
@@ -22,7 +23,8 @@
                         </div>
                         <div class="form-group">
                             <label>Date of Birth</label>
-                            <input type="date" class="form-control" value="{{ optional($record->dob)->format('Y-m-d') }}" readonly>
+                            <input type="date" class="form-control" value="{{ optional($record->dob)->format('Y-m-d') }}"
+                                readonly>
                         </div>
                         <div class="form-group">
                             <label>Mother's Name</label>
@@ -60,9 +62,8 @@
                                         <td>{{ $visit->status }}</td>
                                         <td>{{ $visit->vaccine }}</td>
                                         <td>
-                                            <a href="javascript:void(0)" class="btn-action btn-view view-nip-visit" 
-                                               data-visit-id="{{ $visit->id }}"
-                                               data-visit-index="{{ $index }}">
+                                            <a href="javascript:void(0)" class="btn-action btn-view view-nip-visit"
+                                                data-visit-id="{{ $visit->id }}" data-visit-index="{{ $index }}">
                                                 <i class="bi bi-eye"></i> View
                                             </a>
                                         </td>
@@ -82,20 +83,21 @@
 
             <div class="form-section section-assessment">
                 <div class="section-header section-between">
-                    <span><span class="section-indicator"></span>{{ isset($record) ? 'Add Follow-up Visit' : 'Child & Immunization Details' }}</span>
+                    <span><span
+                            class="section-indicator"></span>{{ isset($record) ? 'Add Follow-up Visit' : 'Child & Immunization Details' }}</span>
                     @if(isset($record))
                         <button type="button" class="btn btn-outline" id="addFollowUpBtn">+ Add Visit</button>
                     @endif
                 </div>
-                <p class="form-note">
-                    @if(isset($record))
-                        Capture immunization and growth monitoring details for follow-up visits. Previously saved visits appear in the table above.
-                    @else
-                        Provide child, family, birth, and immunization information.
-                    @endif
-                </p>
+                @if(isset($record))
+                    <p class="form-note">
+                        Capture immunization and growth monitoring details for follow-up visits. Previously saved visits appear
+                        in the table above.
+                    </p>
+                @endif
 
-                <form id="nipForm" method="POST" action="{{ isset($record) ? route('health-programs.new-nip-update', $record) : route('health-programs.new-nip-store') }}">
+                <form id="nipForm" method="POST"
+                    action="{{ isset($record) ? route('health-programs.new-nip-update', $record) : route('health-programs.new-nip-store') }}">
                     @csrf
                     @if(isset($record))
                         @method('PUT')
@@ -117,8 +119,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="nip_child_name">Name of child <span class="required-asterisk">*</span></label>
-                                    <input type="text" id="nip_child_name" name="nip_child_name" class="form-control"
-                                        required value="{{ old('nip_child_name') }}">
+                                    <input type="text" id="nip_child_name" name="nip_child_name" class="form-control" required
+                                        value="{{ old('nip_child_name') }}">
                                     <span class="error-message" data-for="nip_child_name"></span>
                                 </div>
                                 <div class="form-group">
@@ -131,7 +133,8 @@
 
                             <div class="form-row">
                                 <div class="form-group full-width">
-                                    <label for="nip_address">Complete Purok Address <span class="required-asterisk">*</span></label>
+                                    <label for="nip_address">Complete Purok Address <span
+                                            class="required-asterisk">*</span></label>
                                     <input type="text" id="nip_address" name="nip_address" class="form-control" required
                                         value="{{ old('nip_address') }}">
                                     <span class="error-message" data-for="nip_address"></span>
@@ -140,9 +143,10 @@
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="nip_mother_name">Complete Name of Mother (with middle name) <span class="required-asterisk">*</span></label>
-                                    <input type="text" id="nip_mother_name" name="nip_mother_name" class="form-control"
-                                        required value="{{ old('nip_mother_name') }}">
+                                    <label for="nip_mother_name">Complete Name of Mother (with middle name) <span
+                                            class="required-asterisk">*</span></label>
+                                    <input type="text" id="nip_mother_name" name="nip_mother_name" class="form-control" required
+                                        value="{{ old('nip_mother_name') }}">
                                     <span class="error-message" data-for="nip_mother_name"></span>
                                 </div>
                                 <div class="form-group">
@@ -185,21 +189,23 @@
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="nip_tt_status_mother">TT status of Mother <span class="required-asterisk">*</span></label>
+                                    <label for="nip_tt_status_mother">TT status of Mother <span
+                                            class="required-asterisk">*</span></label>
                                     <input type="text" id="nip_tt_status_mother" name="nip_tt_status_mother"
                                         class="form-control" required value="{{ old('nip_tt_status_mother') }}">
                                     <span class="error-message" data-for="nip_tt_status_mother"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="nip_place_delivery">Place of delivery <span class="required-asterisk">*</span></label>
+                                    <label for="nip_place_delivery">Place of delivery <span
+                                            class="required-asterisk">*</span></label>
                                     <input type="text" id="nip_place_delivery" name="nip_place_delivery" class="form-control"
                                         required value="{{ old('nip_place_delivery') }}">
                                     <span class="error-message" data-for="nip_place_delivery"></span>
                                 </div>
                                 <div class="form-group">
                                     <label for="nip_attended_by">Attended by <span class="required-asterisk">*</span></label>
-                                    <input type="text" id="nip_attended_by" name="nip_attended_by" class="form-control"
-                                        required value="{{ old('nip_attended_by') }}">
+                                    <input type="text" id="nip_attended_by" name="nip_attended_by" class="form-control" required
+                                        value="{{ old('nip_attended_by') }}">
                                     <span class="error-message" data-for="nip_attended_by"></span>
                                 </div>
                             </div>
@@ -229,13 +235,15 @@
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="nip_delivery_type">Type of delivery <span class="required-asterisk">*</span></label>
+                                    <label for="nip_delivery_type">Type of delivery <span
+                                            class="required-asterisk">*</span></label>
                                     <input type="text" id="nip_delivery_type" name="nip_delivery_type" class="form-control"
                                         placeholder="e.g., Normal, CS" required value="{{ old('nip_delivery_type') }}">
                                     <span class="error-message" data-for="nip_delivery_type"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="nip_initiated_breastfeeding">Initiated breastfeeding after birth <span class="required-asterisk">*</span></label>
+                                    <label for="nip_initiated_breastfeeding">Initiated breastfeeding after birth <span
+                                            class="required-asterisk">*</span></label>
                                     <select id="nip_initiated_breastfeeding" name="nip_initiated_breastfeeding"
                                         class="form-control" required>
                                         <option value="">Select</option>
@@ -255,21 +263,24 @@
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="nip_newborn_screening_date">Date of Newborn Screening <span class="required-asterisk">*</span></label>
+                                    <label for="nip_newborn_screening_date">Date of Newborn Screening <span
+                                            class="required-asterisk">*</span></label>
                                     <input type="date" id="nip_newborn_screening_date" name="nip_newborn_screening_date"
                                         class="form-control" required value="{{ old('nip_newborn_screening_date') }}">
                                     <span class="error-message" data-for="nip_newborn_screening_date"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="nip_newborn_screening_result">Result of Newborn Screening <span class="required-asterisk">*</span></label>
+                                    <label for="nip_newborn_screening_result">Result of Newborn Screening <span
+                                            class="required-asterisk">*</span></label>
                                     <input type="text" id="nip_newborn_screening_result" name="nip_newborn_screening_result"
                                         class="form-control" required value="{{ old('nip_newborn_screening_result') }}">
                                     <span class="error-message" data-for="nip_newborn_screening_result"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="nip_hearing_test_screened">Screened Hearing Test <span class="required-asterisk">*</span></label>
-                                    <select id="nip_hearing_test_screened" name="nip_hearing_test_screened"
-                                        class="form-control" required>
+                                    <label for="nip_hearing_test_screened">Screened Hearing Test <span
+                                            class="required-asterisk">*</span></label>
+                                    <select id="nip_hearing_test_screened" name="nip_hearing_test_screened" class="form-control"
+                                        required>
                                         <option value="">Select</option>
                                         <option value="pass" @selected(old('nip_hearing_test_screened') === 'pass')>Pass</option>
                                         <option value="fail" @selected(old('nip_hearing_test_screened') === 'fail')>Fail</option>
@@ -298,7 +309,8 @@
                                     <span class="error-message" data-for="nip_bcg"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="nip_hepa_b_24h">Hepa B birth dose within 24 hrs <span class="required-asterisk">*</span></label>
+                                    <label for="nip_hepa_b_24h">Hepa B birth dose within 24 hrs <span
+                                            class="required-asterisk">*</span></label>
                                     <select id="nip_hepa_b_24h" name="nip_hepa_b_24h" class="form-control" required>
                                         <option value="">Select</option>
                                         <option value="yes" @selected(old('nip_hepa_b_24h') === 'yes')>Yes</option>
@@ -313,7 +325,8 @@
                     <div id="followUpContainer"></div>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">{{ isset($record) ? 'Save Visits' : 'Save Record' }}</button>
+                        <button type="submit"
+                            class="btn btn-primary">{{ isset($record) ? 'Save Visits' : 'Save Record' }}</button>
                         <a href="{{ route('health-programs.new-nip-view') }}" class="btn btn-secondary">Back to Records</a>
                     </div>
                 </form>
@@ -351,55 +364,55 @@
             let visitCount = 0;
 
             const visitTemplate = (index) => `
-                <div class="visit-box" data-index="${index}">
-                    <div class="visit-box-header">
-                        <h4>Visit ${index + 1}</h4>
-                        <button type="button" class="btn btn-link remove-follow-up" data-index="${index}">Remove</button>
-                    </div>
+                    <div class="visit-box" data-index="${index}">
+                        <div class="visit-box-header">
+                            <h4>Visit ${index + 1}</h4>
+                            <button type="button" class="btn btn-link remove-follow-up" data-index="${index}">Remove</button>
+                        </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Date <span class="required-asterisk">*</span></label>
-                            <input type="date" name="new_visits[${index}][date]" class="form-control" required>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Date <span class="required-asterisk">*</span></label>
+                                <input type="date" name="new_visits[${index}][date]" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Age in months <span class="required-asterisk">*</span></label>
+                                <input type="text" name="new_visits[${index}][age]" class="form-control" placeholder="e.g., 2" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Weight <span class="required-asterisk">*</span></label>
+                                <input type="text" name="new_visits[${index}][weight]" class="form-control" placeholder="kg" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Length for age</label>
+                                <input type="text" name="new_visits[${index}][length]" class="form-control" placeholder="cm">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Age in months <span class="required-asterisk">*</span></label>
-                            <input type="text" name="new_visits[${index}][age]" class="form-control" placeholder="e.g., 2" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Weight <span class="required-asterisk">*</span></label>
-                            <input type="text" name="new_visits[${index}][weight]" class="form-control" placeholder="kg" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Length for age</label>
-                            <input type="text" name="new_visits[${index}][length]" class="form-control" placeholder="cm">
-                        </div>
-                    </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Status <span class="required-asterisk">*</span></label>
-                            <input type="text" name="new_visits[${index}][status]" class="form-control" placeholder="Normal, Underweight, etc." required>
-                        </div>
-                        <div class="form-group">
-                            <label>Breastfeeding <span class="required-asterisk">*</span></label>
-                            <select name="new_visits[${index}][breast]" class="form-control" required>
-                                <option value="">Select</option>
-                                <option value="yes">Yes</option>
-                                <option value="no">No</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Temperature <span class="required-asterisk">*</span></label>
-                            <input type="text" name="new_visits[${index}][temp]" class="form-control" placeholder="°C" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Vaccine <span class="required-asterisk">*</span></label>
-                            <input type="text" name="new_visits[${index}][vaccine]" class="form-control" placeholder="Vaccine given" required>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Status <span class="required-asterisk">*</span></label>
+                                <input type="text" name="new_visits[${index}][status]" class="form-control" placeholder="Normal, Underweight, etc." required>
+                            </div>
+                            <div class="form-group">
+                                <label>Breastfeeding <span class="required-asterisk">*</span></label>
+                                <select name="new_visits[${index}][breast]" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Temperature <span class="required-asterisk">*</span></label>
+                                <input type="text" name="new_visits[${index}][temp]" class="form-control" placeholder="°C" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Vaccine <span class="required-asterisk">*</span></label>
+                                <input type="text" name="new_visits[${index}][vaccine]" class="form-control" placeholder="Vaccine given" required>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
 
             const addVisitCard = () => {
                 const wrapper = document.createElement('div');
@@ -429,10 +442,10 @@
                 const visitsData = @json($record->visits);
 
                 document.querySelectorAll('.view-nip-visit').forEach(button => {
-                    button.addEventListener('click', function() {
+                    button.addEventListener('click', function () {
                         const visitId = parseInt(this.getAttribute('data-visit-id'));
                         const visitIndex = parseInt(this.getAttribute('data-visit-index'));
-                        
+
                         visitModal.style.display = 'flex';
                         visitModalBody.innerHTML = '<div style="text-align:center; padding: 2rem;"><p>Loading...</p></div>';
 
@@ -452,56 +465,56 @@
                             };
 
                             visitModalBody.innerHTML = `
-                                <div class="form-section section-patient-info">
-                                    <h3 class="section-header"><span class="section-indicator"></span>Visit Information</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>Visit Date:</strong></label>
-                                            <p>${formatDate(visit.visit_date)}</p>
+                                        <div class="form-section section-patient-info">
+                                            <h3 class="section-header"><span class="section-indicator"></span>Visit Information</h3>
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label><strong>Visit Date:</strong></label>
+                                                    <p>${formatDate(visit.visit_date)}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Age (months):</strong></label>
+                                                    <p>${visit.age_months || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Weight:</strong></label>
+                                                    <p>${visit.weight || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Length:</strong></label>
+                                                    <p>${visit.length || 'N/A'}</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label><strong>Age (months):</strong></label>
-                                            <p>${visit.age_months || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Weight:</strong></label>
-                                            <p>${visit.weight || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Length:</strong></label>
-                                            <p>${visit.length || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div class="form-section section-history">
-                                    <h3 class="section-header"><span class="section-indicator"></span>Health Status</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>Status:</strong></label>
-                                            <p>${visit.status || 'N/A'}</p>
+                                        <div class="form-section section-history">
+                                            <h3 class="section-header"><span class="section-indicator"></span>Health Status</h3>
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label><strong>Status:</strong></label>
+                                                    <p>${visit.status || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Breastfeeding:</strong></label>
+                                                    <p>${visit.breastfeeding || 'N/A'}</p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label><strong>Temperature:</strong></label>
+                                                    <p>${visit.temperature || 'N/A'}</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label><strong>Breastfeeding:</strong></label>
-                                            <p>${visit.breastfeeding || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Temperature:</strong></label>
-                                            <p>${visit.temperature || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div class="form-section section-assessment">
-                                    <h3 class="section-header"><span class="section-indicator"></span>Vaccine Information</h3>
-                                    <div class="form-row">
-                                        <div class="form-group full-width">
-                                            <label><strong>Vaccine:</strong></label>
-                                            <p>${visit.vaccine || 'N/A'}</p>
+                                        <div class="form-section section-assessment">
+                                            <h3 class="section-header"><span class="section-indicator"></span>Vaccine Information</h3>
+                                            <div class="form-row">
+                                                <div class="form-group full-width">
+                                                    <label><strong>Vaccine:</strong></label>
+                                                    <p>${visit.vaccine || 'N/A'}</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            `;
+                                    `;
                         } else {
                             visitModalBody.innerHTML = '<div style="text-align:center; padding: 2rem; color: red;"><p>Visit not found.</p></div>';
                         }
@@ -516,6 +529,6 @@
                     }
                 });
             @endif
-        });
+            });
     </script>
 @endpush

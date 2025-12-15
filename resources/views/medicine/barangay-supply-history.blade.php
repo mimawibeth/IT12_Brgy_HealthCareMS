@@ -11,27 +11,27 @@
 @section('content')
     <div class="page-content">
         <!-- Search and Filter Section -->
-        <form method="GET" action="{{ route('medical-supplies.history') }}" class="filters">
-            <div class="filter-options" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <form method="GET" action="{{ route('medical-supplies.history') }}" class="filters" id="historyFilterForm">
+            <div class="filter-options"
+                style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
                 <input type="text" id="searchHistory" name="search" placeholder="Search by item name, source, or handler..."
-                    class="search-input" value="{{ request('search') }}" style="flex: 1; min-width: 300px;">
+                    class="search-input" value="{{ request('search') }}" style="flex: 1; min-width: 250px;">
 
                 <select id="sourceFilter" name="source" class="filter-select">
                     <option value="">All Sources</option>
                     @foreach($sources as $source)
-                        <option value="{{ $source }}" {{ request('source') === $source ? 'selected' : '' }}>
+                        <option value="{{ $source }}" @selected(request('source') === $source)>
                             {{ $source }}
                         </option>
                     @endforeach
                 </select>
 
                 <select id="dateRangeFilter" name="date_range" class="filter-select">
-                    <option value="today" {{ request('date_range') === 'today' ? 'selected' : '' }}>Today</option>
-                    <option value="week" {{ request('date_range') === 'week' ? 'selected' : '' }}>This Week</option>
-                    <option value="month" {{ request('date_range', 'month') === 'month' ? 'selected' : '' }}>This Month
-                    </option>
-                    <option value="quarter" {{ request('date_range') === 'quarter' ? 'selected' : '' }}>This Quarter</option>
-                    <option value="year" {{ request('date_range') === 'year' ? 'selected' : '' }}>This Year</option>
+                    <option value="today" @selected(request('date_range') === 'today')>Today</option>
+                    <option value="week" @selected(request('date_range') === 'week')>This Week</option>
+                    <option value="month" @selected(request('date_range', 'month') === 'month')>This Month</option>
+                    <option value="quarter" @selected(request('date_range') === 'quarter')>This Quarter</option>
+                    <option value="year" @selected(request('date_range') === 'year')>This Year</option>
                 </select>
 
                 <a href="{{ route('medical-supplies.history') }}" class="btn btn-secondary"
@@ -40,6 +40,90 @@
                 </a>
             </div>
         </form>
+
+        @push('scripts')
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const form = document.getElementById('historyFilterForm');
+                    const searchInput = document.getElementById('searchHistory');
+                    const sourceFilter = document.getElementById('sourceFilter');
+                    const dateRangeFilter = document.getElementById('dateRangeFilter');
+
+                    let searchTimeout;
+
+                    // Auto-submit on search input with debounce
+                    searchInput.addEventListener('input', function () {
+                        clearTimeout(searchTimeout);
+                        searchTimeout = setTimeout(() => {
+                            form.submit();
+                        }, 500);
+                    });
+
+                    // Auto-submit on filter changes
+                    sourceFilter.addEventListener('change', () => form.submit());
+                    dateRangeFilter.addEventListener('change', () => form.submit());
+
+                    // Modal functions
+                    function openModal(id) {
+                        const modal = document.getElementById(id);
+                        if (modal) {
+                            modal.style.display = 'flex';
+                        }
+                    }
+
+                    function closeModal(id) {
+                        const modal = document.getElementById(id);
+                        if (modal) {
+                            modal.style.display = 'none';
+                        }
+                    }
+
+                    // Close modal handlers
+                    document.querySelectorAll('.close-modal[data-close-modal]').forEach(span => {
+                        span.addEventListener('click', function () {
+                            const targetId = this.getAttribute('data-close-modal');
+                            closeModal(targetId);
+                        });
+                    });
+
+                    document.querySelectorAll('button[data-close-modal]').forEach(button => {
+                        button.addEventListener('click', function () {
+                            const targetId = this.getAttribute('data-close-modal');
+                            closeModal(targetId);
+                        });
+                    });
+
+                    const viewTransactionModal = document.getElementById('viewTransactionModal');
+                    window.addEventListener('click', function (event) {
+                        if (event.target === viewTransactionModal) {
+                            closeModal('viewTransactionModal');
+                        }
+                    });
+
+                    // View transaction functionality
+                    document.querySelectorAll('.view-transaction').forEach(button => {
+                        button.addEventListener('click', function () {
+                            const itemName = this.dataset.item;
+                            const quantity = this.dataset.quantity;
+                            const receivedFrom = this.dataset.receivedFrom;
+                            const handledBy = this.dataset.handledBy;
+                            const date = this.dataset.date;
+                            const time = this.dataset.time;
+
+                            // Populate modal
+                            document.getElementById('trans_item_name').textContent = itemName;
+                            document.getElementById('trans_quantity').textContent = quantity;
+                            document.getElementById('trans_received_from').textContent = receivedFrom;
+                            document.getElementById('trans_date_received').textContent = date;
+                            document.getElementById('trans_handled_by').textContent = handledBy;
+                            document.getElementById('trans_created_at').textContent = date + ' ' + time;
+
+                            openModal('viewTransactionModal');
+                        });
+                    });
+                });
+            </script>
+        @endpush
 
         <div class="table-container">
             <div style="overflow-x: auto;">
@@ -86,7 +170,12 @@
                                 </td>
                                 <td class="actions">
                                     <a href="javascript:void(0)" class="btn-action btn-view view-transaction"
-                                        data-id="{{ $record->id }}">
+                                        data-id="{{ $record->id }}" data-item="{{ $record->item_name }}"
+                                        data-quantity="{{ $record->quantity }}"
+                                        data-received-from="{{ $record->received_from ?? 'N/A' }}"
+                                        data-handled-by="{{ $record->handled_by }}"
+                                        data-date="{{ $record->date_received->format('M d, Y') }}"
+                                        data-time="{{ $record->created_at->format('h:i A') }}">
                                         <i class="bi bi-eye"></i> View
                                     </a>
                                 </td>
@@ -110,7 +199,7 @@
                 @if($history->onFirstPage())
                     <button class="btn-page" disabled>« Previous</button>
                 @else
-                    <a class="btn-page" href="{{ $history->appends(request()->query())->previousPageUrl() }}">« Previous</a>
+                    <a class="btn-page" href="{{ $history->previousPageUrl() }}">« Previous</a>
                 @endif
 
                 @php
@@ -122,16 +211,17 @@
                     @if ($page === $history->currentPage())
                         <span class="btn-page active">{{ $page }}</span>
                     @else
-                        <a class="btn-page" href="{{ $history->appends(request()->query())->url($page) }}">{{ $page }}</a>
+                        <a class="btn-page" href="{{ $history->url($page) }}">{{ $page }}</a>
                     @endif
                 @endfor
 
                 <span class="page-info">
-                    Page {{ $history->currentPage() }} of {{ $history->lastPage() }} ({{ $history->total() }} total records)
+                    Page {{ $history->currentPage() }} of {{ $history->lastPage() }} ({{ $history->total() }} total
+                    records)
                 </span>
 
                 @if($history->hasMorePages())
-                    <a class="btn-page" href="{{ $history->appends(request()->query())->nextPageUrl() }}">Next »</a>
+                    <a class="btn-page" href="{{ $history->nextPageUrl() }}">Next »</a>
                 @else
                     <button class="btn-page" disabled>Next »</button>
                 @endif
@@ -195,89 +285,3 @@
         </div>
     </div>
 @endsection
-
-@push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function openModal(id) {
-                const modal = document.getElementById(id);
-                if (modal) {
-                    modal.style.display = 'flex';
-                }
-            }
-
-            function closeModal(id) {
-                const modal = document.getElementById(id);
-                if (modal) {
-                    modal.style.display = 'none';
-                }
-            }
-
-            // Close modal handlers
-            document.querySelectorAll('.close-modal[data-close-modal]').forEach(span => {
-                span.addEventListener('click', function () {
-                    const targetId = this.getAttribute('data-close-modal');
-                    closeModal(targetId);
-                });
-            });
-
-            document.querySelectorAll('button[data-close-modal]').forEach(button => {
-                button.addEventListener('click', function () {
-                    const targetId = this.getAttribute('data-close-modal');
-                    closeModal(targetId);
-                });
-            });
-
-            const viewTransactionModal = document.getElementById('viewTransactionModal');
-            window.addEventListener('click', function (event) {
-                if (event.target === viewTransactionModal) {
-                    closeModal('viewTransactionModal');
-                }
-            });
-
-            // View transaction functionality
-            document.querySelectorAll('.view-transaction').forEach(button => {
-                button.addEventListener('click', function () {
-                    const recordId = this.dataset.id;
-                    const row = this.closest('tr');
-
-                    // Extract data from the row
-                    const cells = row.querySelectorAll('td');
-                    const dateText = cells[0].querySelector('.transaction-date').textContent.trim();
-                    const itemName = cells[1].querySelector('.item-name').textContent.trim();
-                    const quantity = cells[2].querySelector('.quantity-badge').textContent.trim();
-                    const receivedFrom = cells[3].querySelector('small').textContent.trim();
-                    const handledBy = cells[4].querySelector('small').textContent.trim();
-
-                    // Populate modal
-                    document.getElementById('trans_item_name').textContent = itemName;
-                    document.getElementById('trans_quantity').textContent = quantity;
-                    document.getElementById('trans_received_from').textContent = receivedFrom;
-                    document.getElementById('trans_date_received').textContent = dateText.split('\n')[0].trim();
-                    document.getElementById('trans_handled_by').textContent = handledBy;
-                    document.getElementById('trans_created_at').textContent = dateText.replace(/\s+/g, ' ').trim();
-
-                    openModal('viewTransactionModal');
-                });
-            });
-
-            // Auto-submit filter form
-            const filterForm = document.querySelector('.filters');
-            const searchInput = document.getElementById('searchHistory');
-            const sourceFilter = document.getElementById('sourceFilter');
-            const dateRangeFilter = document.getElementById('dateRangeFilter');
-            
-            let searchTimeout;
-            
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    filterForm.submit();
-                }, 500);
-            });
-            
-            sourceFilter.addEventListener('change', () => filterForm.submit());
-            dateRangeFilter.addEventListener('change', () => filterForm.submit());
-        });
-    </script>
-@endpush

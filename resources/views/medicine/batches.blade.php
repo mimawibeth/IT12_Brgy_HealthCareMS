@@ -49,81 +49,157 @@
             </div>
         </form>
 
-        @forelse($batches as $medicineId => $medicineBatches)
+        @forelse($batches as $batchGroup)
             @php
+                $medicineId = $batchGroup['medicine_id'];
+                $medicineBatches = $batchGroup['batches'];
                 $medicine = $medicineBatches->first()->medicine;
                 $totalQuantity = $medicineBatches->sum('quantity_on_hand');
+                $hasExpired = $medicineBatches->where('expiry_date', '<', now())->count() > 0;
+                $hasExpiringSoon = $medicineBatches->where('expiry_date', '>=', now())->where('expiry_date', '<=', now()->addDays(30))->count() > 0;
             @endphp
 
-            <div class="table-container" style="margin-bottom: 2rem;">
-                <div
-                    style="padding: 1rem 1.5rem; background: linear-gradient(135deg, #2f6d7e 0%, #1f4d5c 100%); color: white; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <h3 style="margin: 0; font-size: 1.1rem; font-weight: 600;">
-                            {{ $medicine->name ?? 'Unknown Medicine' }}
-                        </h3>
-                        <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem; opacity: 0.9;">Total Available:
-                            {{ $totalQuantity }} units across {{ $medicineBatches->count() }} batch(es)
-                        </p>
+            <div class="batch-medicine-card" style="margin-bottom: 1.5rem;">
+                <div class="batch-card-header" data-medicine-id="{{ $medicineId }}">
+                    <div class="batch-header-content">
+                        <div class="batch-info-section">
+                            <div class="batch-title-row">
+                                <i class="bi bi-chevron-down batch-toggle-icon"></i>
+                                <h3 class="batch-medicine-name">{{ $medicine->name ?? 'Unknown Medicine' }}</h3>
+                                @if($hasExpired)
+                                    <span class="batch-badge badge-danger">
+                                        <i class="bi bi-exclamation-triangle"></i> Has Expired
+                                    </span>
+                                @elseif($hasExpiringSoon)
+                                    <span class="batch-badge badge-warning">
+                                        <i class="bi bi-clock-history"></i> Expiring Soon
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="batch-stats">
+                                <span class="batch-stat-item">
+                                    <i class="bi bi-box-seam"></i>
+                                    <strong>{{ $totalQuantity }}</strong> units
+                                </span>
+                                <span class="batch-stat-separator">•</span>
+                                <span class="batch-stat-item">
+                                    <i class="bi bi-layers"></i>
+                                    <strong>{{ $medicineBatches->count() }}</strong>
+                                    batch{{ $medicineBatches->count() > 1 ? 'es' : '' }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="batch-actions">
+                            <button type="button" class="btn btn-teal btn-sm dispense-batch-btn"
+                                data-medicine-id="{{ $medicineId }}" data-medicine-name="{{ $medicine->name ?? '' }}">
+                                <i class="bi bi-prescription2"></i> Dispense
+                            </button>
+                        </div>
                     </div>
-                    <button type="button" class="btn btn-teal btn-sm dispense-batch-btn" data-medicine-id="{{ $medicineId }}"
-                        data-medicine-name="{{ $medicine->name ?? '' }}"
-                        style="background: white; color: #2f6d7e; padding: 8px 12px !important; font-size: 14px; font-weight: normal;">
-                        <i class="bi bi-prescription2"></i> Dispense
-                    </button>
                 </div>
 
-                <div style="overflow-x: auto;">
-                    <table class="data-table" style="min-width: 800px;">
-                        <thead>
-                            <tr>
-                                <th>Batch Code</th>
-                                <th>Quantity on Hand</th>
-                                <th>Expiry Date</th>
-                                <th>Date Received</th>
-                                <th>From</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($medicineBatches as $batch)
+                <div class="batch-card-body" id="batch-body-{{ $medicineId }}">
+                    <div class="batch-table-wrapper">
+                        <table class="data-table">
+                            <thead>
                                 <tr>
-                                    <td>{{ $batch->batch_code ?? 'N/A' }}</td>
-                                    <td>{{ $batch->quantity_on_hand }}</td>
-                                    <td>{{ optional($batch->expiry_date)->format('M d, Y') }}</td>
-                                    <td>{{ optional($batch->date_received)->format('M d, Y') }}</td>
-                                    <td>{{ $batch->supplier ?? 'N/A' }}</td>
+                                    <th>Batch Code</th>
+                                    <th>Quantity on Hand</th>
+                                    <th>Expiry Date</th>
+                                    <th>Date Received</th>
+                                    <th>From</th>
+                                    <th>Status</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach($medicineBatches as $batch)
+                                    @php
+                                        $isExpired = $batch->expiry_date && $batch->expiry_date < now();
+                                        $isExpiringSoon = $batch->expiry_date && $batch->expiry_date >= now() && $batch->expiry_date <= now()->addDays(30);
+                                    @endphp
+                                    <tr class="{{ $isExpired ? 'batch-expired' : ($isExpiringSoon ? 'batch-expiring-soon' : '') }}">
+                                        <td><strong>{{ $batch->batch_code ?? 'N/A' }}</strong></td>
+                                        <td>
+                                            <span
+                                                class="quantity-badge {{ $batch->quantity_on_hand > 0 ? 'quantity-available' : 'quantity-empty' }}">
+                                                {{ $batch->quantity_on_hand }}
+                                            </span>
+                                        </td>
+                                        <td>{{ optional($batch->expiry_date)->format('M d, Y') ?? 'N/A' }}</td>
+                                        <td>{{ optional($batch->date_received)->format('M d, Y') ?? 'N/A' }}</td>
+                                        <td>{{ $batch->supplier ?? 'N/A' }}</td>
+                                        <td>
+                                            @if($isExpired)
+                                                <span class="status-badge status-expired">
+                                                    <i class="bi bi-x-circle"></i> Expired
+                                                </span>
+                                            @elseif($isExpiringSoon)
+                                                <span class="status-badge status-expiring">
+                                                    <i class="bi bi-exclamation-circle"></i> Expiring Soon
+                                                </span>
+                                            @else
+                                                <span class="status-badge status-valid">
+                                                    <i class="bi bi-check-circle"></i> Valid
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         @empty
-            <div class="table-container">
-                <div style="overflow-x: auto;">
-                    <table class="data-table" style="min-width: 800px;">
-                        <thead>
-                            <tr>
-                                <th>Batch Code</th>
-                                <th>Quantity on Hand</th>
-                                <th>Expiry Date</th>
-                                <th>Date Received</th>
-                                <th>From</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="5" style="text-align:center; padding: 40px; color: #7f8c8d;">
-                                    <i class="bi bi-inbox"
-                                        style="font-size: 48px; display: block; margin-bottom: 10px; opacity: 0.5;"></i>
-                                    No medicine batches found.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="empty-state">
+                <i class="bi bi-inbox" style="font-size: 64px; color: #bdc3c7; margin-bottom: 16px;"></i>
+                <h3 style="color: #7f8c8d; font-size: 18px; margin-bottom: 8px;">No Medicine Batches Found</h3>
+                <p style="color: #95a5a6; font-size: 14px; margin-bottom: 20px;">
+                    @if(request('medicine_id') || request('filter'))
+                        No batches match your current filters. Try adjusting your search criteria.
+                    @else
+                        Get started by adding your first medicine batch.
+                    @endif
+                </p>
+                <button type="button" class="btn btn-primary" id="openAddBatchModalEmpty">
+                    <i class="bi bi-plus-circle"></i> Add First Batch
+                </button>
             </div>
         @endforelse
+
+        @if($batches->hasPages())
+            <div class="pagination">
+                @if($batches->onFirstPage())
+                    <button class="btn-page" disabled>« Previous</button>
+                @else
+                    <a class="btn-page" href="{{ $batches->previousPageUrl() }}">« Previous</a>
+                @endif
+
+                @php
+                    $start = max(1, $batches->currentPage() - 2);
+                    $end = min($batches->lastPage(), $batches->currentPage() + 2);
+                @endphp
+
+                @for ($page = $start; $page <= $end; $page++)
+                    @if ($page === $batches->currentPage())
+                        <span class="btn-page active">{{ $page }}</span>
+                    @else
+                        <a class="btn-page" href="{{ $batches->url($page) }}">{{ $page }}</a>
+                    @endif
+                @endfor
+
+                <span class="page-info">
+                    Page {{ $batches->currentPage() }} of {{ $batches->lastPage() }} ({{ $batches->total() }} total
+                    medicine{{ $batches->total() > 1 ? 's' : '' }})
+                </span>
+
+                @if($batches->hasMorePages())
+                    <a class="btn-page" href="{{ $batches->nextPageUrl() }}">Next »</a>
+                @else
+                    <button class="btn-page" disabled>Next »</button>
+                @endif
+            </div>
+        @endif
 
         <div class="modal" id="addBatchModal" style="display:none;">
             <div class="modal-content modal-large">
@@ -293,7 +369,49 @@
                 const addBatchModal = document.getElementById('addBatchModal');
                 const dispenseModal = document.getElementById('dispenseFromBatchesModal');
                 const openAddBatchBtn = document.getElementById('openAddBatchModal');
+                const openAddBatchBtnEmpty = document.getElementById('openAddBatchModalEmpty');
                 const openDispenseBtn = document.getElementById('openDispenseFromBatchesModal');
+
+                // Collapsible Batch Cards
+                function initializeCollapsibleCards() {
+                    const batchHeaders = document.querySelectorAll('.batch-card-header');
+
+                    batchHeaders.forEach((header, index) => {
+                        const medicineId = header.getAttribute('data-medicine-id');
+                        const batchBody = document.getElementById(`batch-body-${medicineId}`);
+                        const toggleIcon = header.querySelector('.batch-toggle-icon');
+
+                        // Set initial state - first card open, rest collapsed
+                        if (index === 0) {
+                            batchBody.classList.add('active');
+                            toggleIcon.style.transform = 'rotate(0deg)';
+                        } else {
+                            batchBody.classList.remove('active');
+                            toggleIcon.style.transform = 'rotate(-90deg)';
+                        }
+
+                        header.addEventListener('click', function (e) {
+                            // Don't toggle if clicking the dispense button
+                            if (e.target.closest('.dispense-batch-btn')) {
+                                return;
+                            }
+
+                            const isActive = batchBody.classList.contains('active');
+
+                            // Toggle current card
+                            if (isActive) {
+                                batchBody.classList.remove('active');
+                                toggleIcon.style.transform = 'rotate(-90deg)';
+                            } else {
+                                batchBody.classList.add('active');
+                                toggleIcon.style.transform = 'rotate(0deg)';
+                            }
+                        });
+                    });
+                }
+
+                // Initialize collapsible cards on page load
+                initializeCollapsibleCards();
 
                 function openModal(id) {
                     const modal = document.getElementById(id);
@@ -311,6 +429,13 @@
 
                 if (openAddBatchBtn && addBatchModal) {
                     openAddBatchBtn.addEventListener('click', function () {
+                        generateBatchCode();
+                        openModal('addBatchModal');
+                    });
+                }
+
+                if (openAddBatchBtnEmpty && addBatchModal) {
+                    openAddBatchBtnEmpty.addEventListener('click', function () {
                         generateBatchCode();
                         openModal('addBatchModal');
                     });
@@ -472,11 +597,11 @@
 
                                 if (patients.length > 0) {
                                     patientSearchResults.innerHTML = patients.map(patient => `
-                                                        <div class="patient-result-item" data-name="${patient.full_name}" data-id="${patient.patient_id}" 
-                                                            style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee;">
-                                                            <strong>${patient.full_name}</strong> <span style="color: #666;">(${patient.patient_id})</span>
-                                                        </div>
-                                                    `).join('');
+                                                                        <div class="patient-result-item" data-name="${patient.full_name}" data-id="${patient.patient_id}" 
+                                                                            style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee;">
+                                                                            <strong>${patient.full_name}</strong> <span style="color: #666;">(${patient.patient_id})</span>
+                                                                        </div>
+                                                                    `).join('');
                                     patientSearchResults.style.display = 'block';
 
                                     // Add click handlers to results

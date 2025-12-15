@@ -13,33 +13,95 @@
             <h2 class="form-title">Editing Patient: {{ $patient->name }} ({{ $patient->patientNo }})</h2>
 
             <div class="form-section section-patient-info">
-                <h3 class="section-header"><span class="section-indicator"></span>Patient Summary</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Patient No.</label>
-                        <input type="text" class="form-control" value="{{ $patient->patientNo }}" readonly>
+                <h3 class="section-header" style="display: flex; align-items: center; justify-content: space-between;">
+                    <span style="display: flex; align-items: center;"><span class="section-indicator"></span>Patient
+                        Summary</span>
+                    @if(auth()->user()->role === 'super_admin')
+                        <button type="button" id="toggleEditBtn" class="btn btn-secondary"
+                            style="padding: 6px 12px; font-size: 13px;" onclick="toggleEditMode()">
+                            <i class="bi bi-pencil"></i> Enable Edit Mode
+                        </button>
+                    @endif
+                </h3>
+                <form method="POST" action="{{ route('patients.update', $patient->PatientID) }}" id="patientInfoForm"
+                    style="display: none;">
+                    @csrf
+                    @method('PUT')
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Patient No.</label>
+                            <input type="text" name="patientNo" class="form-control" value="{{ $patient->patientNo }}"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" name="firstname" class="form-control" value="{{ $patient->firstname }}"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" name="lastname" class="form-control" value="{{ $patient->lastname }}"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label>Sex</label>
+                            <select name="sex" class="form-control" required>
+                                <option value="Male" {{ $patient->sex === 'Male' ? 'selected' : '' }}>Male</option>
+                                <option value="Female" {{ $patient->sex === 'Female' ? 'selected' : '' }}>Female</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" class="form-control" value="{{ $patient->name }}" readonly>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Birthday</label>
+                            <input type="date" name="birthday" class="form-control"
+                                value="{{ optional($patient->birthday)->format('Y-m-d') }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input type="text" name="address" class="form-control" value="{{ $patient->address }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <input type="text" name="contactNumber" class="form-control"
+                                value="{{ $patient->contactNumber }}">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>Sex</label>
-                        <input type="text" class="form-control" value="{{ $patient->sex }}" readonly>
+                    <div class="form-actions"
+                        style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px;">
+                        <button type="button" class="btn btn-secondary" onclick="toggleEditMode()">Cancel</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Changes</button>
                     </div>
-                    <div class="form-group">
-                        <label>Birthday</label>
-                        <input type="date" class="form-control" value="{{ optional($patient->birthday)->format('Y-m-d') }}" readonly>
+                </form>
+                <div id="patientInfoView">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Patient No.</label>
+                            <input type="text" class="form-control" value="{{ $patient->patientNo }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" class="form-control" value="{{ $patient->name }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Sex</label>
+                            <input type="text" class="form-control" value="{{ $patient->sex }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Birthday</label>
+                            <input type="date" class="form-control"
+                                value="{{ optional($patient->birthday)->format('Y-m-d') }}" readonly>
+                        </div>
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Address</label>
-                        <input type="text" class="form-control" value="{{ $patient->address }}" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label>Contact Number</label>
-                        <input type="text" class="form-control" value="{{ $patient->contactNumber }}" readonly>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input type="text" class="form-control" value="{{ $patient->address }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Number</label>
+                            <input type="text" class="form-control" value="{{ $patient->contactNumber }}" readonly>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -81,9 +143,9 @@
                                     <td>{{ $assessment->ht ?? '—' }}</td>
                                     <td>{{ Str::limit($assessment->chiefComplaint ?? '—', 30) }}</td>
                                     <td>
-                                        <a href="javascript:void(0)" class="btn-action btn-view view-assessment" 
-                                           data-assessment-id="{{ $assessment->id }}"
-                                           data-patient-id="{{ $patient->PatientID }}">
+                                        <a href="javascript:void(0)" class="btn-action btn-view view-assessment"
+                                            data-assessment-id="{{ $assessment->id }}"
+                                            data-patient-id="{{ $patient->PatientID }}">
                                             <i class="bi bi-eye"></i> View
                                         </a>
                                     </td>
@@ -103,9 +165,11 @@
                     <span><span class="section-indicator"></span>Add New Visit Assessment</span>
                     <button type="button" class="btn btn-outline" id="addAssessmentBtn">+ Add Assessment</button>
                 </div>
-                <p class="form-note">Add new visit assessments for this patient. Previously saved assessments appear in the table above.</p>
+                <p class="form-note">Add new visit assessments for this patient. Previously saved assessments appear in the
+                    table above.</p>
 
-                <form id="assessmentForm" method="POST" action="{{ route('patients.assessments.store', $patient->PatientID) }}">
+                <form id="assessmentForm" method="POST"
+                    action="{{ route('patients.assessments.store', $patient->PatientID) }}">
                     @csrf
                     <div id="assessmentContainer"></div>
 
@@ -145,141 +209,141 @@
             let assessmentCount = 0;
 
             const assessmentTemplate = (index) => `
-                <div class="visit-box" data-index="${index}" style="border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; border-radius: 8px; background-color: #f9f9f9;">
-                    <div class="visit-box-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #2f6d7e;">
-                        <h4 style="margin: 0; color: #2f6d7e;">Visit Assessment ${index + 1}</h4>
-                        <button type="button" class="btn btn-link remove-assessment" data-index="${index}" style="color: #e74c3c; text-decoration: none; padding: 5px 10px;">Remove</button>
+                    <div class="visit-box" data-index="${index}" style="border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; border-radius: 8px; background-color: #f9f9f9;">
+                        <div class="visit-box-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #2f6d7e;">
+                            <h4 style="margin: 0; color: #2f6d7e;">Visit Assessment ${index + 1}</h4>
+                            <button type="button" class="btn btn-link remove-assessment" data-index="${index}" style="color: #e74c3c; text-decoration: none; padding: 5px 10px;">Remove</button>
+                        </div>
+
+                        <div style="display: flex; gap: 20px;">
+                            <!-- Monitoring Parameters (Left Column) -->
+                            <div style="flex: 1;">
+                                <h4 style="margin-bottom: 10px; color: #2f6d7e;">Monitoring Parameters</h4>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Date <span class="required-asterisk">*</span></label>
+                                        <input type="date" name="assessments[${index}][date]" class="form-control assessment-date" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Age</label>
+                                        <input type="text" name="assessments[${index}][age]" class="form-control assessment-age" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>CVD Risk</label>
+                                        <input type="text" name="assessments[${index}][cvd_risk]" class="form-control" placeholder="e.g., Low, Medium, High">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>BP: (Systolic)</label>
+                                        <input type="text" name="assessments[${index}][bp_systolic]" class="form-control" placeholder="mmHg">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>BP: (Diastolic)</label>
+                                        <input type="text" name="assessments[${index}][bp_diastolic]" class="form-control" placeholder="mmHg">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Wt (Weight)</label>
+                                        <input type="text" name="assessments[${index}][wt]" class="form-control" placeholder="kg">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Ht (Height)</label>
+                                        <input type="text" name="assessments[${index}][ht]" class="form-control" placeholder="cm">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>FBS/RBS</label>
+                                        <input type="text" name="assessments[${index}][fbs_rbs]" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Lipid Profile</label>
+                                        <input type="text" name="assessments[${index}][lipid_profile]" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Urine Ketones</label>
+                                        <input type="text" name="assessments[${index}][urine_ketones]" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Urine Protein</label>
+                                        <input type="text" name="assessments[${index}][urine_protein]" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Foot Check</label>
+                                        <input type="text" name="assessments[${index}][foot_check]" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Chief Complaint / History / Physical Examination (Middle Column) -->
+                            <div style="flex: 1;">
+                                <h4 style="margin-bottom: 10px; color: #2f6d7e;">Chief Complaint / Diagnosis</h4>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Chief Complaint</label>
+                                        <textarea name="assessments[${index}][chief_complaint]" class="form-control" rows="3" placeholder="Patient's main complaint"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>History / Physical Examination</label>
+                                        <textarea name="assessments[${index}][history_physical]" class="form-control" rows="7" placeholder="Medical history and physical examination findings"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Management (Right Column) -->
+                            <div style="flex: 1;">
+                                <h4 style="margin-bottom: 10px; color: #2f6d7e;">Management</h4>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Management Plan</label>
+                                        <textarea name="assessments[${index}][management]" class="form-control" rows="12" placeholder="Treatment plan, medications, follow-up instructions"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <div style="display: flex; gap: 20px;">
-                        <!-- Monitoring Parameters (Left Column) -->
-                        <div style="flex: 1;">
-                            <h4 style="margin-bottom: 10px; color: #2f6d7e;">Monitoring Parameters</h4>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Date <span class="required-asterisk">*</span></label>
-                                    <input type="date" name="assessments[${index}][date]" class="form-control assessment-date" required>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Age</label>
-                                    <input type="text" name="assessments[${index}][age]" class="form-control assessment-age" readonly>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>CVD Risk</label>
-                                    <input type="text" name="assessments[${index}][cvd_risk]" class="form-control" placeholder="e.g., Low, Medium, High">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>BP: (Systolic)</label>
-                                    <input type="text" name="assessments[${index}][bp_systolic]" class="form-control" placeholder="mmHg">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>BP: (Diastolic)</label>
-                                    <input type="text" name="assessments[${index}][bp_diastolic]" class="form-control" placeholder="mmHg">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Wt (Weight)</label>
-                                    <input type="text" name="assessments[${index}][wt]" class="form-control" placeholder="kg">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Ht (Height)</label>
-                                    <input type="text" name="assessments[${index}][ht]" class="form-control" placeholder="cm">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>FBS/RBS</label>
-                                    <input type="text" name="assessments[${index}][fbs_rbs]" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Lipid Profile</label>
-                                    <input type="text" name="assessments[${index}][lipid_profile]" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Urine Ketones</label>
-                                    <input type="text" name="assessments[${index}][urine_ketones]" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Urine Protein</label>
-                                    <input type="text" name="assessments[${index}][urine_protein]" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Foot Check</label>
-                                    <input type="text" name="assessments[${index}][foot_check]" class="form-control">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Chief Complaint / History / Physical Examination (Middle Column) -->
-                        <div style="flex: 1;">
-                            <h4 style="margin-bottom: 10px; color: #2f6d7e;">Chief Complaint / Diagnosis</h4>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Chief Complaint</label>
-                                    <textarea name="assessments[${index}][chief_complaint]" class="form-control" rows="3" placeholder="Patient's main complaint"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>History / Physical Examination</label>
-                                    <textarea name="assessments[${index}][history_physical]" class="form-control" rows="7" placeholder="Medical history and physical examination findings"></textarea>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Management (Right Column) -->
-                        <div style="flex: 1;">
-                            <h4 style="margin-bottom: 10px; color: #2f6d7e;">Management</h4>
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Management Plan</label>
-                                    <textarea name="assessments[${index}][management]" class="form-control" rows="12" placeholder="Treatment plan, medications, follow-up instructions"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+                `;
 
             const addAssessmentCard = () => {
                 const wrapper = document.createElement('div');
                 wrapper.innerHTML = assessmentTemplate(assessmentCount);
                 container.appendChild(wrapper.firstElementChild);
-                
+
                 // Calculate age based on today's date and patient's birthday
                 const ageInput = container.querySelector(`[data-index="${assessmentCount}"] .assessment-age`);
                 if (ageInput) {
@@ -297,7 +361,7 @@
                         }
                     }
                 }
-                
+
                 assessmentCount++;
             };
 
@@ -316,7 +380,7 @@
             const closeModalBtn = document.getElementById('closeAssessmentModalBtn');
 
             document.querySelectorAll('.view-assessment').forEach(button => {
-                button.addEventListener('click', async function() {
+                button.addEventListener('click', async function () {
                     const assessmentId = this.getAttribute('data-assessment-id');
                     const patientId = this.getAttribute('data-patient-id');
 
@@ -358,96 +422,96 @@
                             }
 
                             modalBody.innerHTML = `
-                                <div class="form-section section-patient-info">
-                                    <h3 class="section-header"><span class="section-indicator"></span>Assessment Information</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>Assessment Date:</strong></label>
-                                            <p>${formatDate(assessment.date)}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Patient Age (Current):</strong></label>
-                                            <p>${currentAge} years old</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>CVD Risk:</strong></label>
-                                            <p>${assessment.cvdRisk || 'N/A'}</p>
+                                    <div class="form-section section-patient-info">
+                                        <h3 class="section-header"><span class="section-indicator"></span>Assessment Information</h3>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label><strong>Assessment Date:</strong></label>
+                                                <p>${formatDate(assessment.date)}</p>
+                                            </div>
+                                            <div class="form-group">
+                                                <label><strong>Patient Age (Current):</strong></label>
+                                                <p>${currentAge} years old</p>
+                                            </div>
+                                            <div class="form-group">
+                                                <label><strong>CVD Risk:</strong></label>
+                                                <p>${assessment.cvdRisk || 'N/A'}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="form-section section-history">
-                                    <h3 class="section-header"><span class="section-indicator"></span>Monitoring Parameters</h3>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>BP Systolic:</strong></label>
-                                            <p>${assessment.bpSystolic || 'N/A'} ${assessment.bpSystolic ? 'mmHg' : ''}</p>
+                                    <div class="form-section section-history">
+                                        <h3 class="section-header"><span class="section-indicator"></span>Monitoring Parameters</h3>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label><strong>BP Systolic:</strong></label>
+                                                <p>${assessment.bpSystolic || 'N/A'} ${assessment.bpSystolic ? 'mmHg' : ''}</p>
+                                            </div>
+                                            <div class="form-group">
+                                                <label><strong>BP Diastolic:</strong></label>
+                                                <p>${assessment.bpDiastolic || 'N/A'} ${assessment.bpDiastolic ? 'mmHg' : ''}</p>
+                                            </div>
+                                            <div class="form-group">
+                                                <label><strong>Weight:</strong></label>
+                                                <p>${assessment.wt || 'N/A'} ${assessment.wt ? 'kg' : ''}</p>
+                                            </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label><strong>BP Diastolic:</strong></label>
-                                            <p>${assessment.bpDiastolic || 'N/A'} ${assessment.bpDiastolic ? 'mmHg' : ''}</p>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label><strong>Height:</strong></label>
+                                                <p>${assessment.ht || 'N/A'} ${assessment.ht ? 'cm' : ''}</p>
+                                            </div>
+                                            <div class="form-group">
+                                                <label><strong>FBS/RBS:</strong></label>
+                                                <p>${assessment.fbsRbs || 'N/A'}</p>
+                                            </div>
+                                            <div class="form-group">
+                                                <label><strong>Lipid Profile:</strong></label>
+                                                <p>${assessment.lipidProfile || 'N/A'}</p>
+                                            </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label><strong>Weight:</strong></label>
-                                            <p>${assessment.wt || 'N/A'} ${assessment.wt ? 'kg' : ''}</p>
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label><strong>Urine Ketones:</strong></label>
+                                                <p>${assessment.urineKetones || 'N/A'}</p>
+                                            </div>
+                                            <div class="form-group">
+                                                <label><strong>Urine Protein:</strong></label>
+                                                <p>${assessment.urineProtein || 'N/A'}</p>
+                                            </div>
+                                            <div class="form-group">
+                                                <label><strong>Foot Check:</strong></label>
+                                                <p>${assessment.footCheck || 'N/A'}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>Height:</strong></label>
-                                            <p>${assessment.ht || 'N/A'} ${assessment.ht ? 'cm' : ''}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>FBS/RBS:</strong></label>
-                                            <p>${assessment.fbsRbs || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Lipid Profile:</strong></label>
-                                            <p>${assessment.lipidProfile || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                    <div class="form-row">
-                                        <div class="form-group">
-                                            <label><strong>Urine Ketones:</strong></label>
-                                            <p>${assessment.urineKetones || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Urine Protein:</strong></label>
-                                            <p>${assessment.urineProtein || 'N/A'}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label><strong>Foot Check:</strong></label>
-                                            <p>${assessment.footCheck || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div class="form-section section-assessment">
-                                    <h3 class="section-header"><span class="section-indicator"></span>Chief Complaint / Diagnosis</h3>
-                                    <div class="form-row">
-                                        <div class="form-group full-width">
-                                            <label><strong>Chief Complaint:</strong></label>
-                                            <p style="white-space: pre-wrap;">${assessment.chiefComplaint || 'N/A'}</p>
+                                    <div class="form-section section-assessment">
+                                        <h3 class="section-header"><span class="section-indicator"></span>Chief Complaint / Diagnosis</h3>
+                                        <div class="form-row">
+                                            <div class="form-group full-width">
+                                                <label><strong>Chief Complaint:</strong></label>
+                                                <p style="white-space: pre-wrap;">${assessment.chiefComplaint || 'N/A'}</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group full-width">
+                                                <label><strong>History / Physical Examination:</strong></label>
+                                                <p style="white-space: pre-wrap;">${assessment.historyPhysical || 'N/A'}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="form-row">
-                                        <div class="form-group full-width">
-                                            <label><strong>History / Physical Examination:</strong></label>
-                                            <p style="white-space: pre-wrap;">${assessment.historyPhysical || 'N/A'}</p>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div class="form-section section-screening">
-                                    <h3 class="section-header"><span class="section-indicator"></span>Management</h3>
-                                    <div class="form-row">
-                                        <div class="form-group full-width">
-                                            <label><strong>Management Plan:</strong></label>
-                                            <p style="white-space: pre-wrap;">${assessment.management || 'N/A'}</p>
+                                    <div class="form-section section-screening">
+                                        <h3 class="section-header"><span class="section-indicator"></span>Management</h3>
+                                        <div class="form-row">
+                                            <div class="form-group full-width">
+                                                <label><strong>Management Plan:</strong></label>
+                                                <p style="white-space: pre-wrap;">${assessment.management || 'N/A'}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            `;
+                                `;
                         } else {
                             modalBody.innerHTML = '<div style="text-align:center; padding: 2rem; color: red;"><p>Assessment not found.</p></div>';
                         }
@@ -465,6 +529,22 @@
                 }
             });
         });
+
+        // Toggle Edit Mode for Patient Info (Super Admin Only)
+        function toggleEditMode() {
+            const form = document.getElementById('patientInfoForm');
+            const view = document.getElementById('patientInfoView');
+            const btn = document.getElementById('toggleEditBtn');
+
+            if (form.style.display === 'none') {
+                form.style.display = 'block';
+                view.style.display = 'none';
+                btn.innerHTML = '<i class="bi bi-x-circle"></i> Cancel Edit';
+            } else {
+                form.style.display = 'none';
+                view.style.display = 'block';
+                btn.innerHTML = '<i class="bi bi-pencil"></i> Enable Edit Mode';
+            }
+        }
     </script>
 @endpush
-

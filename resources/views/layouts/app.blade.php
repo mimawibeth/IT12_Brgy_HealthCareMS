@@ -164,7 +164,7 @@
                         </a>
                         <a href="{{ route('health-programs.family-planning-view') }}"
                             class="nav-item {{ request()->routeIs('health-programs.family-planning-*') ? 'active' : '' }}">
-                            <i class="bi bi-people-fill icon"></i>
+                            <i class="bi bi-people icon"></i>
                             <span>Family Planning</span>
                         </a>
                         <a href="{{ route('health-programs.new-nip-view') }}"
@@ -172,43 +172,42 @@
                             <i class="bi bi-shield-plus icon"></i>
                             <span>Immunization</span>
                         </a>
-
                     </div>
                 </div>
 
                 <!-- INVENTORY SECTION -->
-                <!-- Medicine Dropdown -->
+                <!-- Medicines & Supplies Dropdown -->
                 <div class="nav-dropdown">
                     <button class="nav-dropdown-toggle">
                         <i class="bi bi-capsule icon"></i>
-                        <span>Supplies</span>
+                        <span>Medicines & Supplies</span>
                         <i class="bi bi-chevron-down arrow"></i>
                     </button>
                     <div class="nav-dropdown-menu">
                         <a href="{{ route('medicine.index') }}"
                             class="nav-item {{ request()->routeIs('medicine.index') ? 'active' : '' }}">
                             <i class="bi bi-list-ul icon"></i>
-                            <span>Medicine Records</span>
+                            <span>Medicines List</span>
                         </a>
                         <a href="{{ route('medicine.batches.index') }}"
                             class="nav-item {{ request()->routeIs('medicine.batches.*') ? 'active' : '' }}">
                             <i class="bi bi-box-seam icon"></i>
-                            <span>Medicine Stock</span>
+                            <span>Stock & Batches</span>
                         </a>
                         <a href="{{ route('medicine.dispense') }}"
                             class="nav-item {{ request()->routeIs('medicine.dispense') ? 'active' : '' }}">
                             <i class="bi bi-prescription2 icon"></i>
-                            <span>Dispense History</span>
+                            <span>Dispensing Log</span>
                         </a>
                         <a href="{{ route('medical-supplies.index') }}"
                             class="nav-item {{ request()->routeIs('medical-supplies.index') ? 'active' : '' }}">
                             <i class="bi bi-box2-heart icon"></i>
-                            <span>Medical Supplies</span>
+                            <span>Supplies Inventory</span>
                         </a>
                         <a href="{{ route('medical-supplies.history') }}"
                             class="nav-item {{ request()->routeIs('medical-supplies.history') ? 'active' : '' }}">
                             <i class="bi bi-clock-history icon"></i>
-                            <span>Supply History</span>
+                            <span>Supply Activity</span>
                         </a>
                     </div>
                 </div>

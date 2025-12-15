@@ -86,6 +86,12 @@
                                     class="btn-action btn-edit">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>
+                                @if(auth()->user()->role === 'super_admin')
+                                    <a href="javascript:void(0)" class="btn-action btn-delete"
+                                        onclick="openDeleteModal({{ $record->id }}, '{{ $record->client_name }}')">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                     @empty
@@ -182,37 +188,34 @@
                                     <span class="error-message" data-for="fp_client_name"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="fp_dob">Date of Birth</label>
+                                    <label for="fp_dob">Date of Birth <span class="required-asterisk">*</span> </label>
                                     <input type="date" id="fp_dob" name="fp_dob" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label for="fp_age">Age</label>
+                                    <label for="fp_age">Age <span class="required-asterisk">*</span></label>
                                     <input type="number" id="fp_age" name="fp_age" class="form-control">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="fp_address">Address</label>
+                                    <label for="fp_address">Address <span class="required-asterisk">*</span></label>
                                     <input type="text" id="fp_address" name="fp_address" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label for="fp_contact">Contact Number</label>
+                                    <label for="fp_contact">Contact Number <span class="required-asterisk">*</span></label>
                                     <input type="text" id="fp_contact" name="fp_contact" class="form-control">
                                 </div>
                                 <div class="form-group">
-                                    <label for="fp_occupation">Occupation</label>
+                                    <label for="fp_occupation">Occupation <span class="required-asterisk">*</span></label>
                                     <input type="text" id="fp_occupation" name="fp_occupation" class="form-control">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="fp_spouse">Name of Spouse</label>
+                                    <label for="fp_spouse">Name of Spouse <span class="required-asterisk">*</span></label>
                                     <input type="text" id="fp_spouse" name="fp_spouse" class="form-control">
                                 </div>
-                                <div class="form-group">
-                                    <label for="fp_spouse_age">Age</label>
-                                    <input type="number" id="fp_spouse_age" name="fp_spouse_age" class="form-control">
-                                </div>
+
                                 <div class="form-group">
                                     <label for="fp_children">No. living children</label>
                                     <input type="number" id="fp_children" name="fp_children" class="form-control">
@@ -437,6 +440,45 @@
             </div>
         </div>
 
+        <!-- Delete Record Modal (Super Admin Only) -->
+        @if(auth()->user()->role === 'super_admin')
+            <div class="modal" id="deleteModal" style="display:none;">
+                <div class="modal-content" style="max-width: 500px;">
+                    <div class="modal-header" style="background: #dc2626; color: white;">
+                        <h3 style="margin: 0;"><i class="bi bi-exclamation-triangle-fill"></i> Delete Family Planning Record
+                        </h3>
+                        <span class="close-modal" onclick="closeDeleteModal()"
+                            style="color: white; cursor: pointer; font-size: 28px;">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <p style="margin-bottom: 20px;">Are you sure you want to permanently delete the family planning record
+                            for <strong id="deleteRecordName"></strong>?</p>
+
+                        <div
+                            style="background: #fee2e2; padding: 15px; border-radius: 4px; border-left: 4px solid #dc2626; margin-bottom: 20px;">
+                            <p style="margin: 0 0 10px 0; color: #991b1b;"><strong><i class="bi bi-exclamation-triangle"
+                                        style="color: #dc2626;"></i> WARNING:</strong> This action cannot be undone!</p>
+                            <p style="margin: 0; color: #991b1b; font-size: 13px;">All family planning data and health records
+                                will be permanently deleted.</p>
+                        </div>
+
+                        <form method="POST" id="deleteForm" action="">
+                            @csrf
+                            @method('DELETE')
+                            <input type="hidden" id="deleteRecordId" name="record_id">
+                            <div class="form-actions" style="display: flex; gap: 10px; justify-content: flex-end;">
+                                <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                                <button type="submit" class="btn btn-primary" style="background: #dc2626;"
+                                    onclick="this.form.action='/health-programs/family-planning/' + document.getElementById('deleteRecordId').value">
+                                    <i class="bi bi-trash"></i> Delete Record
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         @push('scripts')
             <script>
                 // Multi-step wizard functionality for Family Planning
@@ -564,128 +606,128 @@
                                 const vawRisk = Array.isArray(data.vaw_risk) ? data.vaw_risk : JSON.parse(data.vaw_risk || '[]');
 
                                 modalBody.innerHTML = `
-                                                                                <div class="form-section section-patient-info">
-                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Client Information</h3>
-                                                                                    <div class="form-row">
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Record #:</strong></label>
-                                                                                            <p>${data.record_no || 'N/A'}</p>
-                                                                                        </div>
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Client Name:</strong></label>
-                                                                                            <p>${data.client_name || 'N/A'}</p>
-                                                                                        </div>
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Age:</strong></label>
-                                                                                            <p>${data.age || 'N/A'}</p>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="form-row">
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Address:</strong></label>
-                                                                                            <p>${data.address || 'N/A'}</p>
-                                                                                        </div>
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Contact:</strong></label>
-                                                                                            <p>${data.contact || 'N/A'}</p>
-                                                                                        </div>
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Occupation:</strong></label>
-                                                                                            <p>${data.occupation || 'N/A'}</p>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="form-row">
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Client Type:</strong></label>
-                                                                                            <p>${data.client_type ? data.client_type.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A'}</p>
-                                                                                        </div>
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Reason for FP:</strong></label>
-                                                                                            <p>${reasonArray.length ? reasonArray.join(', ') : 'N/A'}</p>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
+                                                                                                                <div class="form-section section-patient-info">
+                                                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Client Information</h3>
+                                                                                                                    <div class="form-row">
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Record #:</strong></label>
+                                                                                                                            <p>${data.record_no || 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Client Name:</strong></label>
+                                                                                                                            <p>${data.client_name || 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Age:</strong></label>
+                                                                                                                            <p>${data.age || 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    <div class="form-row">
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Address:</strong></label>
+                                                                                                                            <p>${data.address || 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Contact:</strong></label>
+                                                                                                                            <p>${data.contact || 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Occupation:</strong></label>
+                                                                                                                            <p>${data.occupation || 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    <div class="form-row">
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Client Type:</strong></label>
+                                                                                                                            <p>${data.client_type ? data.client_type.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Reason for FP:</strong></label>
+                                                                                                                            <p>${reasonArray.length ? reasonArray.join(', ') : 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
 
-                                                                                <div class="form-section section-history">
-                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Spouse & Family</h3>
-                                                                                    <div class="form-row">
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Spouse Name:</strong></label>
-                                                                                            <p>${data.spouse_name || 'N/A'}</p>
-                                                                                        </div>
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Spouse Age:</strong></label>
-                                                                                            <p>${data.spouse_age || 'N/A'}</p>
-                                                                                        </div>
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Number of Children:</strong></label>
-                                                                                            <p>${data.children_count || 'N/A'}</p>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
+                                                                                                                <div class="form-section section-history">
+                                                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Spouse & Family</h3>
+                                                                                                                    <div class="form-row">
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Spouse Name:</strong></label>
+                                                                                                                            <p>${data.spouse_name || 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Spouse Age:</strong></label>
+                                                                                                                            <p>${data.spouse_age || 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Number of Children:</strong></label>
+                                                                                                                            <p>${data.children_count || 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
 
-                                                                                <div class="form-section section-screening">
-                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Medical History & Examination</h3>
-                                                                                    <div class="form-row">
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>G (Gravida):</strong></label>
-                                                                                            <p>${data.gravida ?? 'N/A'}</p>
-                                                                                        </div>
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>P (Para):</strong></label>
-                                                                                            <p>${data.para ?? 'N/A'}</p>
-                                                                                        </div>
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Last Period:</strong></label>
-                                                                                            <p>${data.last_period || 'N/A'}</p>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="form-row">
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Blood Pressure:</strong></label>
-                                                                                            <p>${data.bp || 'N/A'}</p>
-                                                                                        </div>
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Weight:</strong></label>
-                                                                                            <p>${data.weight || 'N/A'} kg</p>
-                                                                                        </div>
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Height:</strong></label>
-                                                                                            <p>${data.height || 'N/A'} cm</p>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    ${medHistory.length ? `
-                                                                                    <div class="form-row">
-                                                                                        <div class="form-group full-width">
-                                                                                            <label><strong>Medical History:</strong></label>
-                                                                                            <p>${medHistory.join(', ')}</p>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    ` : ''}
-                                                                                    ${data.exam_findings ? `
-                                                                                    <div class="form-row">
-                                                                                        <div class="form-group full-width">
-                                                                                            <label><strong>Examination Findings:</strong></label>
-                                                                                            <p>${data.exam_findings}</p>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    ` : ''}
-                                                                                </div>
+                                                                                                                <div class="form-section section-screening">
+                                                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Medical History & Examination</h3>
+                                                                                                                    <div class="form-row">
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>G (Gravida):</strong></label>
+                                                                                                                            <p>${data.gravida ?? 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>P (Para):</strong></label>
+                                                                                                                            <p>${data.para ?? 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Last Period:</strong></label>
+                                                                                                                            <p>${data.last_period || 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    <div class="form-row">
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Blood Pressure:</strong></label>
+                                                                                                                            <p>${data.bp || 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Weight:</strong></label>
+                                                                                                                            <p>${data.weight || 'N/A'} kg</p>
+                                                                                                                        </div>
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Height:</strong></label>
+                                                                                                                            <p>${data.height || 'N/A'} cm</p>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    ${medHistory.length ? `
+                                                                                                                    <div class="form-row">
+                                                                                                                        <div class="form-group full-width">
+                                                                                                                            <label><strong>Medical History:</strong></label>
+                                                                                                                            <p>${medHistory.join(', ')}</p>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    ` : ''}
+                                                                                                                    ${data.exam_findings ? `
+                                                                                                                    <div class="form-row">
+                                                                                                                        <div class="form-group full-width">
+                                                                                                                            <label><strong>Examination Findings:</strong></label>
+                                                                                                                            <p>${data.exam_findings}</p>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                    ` : ''}
+                                                                                                                </div>
 
-                                                                                <div class="form-section section-patient-info">
-                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Consent & Counseling</h3>
-                                                                                    <div class="form-row">
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Counseled By:</strong></label>
-                                                                                            <p>${data.counseled_by || 'N/A'}</p>
-                                                                                        </div>
-                                                                                        <div class="form-group">
-                                                                                            <label><strong>Consent Date:</strong></label>
-                                                                                            <p>${data.consent_date || 'N/A'}</p>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            `;
+                                                                                                                <div class="form-section section-patient-info">
+                                                                                                                    <h3 class="section-header"><span class="section-indicator"></span>Consent & Counseling</h3>
+                                                                                                                    <div class="form-row">
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Counseled By:</strong></label>
+                                                                                                                            <p>${data.counseled_by || 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                        <div class="form-group">
+                                                                                                                            <label><strong>Consent Date:</strong></label>
+                                                                                                                            <p>${data.consent_date || 'N/A'}</p>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            `;
                             } catch (error) {
                                 modalBody.innerHTML = '<div style="text-align:center; padding: 2rem; color: red;"><p>Error loading record details.</p></div>';
                             }
@@ -755,6 +797,24 @@
                         fpDateFilter.value = '';
                         fpForm.submit();
                     });
+                });
+
+                // Delete Modal Functions
+                window.openDeleteModal = function (recordId, recordName) {
+                    document.getElementById('deleteRecordId').value = recordId;
+                    document.getElementById('deleteRecordName').textContent = recordName;
+                    document.getElementById('deleteModal').style.display = 'flex';
+                };
+
+                window.closeDeleteModal = function () {
+                    document.getElementById('deleteModal').style.display = 'none';
+                };
+
+                window.addEventListener('click', function (event) {
+                    const deleteModal = document.getElementById('deleteModal');
+                    if (event.target === deleteModal) {
+                        closeDeleteModal();
+                    }
                 });
             </script>
         @endpush

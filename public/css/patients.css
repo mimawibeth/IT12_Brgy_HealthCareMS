@@ -7,6 +7,9 @@
 .page-content {
     width: 100%;
     max-width: 100%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
 }
 
 /* === CONTENT HEADER === Title and action buttons */
@@ -23,7 +26,7 @@
 
 /* === FILTERS AND SEARCH === */
 .filters {
-    background-color: #fff;
+    background-color: white;
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
@@ -82,7 +85,7 @@
 
 /* === TABLE CONTAINER === */
 .table-container {
-    background-color: #fff;
+    background-color: white;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -177,18 +180,19 @@ button.btn-action {
 }
 
 .btn-delete {
-    color: #e74c3c;
+    color: #dc2626 !important;
     background-color: transparent;
-    border-color: #e74c3c;
+    border-color: #dc2626 !important;
     display: inline-flex;
     align-items: center;
     gap: 5px;
 }
 
-.btn-delete:hover {
-    background-color: transparent;
-    color: #c0392b;
-    border-color: #c0392b;
+.btn-delete:hover,
+.btn-delete:active {
+    background-color: #fee2e2 !important;
+    color: #991b1b !important;
+    border-color: #dc2626 !important;
 }
 
 /* === PAGINATION === */
@@ -198,7 +202,7 @@ button.btn-action {
     align-items: center;
     gap: 15px;
     padding: 20px;
-    background-color: #fff;
+    background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     flex-wrap: wrap;
@@ -238,7 +242,7 @@ button.btn-action {
 
 /* === FORM CONTAINER === */
 .form-container {
-    background-color: #fff;
+    background-color: white;
     border-radius: 8px;
     padding: 24px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -309,7 +313,7 @@ button.btn-action {
     border-radius: 8px;
     font-size: 14px;
     font-family: inherit;
-    background-color: #fff;
+    background-color: #ffffff;
     color: #2d3748;
     transition: all 0.2s ease;
 }
@@ -547,7 +551,7 @@ textarea.form-control {
 }
 
 .btn-outline {
-    background: #fff;
+    background: white;
     border: 1px solid #2c5aa0;
     color: #2c5aa0;
 }
@@ -625,7 +629,7 @@ textarea.form-control {
 }
 
 .btn-prev {
-    background: #fff;
+    background: white;
     border: 1px solid #d0d7e2;
     color: #2c5aa0;
 }
@@ -685,7 +689,7 @@ textarea.form-control {
 }
 
 .visit-box {
-    background-color: #fff;
+    background-color: white;
     border: 1px solid #e0e0e0;
     border-radius: 6px;
     padding: 16px;
@@ -734,9 +738,9 @@ textarea.form-control {
 }
 
 .nav-tabs .nav-link.active {
-    background: #fff;
+    background: white;
     color: #1a1a1a;
-    border-bottom: 2px solid #fff;
+    border-bottom: 2px solid white;
     font-weight: 700;
 }
 
@@ -920,7 +924,7 @@ textarea.form-control {
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: white;
     margin: 20px auto;
     border-radius: 8px;
     padding: 0;
@@ -944,7 +948,7 @@ textarea.form-control {
     align-items: center;
     justify-content: space-between;
     padding: 18px 20px;
-    background: #fff;
+    background: white;
     border-bottom: 2px solid #e9ecef;
     flex-shrink: 0;
 }
@@ -985,7 +989,7 @@ textarea.form-control {
     padding: 16px;
     border: 1px solid #e0e0e0;
     border-radius: 6px;
-    background-color: #fff;
+    background-color: white;
 }
 
 .modal .form-section:last-of-type {
@@ -1203,7 +1207,7 @@ textarea.form-control {
     justify-content: center;
     font-size: 16px;
     font-weight: 600;
-    border: 3px solid #fff;
+    border: 3px solid white;
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;

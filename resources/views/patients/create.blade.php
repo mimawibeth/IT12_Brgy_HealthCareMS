@@ -59,7 +59,7 @@
                                 <div class="form-group">
                                     <label for="patient_no">Patient No.</label>
                                     <input type="text" id="patient_no" name="patient_no" class="form-control"
-                                        placeholder="Auto-generated">
+                                        value="{{ $patientNo ?? '' }}" placeholder="Auto-generated" readonly>
                                 </div>
                                 <div class="form-group">
                                     <label for="sex">Sex <span class="required-asterisk">*</span></label>
@@ -88,8 +88,7 @@
                                     <label for="contact_number">Contact Number <span
                                             class="required-asterisk">*</span></label>
                                     <input type="text" id="contact_number" name="contact_number" class="form-control"
-                                        required>
-                                    placeholder="09XX-XXX-XXXX">
+                                        placeholder="09XX-XXX-XXXX" pattern="[0-9]{11}" maxlength="11" required>
                                 </div>
                             </div>
 
@@ -434,8 +433,8 @@
                                     Visit
                                     Assessment</h3>
                                 <!-- <button type="button" class="btn btn-success btn-sm" id="addAssessment">
-                                        <i class="bi bi-plus-circle"></i> Add Assessment
-                                    </button> -->
+                                            <i class="bi bi-plus-circle"></i> Add Assessment
+                                        </button> -->
                             </div>
 
                             <div id="assessmentsContainer">
@@ -687,131 +686,131 @@
             newAssessment.style.cssText = 'border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px;';
 
             newAssessment.innerHTML = `
-                                                <div class="form-row">
-                                                    <!-- Date/Monitoring Parameters (Left Column) -->
-                                                    <div class="form-group" style="flex: 1;">
-                                                        <h4>Monitoring Parameters</h4>
-                                                        <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Date / Monitoring Parameters</p>
+                                                    <div class="form-row">
+                                                        <!-- Date/Monitoring Parameters (Left Column) -->
+                                                        <div class="form-group" style="flex: 1;">
+                                                            <h4>Monitoring Parameters</h4>
+                                                            <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Date / Monitoring Parameters</p>
 
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>Date:</label>
-                                                                <input type="date" name="assessments[${assessmentCount}][date]" class="form-control assessment-date">
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>Date:</label>
+                                                                    <input type="date" name="assessments[${assessmentCount}][date]" class="form-control assessment-date">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>Age:</label>
+                                                                    <input type="text" name="assessments[${assessmentCount}][age]" class="form-control assessment-age" readonly>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>CVD Risk:</label>
+                                                                    <input type="text" name="assessments[${assessmentCount}][cvd_risk]" class="form-control">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>BP: (Systolic)</label>
+                                                                    <input type="text" name="assessments[${assessmentCount}][bp_systolic]" class="form-control" placeholder="mmHg">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>BP: (Diastolic)</label>
+                                                                    <input type="text" name="assessments[${assessmentCount}][bp_diastolic]" class="form-control" placeholder="mmHg">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>Wt:</label>
+                                                                    <input type="text" name="assessments[${assessmentCount}][wt]" class="form-control" placeholder="kg">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>Ht:</label>
+                                                                    <input type="text" name="assessments[${assessmentCount}][ht]" class="form-control" placeholder="cm">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>FBS/RBS:</label>
+                                                                    <input type="text" name="assessments[${assessmentCount}][fbs_rbs]" class="form-control">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>Lipid Profile:</label>
+                                                                    <input type="text" name="assessments[${assessmentCount}][lipid_profile]" class="form-control">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>Urine Ketones:</label>
+                                                                    <input type="text" name="assessments[${assessmentCount}][urine_ketones]" class="form-control">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>Urine Protein:</label>
+                                                                    <input type="text" name="assessments[${assessmentCount}][urine_protein]" class="form-control">
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>Foot Check:</label>
+                                                                    <input type="text" name="assessments[${assessmentCount}][foot_check]" class="form-control">
+                                                                </div>
                                                             </div>
                                                         </div>
 
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>Age:</label>
-                                                                <input type="text" name="assessments[${assessmentCount}][age]" class="form-control assessment-age" readonly>
+                                                        <!-- Chief Complaint / History / Physical Examination / Diagnosis (Middle Column) -->
+                                                        <div class="form-group" style="flex: 1; margin-left: 20px;">
+                                                            <h4>Chief Complaint / Diagnosis</h4>
+                                                            <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Chief Complaint / History / Physical Examination / Diagnosis</p>
+
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>Chief Complaint:</label>
+                                                                    <textarea name="assessments[${assessmentCount}][chief_complaint]" class="form-control" rows="3"></textarea>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>History / Physical Examination:</label>
+                                                                    <textarea name="assessments[${assessmentCount}][history_physical]" class="form-control" rows="7"></textarea>
+                                                                </div>
                                                             </div>
                                                         </div>
 
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>CVD Risk:</label>
-                                                                <input type="text" name="assessments[${assessmentCount}][cvd_risk]" class="form-control">
-                                                            </div>
-                                                        </div>
+                                                        <!-- Management (Right Column) -->
+                                                        <div class="form-group" style="flex: 1; margin-left: 20px;">
+                                                            <h4>Management</h4>
+                                                            <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Management</p>
 
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>BP: (Systolic)</label>
-                                                                <input type="text" name="assessments[${assessmentCount}][bp_systolic]" class="form-control" placeholder="mmHg">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>BP: (Diastolic)</label>
-                                                                <input type="text" name="assessments[${assessmentCount}][bp_diastolic]" class="form-control" placeholder="mmHg">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>Wt:</label>
-                                                                <input type="text" name="assessments[${assessmentCount}][wt]" class="form-control" placeholder="kg">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>Ht:</label>
-                                                                <input type="text" name="assessments[${assessmentCount}][ht]" class="form-control" placeholder="cm">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>FBS/RBS:</label>
-                                                                <input type="text" name="assessments[${assessmentCount}][fbs_rbs]" class="form-control">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>Lipid Profile:</label>
-                                                                <input type="text" name="assessments[${assessmentCount}][lipid_profile]" class="form-control">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>Urine Ketones:</label>
-                                                                <input type="text" name="assessments[${assessmentCount}][urine_ketones]" class="form-control">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>Urine Protein:</label>
-                                                                <input type="text" name="assessments[${assessmentCount}][urine_protein]" class="form-control">
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>Foot Check:</label>
-                                                                <input type="text" name="assessments[${assessmentCount}][foot_check]" class="form-control">
+                                                            <div class="form-row">
+                                                                <div class="form-group">
+                                                                    <label>Management Plan:</label>
+                                                                    <textarea name="assessments[${assessmentCount}][management]" class="form-control" rows="12"></textarea>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-
-                                                    <!-- Chief Complaint / History / Physical Examination / Diagnosis (Middle Column) -->
-                                                    <div class="form-group" style="flex: 1; margin-left: 20px;">
-                                                        <h4>Chief Complaint / Diagnosis</h4>
-                                                        <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Chief Complaint / History / Physical Examination / Diagnosis</p>
-
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>Chief Complaint:</label>
-                                                                <textarea name="assessments[${assessmentCount}][chief_complaint]" class="form-control" rows="3"></textarea>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>History / Physical Examination:</label>
-                                                                <textarea name="assessments[${assessmentCount}][history_physical]" class="form-control" rows="7"></textarea>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Management (Right Column) -->
-                                                    <div class="form-group" style="flex: 1; margin-left: 20px;">
-                                                        <h4>Management</h4>
-                                                        <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Management</p>
-
-                                                        <div class="form-row">
-                                                            <div class="form-group">
-                                                                <label>Management Plan:</label>
-                                                                <textarea name="assessments[${assessmentCount}][management]" class="form-control" rows="12"></textarea>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            `;
+                                                `;
 
             container.appendChild(newAssessment);
             assessmentCount++;

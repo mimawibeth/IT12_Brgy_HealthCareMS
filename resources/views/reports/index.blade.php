@@ -47,87 +47,64 @@
         </div>
 
         <div class="charts-grid">
+            <!-- Row 1: Overview Charts -->
+
             <!-- Monthly Services Trend -->
             <div class="chart-card" data-chart-id="servicesChart" data-chart-title="Monthly Services Trend"
                 data-chart-icon="bi-graph-up" data-chart-period="Last 6 Months"
-                data-chart-description="Overall service delivery trends across all programs">
+                data-chart-description="Overall service delivery trends across all health programs">
                 <div class="chart-header">
                     <h3><i class="bi bi-graph-up"></i> Monthly Services Trend</h3>
                     <span class="chart-period">Last 6 Months</span>
                 </div>
                 <div class="chart-placeholder">
                     <canvas id="servicesChart"></canvas>
-                    <p>Overall service delivery trends across all programs</p>
+                    <p>Overall service delivery trends across all health programs</p>
                 </div>
             </div>
 
             <!-- Program Distribution -->
             <div class="chart-card" data-chart-id="programDistributionChart" data-chart-title="Health Program Distribution"
                 data-chart-icon="bi-pie-chart" data-chart-period="{{ $selectedMonthLabel ?? 'Current Month' }}"
-                data-chart-description="Service breakdown by health programs">
+                data-chart-description="Service breakdown by health programs this month">
                 <div class="chart-header">
                     <h3><i class="bi bi-pie-chart"></i> Health Program Distribution</h3>
                     <span class="chart-period">{{ $selectedMonthLabel ?? 'Current Month' }}</span>
                 </div>
                 <div class="chart-placeholder">
                     <canvas id="programDistributionChart"></canvas>
-                    <p>Service breakdown by health programs</p>
+                    <p>Service breakdown by health programs this month</p>
                 </div>
             </div>
 
-            <!-- Patient Demographics -->
-            <div class="chart-card" data-chart-id="demographicsChart" data-chart-title="Patient Demographics"
-                data-chart-icon="bi-people" data-chart-period="Age Group Distribution"
-                data-chart-description="Patient breakdown by age groups">
+            <!-- Row 2: Patient Analytics -->
+
+            <!-- Patient Demographics by Age & Gender -->
+            <div class="chart-card" data-chart-id="demographicsChart"
+                data-chart-title="Patient Demographics by Age & Gender" data-chart-icon="bi-people"
+                data-chart-period="All Registered Patients"
+                data-chart-description="Patient breakdown by age groups and gender">
                 <div class="chart-header">
                     <h3><i class="bi bi-people"></i> Patient Demographics</h3>
-                    <span class="chart-period">Age Group Distribution</span>
+                    <span class="chart-period">All Registered Patients</span>
                 </div>
                 <div class="chart-placeholder">
                     <canvas id="demographicsChart"></canvas>
-                    <p>Patient breakdown by age groups</p>
-                </div>
-            </div>
-
-            <!-- Gender Distribution -->
-            <div class="chart-card" data-chart-id="genderChart" data-chart-title="Gender Distribution"
-                data-chart-icon="bi-gender-ambiguous" data-chart-period="Patient Statistics"
-                data-chart-description="Male vs Female patient breakdown">
-                <div class="chart-header">
-                    <h3><i class="bi bi-gender-ambiguous"></i> Gender Distribution</h3>
-                    <span class="chart-period">Patient Statistics</span>
-                </div>
-                <div class="chart-placeholder">
-                    <canvas id="genderChart"></canvas>
-                    <p>Male vs Female patient breakdown</p>
-                </div>
-            </div>
-
-            <!-- Medicine Dispensing Trend -->
-            <div class="chart-card" data-chart-id="medicineDispenseChart" data-chart-title="Medicine Dispensing Trend"
-                data-chart-icon="bi-capsule" data-chart-period="Last 6 Months"
-                data-chart-description="Monthly medicine dispensing volume">
-                <div class="chart-header">
-                    <h3><i class="bi bi-capsule"></i> Medicine Dispensing Trend</h3>
-                    <span class="chart-period">Last 6 Months</span>
-                </div>
-                <div class="chart-placeholder">
-                    <canvas id="medicineDispenseChart"></canvas>
-                    <p>Monthly medicine dispensing volume</p>
+                    <p>Patient breakdown by age groups and gender</p>
                 </div>
             </div>
 
             <!-- Top Dispensed Medicines -->
             <div class="chart-card" data-chart-id="topMedicinesChart" data-chart-title="Top Dispensed Medicines"
                 data-chart-icon="bi-bar-chart-fill" data-chart-period="{{ $selectedMonthLabel ?? 'Current Month' }}"
-                data-chart-description="Most frequently dispensed medicines">
+                data-chart-description="Most frequently dispensed medicines this month">
                 <div class="chart-header">
                     <h3><i class="bi bi-bar-chart-fill"></i> Top Dispensed Medicines</h3>
                     <span class="chart-period">{{ $selectedMonthLabel ?? 'Current Month' }}</span>
                 </div>
                 <div class="chart-placeholder">
                     <canvas id="topMedicinesChart"></canvas>
-                    <p>Most frequently dispensed medicines</p>
+                    <p>Most frequently dispensed medicines this month</p>
                 </div>
             </div>
         </div>
@@ -168,23 +145,26 @@
                             <td><strong>Prenatal Care</strong></td>
                             <td>{{ number_format($prenatalCount ?? 0) }}</td>
                             <td>{{ number_format($totalPrenatalRecords ?? 0) }}</td>
-                            <td>{{ $totalHealthPrograms > 0 ? number_format(($totalPrenatalRecords / $totalHealthPrograms) * 100, 1) : 0 }}%</td>
+                            <td>{{ $totalHealthPrograms > 0 ? number_format(($totalPrenatalRecords / $totalHealthPrograms) * 100, 1) : 0 }}%
+                            </td>
                         </tr>
                         <tr>
                             <td><strong>Family Planning</strong></td>
                             <td>{{ number_format($fpCount ?? 0) }}</td>
                             <td>{{ number_format($totalFPRecords ?? 0) }}</td>
-                            <td>{{ $totalHealthPrograms > 0 ? number_format(($totalFPRecords / $totalHealthPrograms) * 100, 1) : 0 }}%</td>
+                            <td>{{ $totalHealthPrograms > 0 ? number_format(($totalFPRecords / $totalHealthPrograms) * 100, 1) : 0 }}%
+                            </td>
                         </tr>
                         <tr>
                             <td><strong>Immunization (NIP)</strong></td>
                             <td>{{ number_format($nipCount ?? 0) }}</td>
                             <td>{{ number_format($totalNIPRecords ?? 0) }}</td>
-                            <td>{{ $totalHealthPrograms > 0 ? number_format(($totalNIPRecords / $totalHealthPrograms) * 100, 1) : 0 }}%</td>
+                            <td>{{ $totalHealthPrograms > 0 ? number_format(($totalNIPRecords / $totalHealthPrograms) * 100, 1) : 0 }}%
+                            </td>
                         </tr>
-                        @php
-                            $totalCasesThisMonth = ($prenatalCount ?? 0) + ($fpCount ?? 0) + ($nipCount ?? 0);
-                        @endphp
+            @php
+                $totalCasesThisMonth = ($prenatalCount ?? 0) + ($fpCount ?? 0) + ($nipCount ?? 0);
+            @endphp
                         <tr class="table-total">
                             <td><strong>TOTAL</strong></td>
                             <td><strong>{{ number_format($totalCasesThisMonth) }}</strong></td>
@@ -371,9 +351,9 @@
                     labels: ['Prenatal Care', 'Family Planning', 'Immunization'],
                     datasets: [{
                         data: [
-                                                    {{ $programDistribution['prenatal'] ?? 0 }},
-                                                    {{ $programDistribution['fp'] ?? 0 }},
-                                                    {{ $programDistribution['nip'] ?? 0 }},
+                                                        {{ $programDistribution['prenatal'] ?? 0 }},
+                                                        {{ $programDistribution['fp'] ?? 0 }},
+                                                        {{ $programDistribution['nip'] ?? 0 }},
                         ],
                         backgroundColor: [
                             '#e74c3c',
@@ -417,55 +397,6 @@
                             borderWidth: 1
                         }
                     ]
-                },
-                options: {
-                    ...chartOptions,
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-        }
-
-
-        // Initialize Gender Distribution Chart
-        const genderCtx = document.getElementById('genderChart');
-        if (genderCtx) {
-            new Chart(genderCtx.getContext('2d'), {
-                type: 'pie',
-                data: {
-                    labels: ['Female', 'Male'],
-                    datasets: [{
-                        data: [
-                                                                {{ $genderCounts['F'] ?? 0 }},
-                                                                {{ $genderCounts['M'] ?? 0 }},
-                        ],
-                        backgroundColor: ['#e74c3c', '#3498db'],
-                        borderColor: '#fff',
-                        borderWidth: 3
-                    }]
-                },
-                options: chartOptions
-            });
-        }
-
-        // Initialize Medicine Dispensing Trend Chart
-        const medicineDispenseSeries = @json($medicineDispenseSeries ?? []);
-        const medicineDispenseCtx = document.getElementById('medicineDispenseChart');
-        if (medicineDispenseCtx) {
-            new Chart(medicineDispenseCtx.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: monthLabels,
-                    datasets: [{
-                        label: 'Medicines Dispensed',
-                        data: medicineDispenseSeries,
-                        borderColor: '#9b59b6',
-                        backgroundColor: 'rgba(155, 89, 182, 0.1)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4
-                    }]
                 },
                 options: {
                     ...chartOptions,
@@ -706,7 +637,7 @@
             const form = document.getElementById('report-filters-form');
             const formData = new FormData(form);
             const params = new URLSearchParams(formData);
-            
+
             // Redirect to PDF export route with current filters
             window.location.href = '{{ route('reports.export.pdf') }}?' + params.toString();
         }
@@ -716,14 +647,14 @@
             const form = document.getElementById('report-filters-form');
             const formData = new FormData(form);
             const params = new URLSearchParams(formData);
-            
+
             // Open print view in new window
             const printWindow = window.open('{{ route('reports.print') }}?' + params.toString(), '_blank');
-            
+
             // Wait for the page to load, then trigger print
             if (printWindow) {
-                printWindow.onload = function() {
-                    setTimeout(function() {
+                printWindow.onload = function () {
+                    setTimeout(function () {
                         printWindow.print();
                     }, 500);
                 };

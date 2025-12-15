@@ -204,6 +204,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/prenatal/{record}', [PrenatalRecordController::class, 'show'])
             ->name('prenatal-show');
 
+        Route::delete('/prenatal/{id}', [PrenatalRecordController::class, 'destroy'])
+            ->name('prenatal-destroy');
+
         // Family Planning
         Route::get('/family-planning', [FamilyPlanningRecordController::class, 'index'])
             ->name('family-planning-view');
@@ -219,6 +222,9 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/family-planning/{record}', [FamilyPlanningRecordController::class, 'show'])
             ->name('family-planning-show');
+
+        Route::delete('/family-planning/{id}', [FamilyPlanningRecordController::class, 'destroy'])
+            ->name('family-planning-destroy');
 
         // New Immunization (NIP) - dedicated controller and view
         Route::get('/new-immunization', [NewNipRecordController::class, 'index'])
@@ -238,6 +244,9 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/new-immunization/{record}', [NewNipRecordController::class, 'show'])
             ->name('new-nip-show');
+
+        Route::delete('/new-nip/{id}', [NewNipRecordController::class, 'destroy'])
+            ->name('new-nip-destroy');
     });
 
     Route::get('/health-programs/other-services', function () {
@@ -332,6 +341,10 @@ Route::middleware('auth')->group(function () {
 
         // Update user
         Route::put('/{id}', [UserController::class, 'update'])->name('update');
+
+        // Deactivate and reactivate user accounts (super admin only)
+        Route::patch('/{id}/deactivate', [UserController::class, 'deactivate'])->name('deactivate');
+        Route::patch('/{id}/reactivate', [UserController::class, 'reactivate'])->name('reactivate');
 
         // Delete user
         Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');

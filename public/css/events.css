@@ -499,7 +499,7 @@
 
 .close:hover,
 .close:focus {
-    color: #f0f0f0;
+    color: white;
     transform: scale(1.1);
 }
 

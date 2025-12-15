@@ -18,7 +18,7 @@
 
 /* === STAT CARD === Individual stat card */
 .stat-card {
-    background-color: #fff;
+    background-color: white;
     border-radius: 10px;
     padding: 16px;
     display: flex;
@@ -183,7 +183,7 @@
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: white;
     margin: 20px auto;
     border-radius: 8px;
     padding: 0;
@@ -202,7 +202,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 18px 20px;
-    background: #ffffff;
+    background: white;
     border-bottom: 2px solid #e9ecef;
     flex-shrink: 0;
 }
@@ -230,8 +230,7 @@
     background: rgba(0, 0, 0, 0.05);
     transform: rotate(90deg);
 }
-    opacity: 1;
-}
+
 
 .modal-body {
     overflow-y: auto;
@@ -260,16 +259,22 @@
 
 /* Modal Customization for Medicine */
 #addMedicineModal .modal-header {
-    background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
-    border-bottom-color: #d35400;
+    background: white;
+    color: #1f2937;
+    border-bottom: 2px solid #e5e7eb;
 }
 
 #addMedicineModal .modal-header h3 {
-    color: #fff;
+    color: #1f2937;
 }
 
 #addMedicineModal .close-modal {
-    color: #fff;
+    color: #1f2937;
+    background: #f3f4f6;
+}
+
+#addMedicineModal .close-modal:hover {
+    background: #e5e7eb;
 }
 
 #addMedicineModal .section-indicator {
@@ -438,6 +443,35 @@
         width: 100%;
         justify-content: center;
     }
+
+    .batch-header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .batch-actions {
+        width: 100%;
+    }
+
+    .batch-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .batch-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .batch-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .batch-table-wrapper .data-table {
+        min-width: 800px;
+    }
 }
 
 @media (max-width: 520px) {
@@ -458,5 +492,406 @@
         width: 50px !important;
         height: 50px !important;
         font-size: 24px !important;
+    }
+}
+
+/* ========================================
+   DISPENSING LOG & SUPPLY HISTORY STYLES
+   ======================================== */
+
+/* Transaction Date Styling */
+.transaction-date {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* Item Name Styling */
+.item-name {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Quantity Badge */
+.quantity-badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.quantity-in {
+    background: #d4edda;
+    color: #155724;
+}
+
+.quantity-out {
+    background: transparent;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+/* Action Buttons */
+.actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-action {
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 13px;
+    display: inline-block;
+    border: 1px solid;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+button.btn-action {
+    background-color: transparent;
+    font-family: inherit;
+}
+
+.btn-view {
+    color: #17a2b8;
+    background-color: transparent;
+    border-color: #17a2b8;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-view:hover,
+.btn-view:active,
+.btn-view.active {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-color: #17a2b8;
+}
+
+.btn-edit {
+    color: #f39c12;
+    background-color: transparent;
+    border-color: #f39c12;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-edit:hover,
+.btn-edit:active,
+.btn-edit.active {
+    background-color: #fef3c7;
+    color: #f39c12;
+    border-color: #f39c12;
+}
+
+.btn-dispense {
+    color: #6366f1;
+    background-color: transparent;
+    border: 1px solid #6366f1;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-dispense:hover {
+    background-color: #eef2ff;
+    color: #4338ca;
+    border-color: #6366f1;
+}
+
+.btn-delete {
+    color: #e74c3c;
+    background-color: transparent;
+    border-color: #e74c3c;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-delete:hover {
+    background-color: transparent;
+    color: #c0392b;
+    border-color: #c0392b;
+}
+
+
+/* ========================================
+   BATCH MANAGEMENT - COLLAPSIBLE CARDS
+   ======================================== */
+
+/* Batch Medicine Card Container */
+.batch-medicine-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.batch-medicine-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Batch Card Header - Clickable */
+.batch-card-header {
+    background: linear-gradient(135deg, #2f6d7e 0%, #1f4d5c 100%);
+    color: white;
+    padding: 1.25rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.batch-card-header:hover {
+    background: linear-gradient(135deg, #3a8296 0%, #255666 100%);
+}
+
+.batch-card-header:active {
+    transform: scale(0.995);
+}
+
+.batch-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.batch-info-section {
+    flex: 1;
+    min-width: 0;
+}
+
+.batch-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.batch-toggle-icon {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.batch-medicine-name {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    flex: 1;
+    min-width: 0;
+}
+
+.batch-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge-danger {
+    background: rgba(231, 76, 60, 0.2);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.badge-warning {
+    background: rgba(243, 156, 18, 0.2);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.batch-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    opacity: 0.95;
+    flex-wrap: wrap;
+}
+
+.batch-stat-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.batch-stat-item i {
+    font-size: 0.95rem;
+}
+
+.batch-stat-separator {
+    opacity: 0.5;
+}
+
+.batch-actions {
+    flex-shrink: 0;
+}
+
+.batch-actions .btn {
+    background: rgba(255, 255, 255, 0.95);
+    color: #2f6d7e;
+    padding: 10px 20px !important;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.batch-actions .btn i {
+    font-size: 16px;
+}
+
+.batch-actions .btn:hover {
+    background: white;
+    color: #14b8a6;
+    border-color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.batch-actions .btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Batch Card Body - Collapsible */
+.batch-card-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.batch-card-body.active {
+    max-height: 2000px;
+}
+
+.batch-table-wrapper {
+    padding: 0;
+}
+
+.batch-table-wrapper .data-table {
+    margin: 0;
+    border-radius: 0;
+}
+
+.batch-table-wrapper .data-table thead th {
+    background: #f8f9fa;
+    color: #2c3e50;
+    font-weight: 600;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* Batch Row Styling */
+.batch-expired {
+    background-color: #fff5f5 !important;
+}
+
+.batch-expiring-soon {
+    background-color: #fffbf0 !important;
+}
+
+/* Quantity Badge */
+.quantity-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.quantity-available {
+    background: #d4edda;
+    color: #155724;
+}
+
+.quantity-empty {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-expired {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-expiring {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-valid {
+    background: #d4edda;
+    color: #155724;
+}
+
+/* Empty State */
+.empty-state {
+    background: white;
+    border-radius: 10px;
+    padding: 60px 40px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive Adjustments for Batches */
+@media (max-width: 768px) {
+    .batch-header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .batch-actions {
+        width: 100%;
+    }
+
+    .batch-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .batch-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .batch-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .batch-table-wrapper .data-table {
+        min-width: 800px;
     }
 }

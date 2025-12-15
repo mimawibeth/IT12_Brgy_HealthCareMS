@@ -68,7 +68,9 @@ class PatientController extends Controller
 
     public function create()
     {
-        return view('patients.create');
+        $patientNo = $this->generatePatientNo();
+
+        return view('patients.create', compact('patientNo'));
     }
 
     public function store(Request $request)
@@ -89,9 +91,11 @@ class PatientController extends Controller
 
         $smokingStatus = $request->input('smoking_status');
 
+        $patientNo = $this->generatePatientNo();
+
         $patient = Patient::create([
             'dateRegistered' => $validated['date_registered'],
-            'patientNo' => $request->input('patient_no'),
+            'patientNo' => $patientNo,
             'sex' => $validated['sex'],
             'name' => $validated['name'],
             'birthday' => $validated['birthday'],
@@ -275,15 +279,23 @@ class PatientController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Only super_admin can update patient basic information
+        if (auth()->user()->role !== 'super_admin') {
+            return back()->with('error', 'Only Super Admin can update patient information');
+        }
+
         $patient = Patient::findOrFail($id);
 
         $validated = $request->validate([
+            'patientNo' => ['nullable', 'string', 'max:50'],
             'lastname' => ['required', 'string', 'max:255'],
             'firstname' => ['required', 'string', 'max:255'],
             'middlename' => ['nullable', 'string', 'max:255'],
             'birthday' => ['nullable', 'date'],
             'age' => ['nullable', 'integer', 'min:0'],
             'sex' => ['nullable', 'in:Male,Female'],
+            'address' => ['nullable', 'string', 'max:500'],
+            'contactNumber' => ['nullable', 'string', 'max:20'],
             'civil_status' => ['nullable', 'string', 'max:50'],
             'purok' => ['nullable', 'string', 'max:100'],
             'barangay' => ['nullable', 'string', 'max:100'],
@@ -315,6 +327,11 @@ class PatientController extends Controller
 
     public function destroy($id)
     {
+        // Only super_admin can delete patients
+        if (auth()->user()->role !== 'super_admin') {
+            return back()->with('error', 'Only Super Admin can delete patient records');
+        }
+
         $patient = Patient::findOrFail($id);
         $patientName = $patient->firstname . ' ' . $patient->lastname;
 
@@ -355,5 +372,31 @@ class PatientController extends Controller
             });
 
         return response()->json($patients);
+    }
+
+    /**
+     * Generate a unique patient number
+     */
+    private function generatePatientNo()
+    {
+        $year = date('Y');
+        $month = date('m');
+
+        // Get the last patient number for this month
+        $lastPatient = Patient::where('patientNo', 'like', $year . $month . '%')
+            ->orderBy('patientNo', 'desc')
+            ->first();
+
+        if ($lastPatient) {
+            // Extract the sequence number and increment
+            $lastSequence = (int) substr($lastPatient->patientNo, 6);
+            $newSequence = $lastSequence + 1;
+        } else {
+            // Start from 1 if no patient exists for this month
+            $newSequence = 1;
+        }
+
+        // Format: YYYYMM + 4-digit sequence (e.g., 202412-0001)
+        return $year . $month . '-' . str_pad($newSequence, 4, '0', STR_PAD_LEFT);
     }
 }

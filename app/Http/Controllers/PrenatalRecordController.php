@@ -186,4 +186,21 @@ class PrenatalRecordController extends Controller
             ->route('health-programs.prenatal-edit', $record)
             ->with('success', 'Follow-up visits saved successfully.');
     }
+
+    public function destroy($id)
+    {
+        // Only super_admin can delete prenatal records
+        if (auth()->user()->role !== 'super_admin') {
+            return back()->with('error', 'Only Super Admin can delete prenatal records');
+        }
+
+        $record = PrenatalRecord::findOrFail($id);
+        $recordName = $record->mother_name;
+
+        $record->visits()->delete();
+        $record->delete();
+
+        return redirect()->route('health-programs.prenatal-view')
+            ->with('success', 'Prenatal record deleted successfully');
+    }
 }

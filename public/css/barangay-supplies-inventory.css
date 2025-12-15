@@ -133,12 +133,12 @@
 
 .stat-card.alert-card-warning {
     border-left-color: #f59e0b;
-    background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);
+    background: linear-gradient(135deg, white 0%, #fef3c7 100%);
 }
 
 .stat-card.alert-card-critical {
     border-left-color: #ef4444;
-    background: linear-gradient(135deg, #ffffff 0%, #fee2e2 100%);
+    background: linear-gradient(135deg, white 0%, #fee2e2 100%);
 }
 
 .stat-content {
@@ -267,7 +267,7 @@
 
 /* === TABLE CONTAINER === */
 .table-container {
-    background-color: #fff;
+    background-color: white;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -367,6 +367,49 @@
 
 .supplies-table tbody tr:hover {
     background: #f8fafc;
+}
+
+/* === DATA TABLE (Standard) === */
+/* Override to match main.css data-table styling */
+.data-table {
+    width: 100%;
+    background-color: white;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.data-table thead {
+    background: #4a90a4 !important;
+    color: whitesmoke !important;
+}
+
+.data-table th {
+    padding: 12px 16px !important;
+    text-align: center !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    color: whitesmoke !important;
+    border-bottom: none !important;
+}
+
+.data-table td {
+    padding: 12px 16px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    color: #334155 !important;
+    font-size: 14px !important;
+}
+
+.data-table tbody tr {
+    border-bottom: 1px solid #e2e8f0 !important;
+    transition: background-color 0.2s;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f7fafc !important;
 }
 
 /* Item Info in Table */
@@ -478,6 +521,7 @@
     display: flex;
     gap: 8px;
     align-items: center;
+    justify-content: center;
 }
 
 .btn-action {
@@ -498,13 +542,25 @@
 }
 
 .btn-edit {
-    background: #e0e7ff;
-    color: #4338ca;
+    background: #fef3c7;
+    color: #92400e;
 }
 
 .btn-edit:hover {
-    background: #c7d2fe;
-    color: #3730a3;
+    background: #fde68a;
+    color: #78350f;
+}
+
+.btn-dispense {
+    color: #6366f1;
+    background-color: transparent;
+    border: 1px solid #6366f1;
+}
+
+.btn-dispense:hover {
+    background-color: #eef2ff;
+    color: #4338ca;
+    border-color: #6366f1;
 }
 
 .btn-issue {
@@ -515,6 +571,24 @@
 .btn-issue:hover {
     background: #fde68a;
     color: #78350f;
+}
+
+/* Outlined teal view button for supply history */
+.btn-view {
+    color: #17a2b8;
+    background-color: transparent;
+    border-color: #17a2b8;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-view:hover,
+.btn-view:active,
+.btn-view.active {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-color: #17a2b8;
 }
 
 /* No Data State */
@@ -689,7 +763,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #ffffff;
+    background: white;
     border-radius: 16px 16px 0 0;
 }
 
@@ -785,6 +859,7 @@
     border: 1px solid #cbd5e1;
     border-radius: 8px;
     font-size: 14px;
+    background-color: #ffffff;
     transition: all 0.2s;
     color: #334155;
 }
@@ -1108,7 +1183,7 @@ textarea.form-control {
     align-items: center;
     gap: 15px;
     padding: 20px;
-    background-color: #fff;
+    background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     flex-wrap: wrap;

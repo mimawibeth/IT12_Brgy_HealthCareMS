@@ -26,7 +26,7 @@
                     @endforeach
                 </select>
 
-                
+
 
                 <button type="button" class="btn btn-primary" id="openAddSupplyModal"
                     style="padding: 9px 15px !important; font-size: 14px; font-weight: normal; margin-left: auto; white-space: nowrap; height: 38px; line-height: 1; display: inline-flex !important; align-items: center; gap: 6px;">
@@ -61,7 +61,7 @@
                                         data-id="{{ $supply->id }}">
                                         <i class="bi bi-eye"></i> View
                                     </a>
-                                    <a href="javascript:void(0)" class="btn-action btn-edit dispense-supply"
+                                    <a href="javascript:void(0)" class="btn-action btn-dispense dispense-supply"
                                         data-id="{{ $supply->id }}" data-name="{{ $supply->item_name }}"
                                         data-max="{{ $supply->quantity_on_hand }}">
                                         <i class="bi bi-box-arrow-up"></i> Dispense
@@ -415,17 +415,17 @@
 
                                 if (supplies.length > 0) {
                                     supplySearchResults.innerHTML = supplies.map(supply => `
-                                                                <div class="supply-result-item" 
-                                                                    data-id="${supply.id}"
-                                                                    data-name="${supply.item_name}"
-                                                                    data-category="${supply.category || ''}"
-                                                                    data-description="${supply.description || ''}"
-                                                                    data-unit="${supply.unit_of_measure || ''}"
-                                                                    style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee;">
-                                                                    <strong>${supply.item_name}</strong>
-                                                                    ${supply.category ? `<span style="color: #666;"> - ${supply.category}</span>` : ''}
-                                                                </div>
-                                                            `).join('');
+                                                                        <div class="supply-result-item" 
+                                                                            data-id="${supply.id}"
+                                                                            data-name="${supply.item_name}"
+                                                                            data-category="${supply.category || ''}"
+                                                                            data-description="${supply.description || ''}"
+                                                                            data-unit="${supply.unit_of_measure || ''}"
+                                                                            style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee;">
+                                                                            <strong>${supply.item_name}</strong>
+                                                                            ${supply.category ? `<span style="color: #666;"> - ${supply.category}</span>` : ''}
+                                                                        </div>
+                                                                    `).join('');
                                     supplySearchResults.style.display = 'block';
 
                                     // Add click handlers to results
@@ -512,13 +512,13 @@
                                     const badgeClass = isOutgoing ? 'quantity-out' : 'quantity-in';
                                     const sign = isOutgoing ? '-' : '+';
                                     return `
-                                                    <tr>
-                                                        <td>${new Date(record.date_received).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
-                                                        <td><span class="quantity-badge ${badgeClass}">${sign}${displayQty}</span></td>
-                                                        <td>${record.received_from || 'N/A'}</td>
-                                                        <td>${record.handled_by}</td>
-                                                    </tr>
-                                                `;
+                                                            <tr>
+                                                                <td>${new Date(record.date_received).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                                                                <td><span class="quantity-badge ${badgeClass}">${sign}${displayQty}</span></td>
+                                                                <td>${record.received_from || 'N/A'}</td>
+                                                                <td>${record.handled_by}</td>
+                                                            </tr>
+                                                        `;
                                 }).join('');
                             } else {
                                 historyList.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: #999;">No transaction history</td></tr>';
@@ -557,16 +557,16 @@
                 const filterForm = document.querySelector('.filters');
                 const searchInput = document.querySelector('input[name="search"]');
                 const categorySelect = document.querySelector('select[name="category"]');
-                
+
                 let searchTimeout;
-                
-                searchInput.addEventListener('input', function() {
+
+                searchInput.addEventListener('input', function () {
                     clearTimeout(searchTimeout);
                     searchTimeout = setTimeout(() => {
                         filterForm.submit();
                     }, 500);
                 });
-                
+
                 categorySelect.addEventListener('change', () => filterForm.submit());
             });
         </script>

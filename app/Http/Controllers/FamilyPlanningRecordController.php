@@ -133,4 +133,20 @@ class FamilyPlanningRecordController extends Controller
             ->route('health-programs.family-planning-view')
             ->with('success', 'Family planning record updated successfully.');
     }
+
+    public function destroy($id)
+    {
+        // Only super_admin can delete family planning records
+        if (auth()->user()->role !== 'super_admin') {
+            return back()->with('error', 'Only Super Admin can delete family planning records');
+        }
+
+        $record = FamilyPlanningRecord::findOrFail($id);
+        $recordName = $record->client_name;
+
+        $record->delete();
+
+        return redirect()->route('health-programs.family-planning-view')
+            ->with('success', 'Family planning record deleted successfully');
+    }
 }
